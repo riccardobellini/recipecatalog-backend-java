@@ -1,5 +1,6 @@
 package com.bellini.recipecatalog.controller.v1;
 
+import com.bellini.recipecatalog.exception.dishtype.DuplicateDishTypeException;
 import com.bellini.recipecatalog.model.v1.DishType;
 import com.bellini.recipecatalog.repository.DishTypeRepository;
 import com.bellini.recipecatalog.service.DishTypeService;
@@ -7,6 +8,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("v1/dishTypes")
@@ -25,6 +28,12 @@ public class DishTypeController {
 
     @PostMapping
     public ResponseEntity<DishType> createDishType(@RequestBody DishType dt) {
+        List<DishType> result = dishTypeService.get(dt.getName());
+
+        if (!result.isEmpty()) {
+            throw new DuplicateDishTypeException(dt);
+        }
+
         dishTypeService.create(dt);
         return new ResponseEntity<DishType>(dt, HttpStatus.OK);
     }
