@@ -12,4 +12,8 @@ public interface DishTypeService {
     void create(DishType dt);
 
     List<DishType> get(String name);
+
+    DishType get(Long id);
+
+    DishType update(Long id, DishType dt);
 }

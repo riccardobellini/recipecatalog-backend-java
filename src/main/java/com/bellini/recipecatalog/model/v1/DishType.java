@@ -7,7 +7,7 @@ public class DishType {
 
     @Id
     @GeneratedValue(strategy= GenerationType.IDENTITY)
-    private Integer id;
+    private Long id;
 
     @Column(name = "NOME")
     private String name;
@@ -18,5 +18,13 @@ public class DishType {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 }
