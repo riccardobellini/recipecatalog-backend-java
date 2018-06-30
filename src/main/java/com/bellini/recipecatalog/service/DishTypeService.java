@@ -1,8 +1,8 @@
 package com.bellini.recipecatalog.service;
 
-import com.bellini.recipecatalog.model.v1.DishType;
+import java.util.Collection;
 
-import java.util.List;
+import com.bellini.recipecatalog.model.v1.DishType;
 
 
 public interface DishTypeService {
@@ -11,7 +11,7 @@ public interface DishTypeService {
 
     void create(DishType dt);
 
-    List<DishType> get(String name);
+    Collection<DishType> get(String name);
 
     DishType get(Long id);
 
