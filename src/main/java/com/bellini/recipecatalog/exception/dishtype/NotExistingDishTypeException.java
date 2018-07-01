@@ -2,7 +2,8 @@ package com.bellini.recipecatalog.exception.dishtype;
 
 public class NotExistingDishTypeException extends RuntimeException {
 
-    private Long id;
+	private static final long serialVersionUID = 7881500207493108775L;
+	private Long id;
 
     public NotExistingDishTypeException(Long id) {
         super();

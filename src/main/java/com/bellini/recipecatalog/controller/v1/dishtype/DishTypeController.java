@@ -1,4 +1,4 @@
-package com.bellini.recipecatalog.controller.v1;
+package com.bellini.recipecatalog.controller.v1.dishtype;
 
 import java.util.Collection;
 
@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.bellini.recipecatalog.exception.dishtype.DuplicateDishTypeException;
 import com.bellini.recipecatalog.exception.dishtype.NotExistingDishTypeException;
 import com.bellini.recipecatalog.model.v1.DishType;
-import com.bellini.recipecatalog.service.DishTypeService;
+import com.bellini.recipecatalog.service.v1.dishtype.DishTypeService;
 
 @RestController
 @RequestMapping("v1/dishTypes")

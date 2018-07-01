@@ -1,11 +1,10 @@
-package com.bellini.recipecatalog.service;
+package com.bellini.recipecatalog.dao.v1.dishtype;
 
 import java.util.Collection;
 
 import com.bellini.recipecatalog.model.v1.DishType;
 
-
-public interface DishTypeService {
+public interface DishTypeRepository {
 
     Iterable<DishType> getAll();
 
@@ -16,4 +15,5 @@ public interface DishTypeService {
     DishType get(Long id);
 
     DishType update(Long id, DishType dt);
+	
 }

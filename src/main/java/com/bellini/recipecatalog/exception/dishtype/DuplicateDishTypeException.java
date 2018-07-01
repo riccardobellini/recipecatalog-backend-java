@@ -4,7 +4,8 @@ import com.bellini.recipecatalog.model.v1.DishType;
 
 public class DuplicateDishTypeException extends RuntimeException {
 
-    private DishType dt;
+	private static final long serialVersionUID = -2458702761165927200L;
+	private DishType dt;
 
     public DuplicateDishTypeException(DishType dt) {
         super();
