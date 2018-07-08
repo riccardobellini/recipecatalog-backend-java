@@ -1,0 +1,230 @@
+CREATE DATABASE  IF NOT EXISTS `recipe_catalog` /*!40100 DEFAULT CHARACTER SET utf8 */;
+USE `recipe_catalog`;
+-- MySQL dump 10.13  Distrib 5.7.22, for Linux (x86_64)
+--
+-- Host: localhost    Database: recipe_catalog
+-- ------------------------------------------------------
+-- Server version	5.7.22-0ubuntu18.04.1
+
+/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
+/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
+/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
+/*!40101 SET NAMES utf8 */;
+/*!40103 SET @OLD_TIME_ZONE=@@TIME_ZONE */;
+/*!40103 SET TIME_ZONE='+00:00' */;
+/*!40014 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0 */;
+/*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
+/*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
+/*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
+
+--
+-- Table structure for table `BOOK`
+--
+
+DROP TABLE IF EXISTS `BOOK`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `BOOK` (
+  `ID` int(11) NOT NULL AUTO_INCREMENT,
+  `TITLE` varchar(50) NOT NULL,
+  `CREATION_TIME` datetime NOT NULL,
+  `LAST_MODIFICATION_TIME` datetime NOT NULL,
+  PRIMARY KEY (`ID`),
+  UNIQUE KEY `TITLE_UNIQUE` (`TITLE`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Book table';
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `BOOK`
+--
+
+LOCK TABLES `BOOK` WRITE;
+/*!40000 ALTER TABLE `BOOK` DISABLE KEYS */;
+/*!40000 ALTER TABLE `BOOK` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `BOOK_RECIPE`
+--
+
+DROP TABLE IF EXISTS `BOOK_RECIPE`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `BOOK_RECIPE` (
+  `ID_RECIPE` int(11) NOT NULL,
+  `ID_BOOK` int(11) NOT NULL,
+  `ID_PUBLICATION` int(11) DEFAULT NULL,
+  PRIMARY KEY (`ID_RECIPE`),
+  KEY `BOOK_RECIPE_FK_2` (`ID_BOOK`),
+  KEY `BOOK_RECIPE_FK_3` (`ID_PUBLICATION`),
+  CONSTRAINT `BOOK_RECIPE_FK_1` FOREIGN KEY (`ID_RECIPE`) REFERENCES `RECIPE` (`ID`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `BOOK_RECIPE_FK_2` FOREIGN KEY (`ID_BOOK`) REFERENCES `BOOK` (`ID`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `BOOK_RECIPE_FK_3` FOREIGN KEY (`ID_PUBLICATION`) REFERENCES `PUBLICATION` (`ID`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `BOOK_RECIPE`
+--
+
+LOCK TABLES `BOOK_RECIPE` WRITE;
+/*!40000 ALTER TABLE `BOOK_RECIPE` DISABLE KEYS */;
+/*!40000 ALTER TABLE `BOOK_RECIPE` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `DISHTYPE`
+--
+
+DROP TABLE IF EXISTS `DISHTYPE`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `DISHTYPE` (
+  `ID` int(11) NOT NULL AUTO_INCREMENT,
+  `NAME` varchar(50) NOT NULL,
+  `CREATION_TIME` datetime NOT NULL,
+  `LAST_MODIFICATION_TIME` datetime NOT NULL,
+  PRIMARY KEY (`ID`),
+  UNIQUE KEY `NAME_UNIQUE` (`NAME`)
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8 COMMENT='Dish type table';
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `DISHTYPE_RECIPE`
+--
+
+DROP TABLE IF EXISTS `DISHTYPE_RECIPE`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `DISHTYPE_RECIPE` (
+  `ID_RECIPE` int(11) NOT NULL,
+  `ID_DISHTYPE` int(11) NOT NULL,
+  PRIMARY KEY (`ID_RECIPE`,`ID_DISHTYPE`),
+  KEY `DISHTYPE_RECIPE_FK_2` (`ID_DISHTYPE`),
+  CONSTRAINT `DISHTYPE_RECIPE_FK_1` FOREIGN KEY (`ID_RECIPE`) REFERENCES `RECIPE` (`ID`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `DISHTYPE_RECIPE_FK_2` FOREIGN KEY (`ID_DISHTYPE`) REFERENCES `DISHTYPE` (`ID`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Relationship table between recipes and dish types';
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `DISHTYPE_RECIPE`
+--
+
+LOCK TABLES `DISHTYPE_RECIPE` WRITE;
+/*!40000 ALTER TABLE `DISHTYPE_RECIPE` DISABLE KEYS */;
+/*!40000 ALTER TABLE `DISHTYPE_RECIPE` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `INGREDIENT`
+--
+
+DROP TABLE IF EXISTS `INGREDIENT`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `INGREDIENT` (
+  `ID` int(11) NOT NULL AUTO_INCREMENT,
+  `NAME` varchar(50) NOT NULL,
+  `CREATION_TIME` datetime NOT NULL,
+  `LAST_MODIFICATION_TIME` datetime NOT NULL,
+  PRIMARY KEY (`ID`),
+  UNIQUE KEY `NAME_UNIQUE` (`NAME`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Ingredient table';
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `INGREDIENT`
+--
+
+LOCK TABLES `INGREDIENT` WRITE;
+/*!40000 ALTER TABLE `INGREDIENT` DISABLE KEYS */;
+/*!40000 ALTER TABLE `INGREDIENT` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `INGREDIENT_RECIPE`
+--
+
+DROP TABLE IF EXISTS `INGREDIENT_RECIPE`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `INGREDIENT_RECIPE` (
+  `ID_RECIPE` int(11) NOT NULL,
+  `ID_INGREDIENT` int(11) NOT NULL,
+  PRIMARY KEY (`ID_RECIPE`,`ID_INGREDIENT`),
+  KEY `INGREDIENT_RECIPE_FK_2` (`ID_INGREDIENT`),
+  CONSTRAINT `INGREDIENT_RECIPE_FK_1` FOREIGN KEY (`ID_RECIPE`) REFERENCES `RECIPE` (`ID`),
+  CONSTRAINT `INGREDIENT_RECIPE_FK_2` FOREIGN KEY (`ID_INGREDIENT`) REFERENCES `INGREDIENT` (`ID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Relationship table between recipes and ingredients';
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `INGREDIENT_RECIPE`
+--
+
+LOCK TABLES `INGREDIENT_RECIPE` WRITE;
+/*!40000 ALTER TABLE `INGREDIENT_RECIPE` DISABLE KEYS */;
+/*!40000 ALTER TABLE `INGREDIENT_RECIPE` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `PUBLICATION`
+--
+
+DROP TABLE IF EXISTS `PUBLICATION`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `PUBLICATION` (
+  `ID` int(11) NOT NULL AUTO_INCREMENT,
+  `VOLUME` int(11) DEFAULT NULL,
+  `YEAR` int(11) DEFAULT NULL,
+  `CREATION_TIME` datetime NOT NULL,
+  `LAST_MODIFICATION_TIME` datetime NOT NULL,
+  PRIMARY KEY (`ID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Publication data table';
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `PUBLICATION`
+--
+
+LOCK TABLES `PUBLICATION` WRITE;
+/*!40000 ALTER TABLE `PUBLICATION` DISABLE KEYS */;
+/*!40000 ALTER TABLE `PUBLICATION` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `RECIPE`
+--
+
+DROP TABLE IF EXISTS `RECIPE`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `RECIPE` (
+  `ID` int(11) NOT NULL AUTO_INCREMENT,
+  `TITLE` varchar(512) NOT NULL,
+  `CREATION_TIME` datetime NOT NULL,
+  `LAST_MODIFICATION_TIME` datetime NOT NULL,
+  PRIMARY KEY (`ID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Recipe table';
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `RECIPE`
+--
+
+LOCK TABLES `RECIPE` WRITE;
+/*!40000 ALTER TABLE `RECIPE` DISABLE KEYS */;
+/*!40000 ALTER TABLE `RECIPE` ENABLE KEYS */;
+UNLOCK TABLES;
+/*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
+
+/*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
+/*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
+/*!40014 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS */;
+/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
+/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
+/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
+/*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
+
+-- Dump completed on 2018-07-08 19:34:51
