@@ -12,6 +12,11 @@ public interface DishTypeRepository {
 
     Collection<DishType> get(String name);
 
+    /**
+     * 
+     * @param id
+     * @return null if no element with id is found
+     */
     DishType get(Long id);
 
     DishType update(Long id, DishType dt);

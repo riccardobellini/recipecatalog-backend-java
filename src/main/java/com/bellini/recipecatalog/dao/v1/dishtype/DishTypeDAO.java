@@ -80,12 +80,44 @@ public class DishTypeDAO implements DishTypeRepository {
 
 	@Override
 	public DishType get(Long id) {
-		DishType dt = new DishType();
-		dt.setId(id);
-		dt.setName("Test dish type");
-		return dt;
+		String selectSql = singleSelectSQL();
+		try (Connection conn = dataSource.getConnection();
+				PreparedStatement stmt = conn.prepareStatement(selectSql)) {
+			stmt.setLong(1, id);
+			try (ResultSet rs = stmt.executeQuery()) {
+				if (rs.next()) {
+					DishType dt = new DishType();
+					
+					dt.setId(rs.getLong("ID"));
+					dt.setName(rs.getString("NAME"));
+					
+					LocalDateTime cldt = rs.getObject("CREATION_TIME", LocalDateTime.class);
+					if (cldt != null) {
+						dt.setCreationTime(cldt.toInstant(ZoneOffset.UTC));
+					}
+					
+					LocalDateTime mldt = rs.getObject("LAST_MODIFICATION_TIME", LocalDateTime.class);
+					if (mldt != null) {
+						dt.setLastModificationTime(mldt.toInstant(ZoneOffset.UTC));
+					}
+					
+					return dt;
+				}
+			}
+		} catch (SQLException e) {
+			e.printStackTrace(); // TODO
+		}
+		return null;
 	}
 
+	private String singleSelectSQL() {
+		StringBuilder sb = new StringBuilder();
+		sb.append("SELECT ID, NAME, CREATION_TIME, LAST_MODIFICATION_TIME ");
+		sb.append("FROM DISHTYPE ");
+		sb.append("WHERE ID = ?");
+		return sb.toString();
+	}
+	
 	@Override
 	public DishType update(Long id, DishType dt) {
 		// TODO Auto-generated method stub
