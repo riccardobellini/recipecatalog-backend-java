@@ -8,7 +8,6 @@ import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 
 import javax.sql.DataSource;
 
@@ -70,12 +69,44 @@ public class DishTypeDAO implements DishTypeRepository {
 
 	@Override
 	public Collection<DishType> get(String name) {
-		DishType dt = new DishType();
-		dt.setId(1l);
-		dt.setName(name);
-		List<DishType> dtList = new ArrayList<>();
-		dtList.add(dt);
-		return dtList;
+		Collection<DishType> result = new ArrayList<>();
+		String selectSql = getByNameSelectSQL();
+		try (Connection conn = dataSource.getConnection();
+				PreparedStatement stmt = conn.prepareStatement(selectSql)) {
+			String searchFor = "%" + name.toLowerCase() + "%";
+			stmt.setString(1, searchFor);
+			try (ResultSet rs = stmt.executeQuery()) {
+				while (rs.next()) {
+					DishType dt = new DishType();
+					
+					dt.setId(rs.getLong("ID"));
+					dt.setName(rs.getString("NAME"));
+					
+					LocalDateTime cldt = rs.getObject("CREATION_TIME", LocalDateTime.class);
+					if (cldt != null) {
+						dt.setCreationTime(cldt.toInstant(ZoneOffset.UTC));
+					}
+					
+					LocalDateTime mldt = rs.getObject("LAST_MODIFICATION_TIME", LocalDateTime.class);
+					if (mldt != null) {
+						dt.setLastModificationTime(mldt.toInstant(ZoneOffset.UTC));
+					}
+					
+					result.add(dt);
+				}
+			}
+		} catch (SQLException e) {
+			e.printStackTrace(); // TODO
+		}
+		return result;
+	}
+	
+	private String getByNameSelectSQL() {
+		StringBuilder sb = new StringBuilder();
+		sb.append("SELECT ID, NAME, CREATION_TIME, LAST_MODIFICATION_TIME ");
+		sb.append("FROM DISHTYPE ");
+		sb.append("WHERE LOWER(NAME) LIKE ?");
+		return sb.toString();
 	}
 
 	@Override

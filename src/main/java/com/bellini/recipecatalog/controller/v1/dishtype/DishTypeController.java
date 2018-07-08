@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -29,9 +30,15 @@ public class DishTypeController {
 
     @GetMapping(path = "", produces = { MediaType.APPLICATION_JSON_VALUE })
     public @ResponseBody
-    ResponseEntity<Iterable<DishType>> getAllDishTypes() {
+    ResponseEntity<Iterable<DishType>> getAllDishTypes(@RequestParam(name="q") String name) {
+    	Iterable<DishType> list = null;
+    	if (name != null) {
+    		list = dishTypeService.get(name);
+    	} else {
+    		list = dishTypeService.getAll();
+    	}
         return new ResponseEntity<Iterable<DishType>>(
-                dishTypeService.getAll(), HttpStatus.OK
+                list, HttpStatus.OK
         );
     }
 
