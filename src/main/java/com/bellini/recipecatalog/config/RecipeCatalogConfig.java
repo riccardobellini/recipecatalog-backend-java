@@ -16,18 +16,6 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter
 @PropertySource("classpath:application.properties")
 public class RecipeCatalogConfig extends WebMvcConfigurerAdapter {
 	
-//	@Bean
-//    DataSource dataSource() {
-//        DataSource dataSource = null;
-//        JndiTemplate jndi = new JndiTemplate();
-//        try {
-//            dataSource = jndi.lookup("java:comp/env/jdbc/RecipeCatalog", DataSource.class);
-//        } catch (NamingException e) {
-//            e.printStackTrace();
-//        }
-//        return dataSource;
-//    }
-	
 	@Bean
     DataSource dataSource() {
 		JndiDataSourceLookup dsLookup = new JndiDataSourceLookup();
