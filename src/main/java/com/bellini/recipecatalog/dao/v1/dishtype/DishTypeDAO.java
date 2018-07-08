@@ -150,9 +150,68 @@ public class DishTypeDAO implements DishTypeRepository {
 	}
 	
 	@Override
-	public DishType update(Long id, DishType dt) {
-		// TODO Auto-generated method stub
+	public int update(Long id, DishType dt) {
+		String updateSql = updateSQL();
+		try (Connection conn = dataSource.getConnection();
+				PreparedStatement stmt = conn.prepareStatement(updateSql)) {
+			int i = 1;
+			stmt.setString(i++, dt.getName());
+			stmt.setLong(i++, id);
+			
+			return stmt.executeUpdate();
+		} catch (SQLException e) {
+			e.printStackTrace(); // TODO
+		}
+		return 0;
+	}
+	
+	private String updateSQL() {
+		StringBuilder sb = new StringBuilder();
+		sb.append("UPDATE DISHTYPE ");
+		sb.append("SET NAME = ?, ");
+		sb.append("LAST_MODIFICATION_TIME = UTC_TIMESTAMP() ");
+		sb.append("WHERE ID = ?");
+		return sb.toString();
+	}
+	
+	@Override
+	public DishType getByExactName(String name) {
+		String selectSql = getByExactNameSelectSQL();
+		try (Connection conn = dataSource.getConnection();
+				PreparedStatement stmt = conn.prepareStatement(selectSql)) {
+			stmt.setString(1, name);
+			try (ResultSet rs = stmt.executeQuery()) {
+				if (rs.next()) {
+					DishType dt = new DishType();
+					
+					dt.setId(rs.getLong("ID"));
+					dt.setName(rs.getString("NAME"));
+					
+					LocalDateTime cldt = rs.getObject("CREATION_TIME", LocalDateTime.class);
+					if (cldt != null) {
+						dt.setCreationTime(cldt.toInstant(ZoneOffset.UTC));
+					}
+					
+					LocalDateTime mldt = rs.getObject("LAST_MODIFICATION_TIME", LocalDateTime.class);
+					if (mldt != null) {
+						dt.setLastModificationTime(mldt.toInstant(ZoneOffset.UTC));
+					}
+					
+					return dt;
+				}
+			}
+		} catch (SQLException e) {
+			e.printStackTrace(); // TODO
+		}
 		return null;
+	}
+	
+	private String getByExactNameSelectSQL() {
+		StringBuilder sb = new StringBuilder();
+		sb.append("SELECT ID, NAME, CREATION_TIME, LAST_MODIFICATION_TIME ");
+		sb.append("FROM DISHTYPE ");
+		sb.append("WHERE LOWER(NAME) = ?");
+		return sb.toString();
 	}
 
 }

@@ -19,6 +19,19 @@ public interface DishTypeRepository {
      */
     DishType get(Long id);
 
-    DishType update(Long id, DishType dt);
+    /**
+     * 
+     * @param id
+     * @param dt
+     * @return number of records updated
+     */
+    int update(Long id, DishType dt);
+    
+    /**
+     * Retrieve a dish type given its name
+     * @param name
+     * @return the dishtype or null if not found with the provided name
+     */
+    DishType getByExactName(String name);
 	
 }
