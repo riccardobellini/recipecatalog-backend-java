@@ -28,20 +28,20 @@ public class DishType {
         this.id = id;
     }
 
-	public Instant getCreationTime() {
-		return creationTime;
-	}
+    public Instant getCreationTime() {
+        return creationTime;
+    }
 
-	public void setCreationTime(Instant creationTime) {
-		this.creationTime = creationTime;
-	}
+    public void setCreationTime(Instant creationTime) {
+        this.creationTime = creationTime;
+    }
 
-	public Instant getLastModificationTime() {
-		return lastModificationTime;
-	}
+    public Instant getLastModificationTime() {
+        return lastModificationTime;
+    }
 
-	public void setLastModificationTime(Instant lastModificationTime) {
-		this.lastModificationTime = lastModificationTime;
-	}
+    public void setLastModificationTime(Instant lastModificationTime) {
+        this.lastModificationTime = lastModificationTime;
+    }
     
 }

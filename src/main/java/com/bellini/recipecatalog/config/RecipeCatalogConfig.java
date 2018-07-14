@@ -14,12 +14,12 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter
 @ComponentScan(basePackages = "com.bellini.recipecatalog")
 //@PropertySource("classpath:application.properties")
 public class RecipeCatalogConfig extends WebMvcConfigurerAdapter {
-	
-	@Bean
+    
+    @Bean
     DataSource dataSource() {
-		JndiDataSourceLookup dsLookup = new JndiDataSourceLookup();
-	    DataSource dataSource = dsLookup.getDataSource("jdbc/RecipeCatalog");       
-	    return dataSource;
-	}
-	
+        JndiDataSourceLookup dsLookup = new JndiDataSourceLookup();
+        DataSource dataSource = dsLookup.getDataSource("jdbc/RecipeCatalog");       
+        return dataSource;
+    }
+    
 }

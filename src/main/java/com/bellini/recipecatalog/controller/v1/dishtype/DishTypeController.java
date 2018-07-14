@@ -28,12 +28,12 @@ public class DishTypeController {
 
     @GetMapping(path = "", produces = { MediaType.APPLICATION_JSON_UTF8_VALUE })
     public ResponseEntity<Iterable<DishType>> getAllDishTypes(@RequestParam(name="q", required = false) String name) {
-    	Iterable<DishType> list = null;
-    	if (name != null) {
-    		list = dishTypeService.get(name);
-    	} else {
-    		list = dishTypeService.getAll();
-    	}
+        Iterable<DishType> list = null;
+        if (name != null) {
+            list = dishTypeService.get(name);
+        } else {
+            list = dishTypeService.getAll();
+        }
         return new ResponseEntity<Iterable<DishType>>(
                 list, HttpStatus.OK
         );
