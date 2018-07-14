@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import com.bellini.recipecatalog.dao.v1.dishtype.DishTypeRepository;
 import com.bellini.recipecatalog.exception.dishtype.DuplicateDishTypeException;
+import com.bellini.recipecatalog.exception.dishtype.NotExistingDishTypeException;
 import com.bellini.recipecatalog.model.v1.DishType;
 
 @Service
@@ -58,6 +59,14 @@ public class DishTypeServiceImpl implements DishTypeService {
 			throw new RuntimeException("No record updated!");
 		}
 		throw new DuplicateDishTypeException(dt);
+	}
+	
+	@Override
+	public void delete(Long id) {
+	    int deleted = repo.delete(id);
+	    if (deleted == 0) {
+	        throw new NotExistingDishTypeException(id);
+	    }
 	}
 
 }

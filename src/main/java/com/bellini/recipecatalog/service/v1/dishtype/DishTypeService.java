@@ -18,4 +18,6 @@ public interface DishTypeService {
     DishType get(Long id);
 
     DishType update(Long id, DishType dt);
+    
+    void delete(Long id);
 }

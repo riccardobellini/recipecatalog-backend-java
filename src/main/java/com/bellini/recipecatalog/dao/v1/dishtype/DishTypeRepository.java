@@ -41,4 +41,12 @@ public interface DishTypeRepository {
      */
     DishType getByExactName(String name);
 
+    /**
+     * Delete a dish type
+     * 
+     * @param id
+     * @return number of deleted elements
+     */
+    int delete(Long id);
+
 }
