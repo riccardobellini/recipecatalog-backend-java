@@ -6,7 +6,7 @@ import com.bellini.recipecatalog.model.v1.DishType;
 
 public interface DishTypeRepository {
 
-    Iterable<DishType> getAll();
+	Collection<DishType> getAll();
 
     void create(DishType dt);
 

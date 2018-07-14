@@ -23,7 +23,7 @@ public class DishTypeDAO implements DishTypeRepository {
 	private DataSource dataSource;
 	
 	@Override
-	public Iterable<DishType> getAll() {
+	public Collection<DishType> getAll() {
 		Collection<DishType> result = new ArrayList<>();
 		String selectSql = allSelectSQL();
 		try (Connection conn = dataSource.getConnection();

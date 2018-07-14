@@ -17,7 +17,7 @@ public class DishTypeServiceImpl implements DishTypeService {
 	private DishTypeRepository repo;
 
 	@Override
-	public Iterable<DishType> getAll() {
+	public Collection<DishType> getAll() {
 		return repo.getAll();
 	}
 

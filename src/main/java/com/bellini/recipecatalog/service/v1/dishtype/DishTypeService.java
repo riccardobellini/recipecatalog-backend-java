@@ -9,7 +9,7 @@ import com.bellini.recipecatalog.model.v1.DishType;
 @Service
 public interface DishTypeService {
 
-    Iterable<DishType> getAll();
+	Collection<DishType> getAll();
 
     void create(DishType dt);
 
