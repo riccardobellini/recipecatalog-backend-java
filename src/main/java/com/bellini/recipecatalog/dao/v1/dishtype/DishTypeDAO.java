@@ -62,9 +62,27 @@ public class DishTypeDAO implements DishTypeRepository {
 	}
 
 	@Override
-	public void create(DishType dt) {
-		// TODO Auto-generated method stub
-
+	public int create(DishType dt) {
+		String insertSql = createInsertSQL();
+		try (Connection conn = dataSource.getConnection();
+				PreparedStatement stmt = conn.prepareStatement(insertSql)) {
+			int i = 1;
+			stmt.setString(i++, dt.getName());
+			
+			return stmt.executeUpdate();
+		} catch (SQLException e) {
+			e.printStackTrace(); // TODO
+		}
+		return 0;
+	}
+	
+	private String createInsertSQL() {
+		StringBuilder sb = new StringBuilder();
+		sb.append("INSERT INTO DISHTYPE ");
+		sb.append(" (NAME, CREATION_TIME, LAST_MODIFICATION_TIME) ");
+		sb.append(" VALUES ");
+		sb.append("(?, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)");
+		return sb.toString();
 	}
 
 	@Override

@@ -27,7 +27,7 @@ public class DishTypeController {
     @Autowired
     private DishTypeService dishTypeService;
 
-    @GetMapping(path = "/", produces = { MediaType.APPLICATION_JSON_UTF8_VALUE })
+    @GetMapping(path = "", produces = { MediaType.APPLICATION_JSON_UTF8_VALUE })
     public ResponseEntity<Iterable<DishType>> getAllDishTypes(@RequestParam(name="q", required = false) String name) {
     	Iterable<DishType> list = null;
     	if (name != null) {

@@ -8,7 +8,7 @@ public interface DishTypeRepository {
 
 	Collection<DishType> getAll();
 
-    void create(DishType dt);
+    int create(DishType dt);
 
     Collection<DishType> get(String name);
 
