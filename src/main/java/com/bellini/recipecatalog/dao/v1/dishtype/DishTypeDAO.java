@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.util.ArrayList;
@@ -62,18 +63,24 @@ public class DishTypeDAO implements DishTypeRepository {
 	}
 
 	@Override
-	public int create(DishType dt) {
+	public long create(DishType dt) {
+	    long newId = -1;
 		String insertSql = createInsertSQL();
 		try (Connection conn = dataSource.getConnection();
-				PreparedStatement stmt = conn.prepareStatement(insertSql)) {
+				PreparedStatement stmt = conn.prepareStatement(insertSql, Statement.RETURN_GENERATED_KEYS)) {
 			int i = 1;
 			stmt.setString(i++, dt.getName());
 			
-			return stmt.executeUpdate();
+			stmt.executeUpdate();
+			
+			ResultSet gk = stmt.getGeneratedKeys();
+			if (gk.next()) {
+			    newId = gk.getLong(1);
+			}
 		} catch (SQLException e) {
 			e.printStackTrace(); // TODO
 		}
-		return 0;
+		return newId;
 	}
 	
 	private String createInsertSQL() {
@@ -81,7 +88,7 @@ public class DishTypeDAO implements DishTypeRepository {
 		sb.append("INSERT INTO DISHTYPE ");
 		sb.append(" (NAME, CREATION_TIME, LAST_MODIFICATION_TIME) ");
 		sb.append(" VALUES ");
-		sb.append("(?, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)");
+		sb.append("(?, UTC_TIMESTAMP(), UTC_TIMESTAMP())");
 		return sb.toString();
 	}
 

@@ -22,8 +22,12 @@ public class DishTypeServiceImpl implements DishTypeService {
 	}
 
 	@Override
-	public void create(DishType dt) {
-		repo.create(dt);
+	public DishType create(DishType dt) {
+	    if (repo.getByExactName(dt.getName()) != null) {
+	        throw new DuplicateDishTypeException(dt);
+	    }
+		long id = repo.create(dt);
+		return repo.get(id);
 	}
 
 	@Override

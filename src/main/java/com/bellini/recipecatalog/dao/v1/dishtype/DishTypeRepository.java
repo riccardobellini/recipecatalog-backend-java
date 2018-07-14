@@ -6,9 +6,15 @@ import com.bellini.recipecatalog.model.v1.DishType;
 
 public interface DishTypeRepository {
 
-	Collection<DishType> getAll();
+    Collection<DishType> getAll();
 
-    int create(DishType dt);
+    /**
+     * Create a new dish type
+     * 
+     * @param dt
+     * @return the id of the newly created dish type
+     */
+    long create(DishType dt);
 
     Collection<DishType> get(String name);
 
@@ -26,12 +32,13 @@ public interface DishTypeRepository {
      * @return number of records updated
      */
     int update(Long id, DishType dt);
-    
+
     /**
      * Retrieve a dish type given its name
+     * 
      * @param name
      * @return the dishtype or null if not found with the provided name
      */
     DishType getByExactName(String name);
-	
+
 }

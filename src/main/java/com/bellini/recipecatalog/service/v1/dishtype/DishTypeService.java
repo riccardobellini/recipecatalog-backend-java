@@ -11,7 +11,7 @@ public interface DishTypeService {
 
 	Collection<DishType> getAll();
 
-    void create(DishType dt);
+    DishType create(DishType dt);
 
     Collection<DishType> get(String name);
 
