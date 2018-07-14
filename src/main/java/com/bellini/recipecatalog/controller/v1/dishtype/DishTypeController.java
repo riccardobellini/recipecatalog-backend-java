@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.bellini.recipecatalog.exception.dishtype.DuplicateDishTypeException;
@@ -28,9 +27,8 @@ public class DishTypeController {
     @Autowired
     private DishTypeService dishTypeService;
 
-    @GetMapping(path = "", produces = { MediaType.APPLICATION_JSON_VALUE })
-    public @ResponseBody
-    ResponseEntity<Iterable<DishType>> getAllDishTypes(@RequestParam(name="q") String name) {
+    @GetMapping(path = "/", produces = { MediaType.APPLICATION_JSON_UTF8_VALUE })
+    public ResponseEntity<Iterable<DishType>> getAllDishTypes(@RequestParam(name="q", required = false) String name) {
     	Iterable<DishType> list = null;
     	if (name != null) {
     		list = dishTypeService.get(name);
@@ -42,7 +40,7 @@ public class DishTypeController {
         );
     }
 
-    @PostMapping(consumes = { MediaType.APPLICATION_JSON_VALUE }, produces = { MediaType.APPLICATION_JSON_VALUE })
+    @PostMapping(consumes = { MediaType.APPLICATION_JSON_UTF8_VALUE }, produces = { MediaType.APPLICATION_JSON_UTF8_VALUE })
     public ResponseEntity<DishType> createDishType(@RequestBody DishType dt) {
         Collection<DishType> result = dishTypeService.get(dt.getName());
         
@@ -65,7 +63,7 @@ public class DishTypeController {
         return new ResponseEntity<DishType>(dt, HttpStatus.OK);
     }
 
-    @PutMapping(path = "/{id}", consumes = { MediaType.APPLICATION_JSON_VALUE }, produces = { MediaType.APPLICATION_JSON_VALUE })
+    @PutMapping(path = "/{id}", consumes = { MediaType.APPLICATION_JSON_UTF8_VALUE }, produces = { MediaType.APPLICATION_JSON_UTF8_VALUE })
     public ResponseEntity<DishType> update(@PathVariable(value = "id") Long id, @RequestBody DishType dt) {
         return new ResponseEntity<DishType>(dishTypeService.update(id, dt), HttpStatus.OK);
     }
