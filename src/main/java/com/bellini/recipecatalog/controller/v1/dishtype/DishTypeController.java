@@ -42,7 +42,7 @@ public class DishTypeController {
     @PostMapping(consumes = { MediaType.APPLICATION_JSON_UTF8_VALUE }, produces = { MediaType.APPLICATION_JSON_UTF8_VALUE })
     public ResponseEntity<DishType> createDishType(@RequestBody DishType dt) {
         DishType insertedDt = dishTypeService.create(dt);
-        return new ResponseEntity<DishType>(insertedDt, HttpStatus.OK);
+        return new ResponseEntity<DishType>(insertedDt, HttpStatus.CREATED);
     }
 
     @GetMapping(path = "/{id}")
