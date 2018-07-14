@@ -100,7 +100,7 @@
     </properties>
 
     <build>
-        <finalName>rest-sample</finalName>
+        <finalName>recipe-catalog</finalName>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
