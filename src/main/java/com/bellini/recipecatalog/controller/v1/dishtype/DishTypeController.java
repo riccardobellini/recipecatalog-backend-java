@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.bellini.recipecatalog.exception.dishtype.NotExistingDishTypeException;
+import com.bellini.recipecatalog.model.common.pagination.PaginationInfo;
 import com.bellini.recipecatalog.model.v1.DishType;
 import com.bellini.recipecatalog.service.v1.dishtype.DishTypeService;
 
@@ -27,12 +28,12 @@ public class DishTypeController {
     private DishTypeService dishTypeService;
 
     @GetMapping(path = "", produces = { MediaType.APPLICATION_JSON_UTF8_VALUE })
-    public ResponseEntity<Iterable<DishType>> getAllDishTypes(@RequestParam(name="q", required = false) String name) {
+    public ResponseEntity<Iterable<DishType>> getAllDishTypes(@RequestParam(name="q", required = false) String name, PaginationInfo pgInfo) {
         Iterable<DishType> list = null;
         if (name != null) {
-            list = dishTypeService.get(name);
+            list = dishTypeService.get(name, pgInfo);
         } else {
-            list = dishTypeService.getAll();
+            list = dishTypeService.getAll(pgInfo);
         }
         return new ResponseEntity<Iterable<DishType>>(
                 list, HttpStatus.OK

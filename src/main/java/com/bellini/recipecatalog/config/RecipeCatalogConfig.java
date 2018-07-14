@@ -1,13 +1,18 @@
 package com.bellini.recipecatalog.config;
 
+import java.util.List;
+
 import javax.sql.DataSource;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.jdbc.datasource.lookup.JndiDataSourceLookup;
+import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
+
+import com.bellini.recipecatalog.utils.resolver.PaginationHandlerMethodArgumentResolver;
 
 @Configuration
 @EnableWebMvc
@@ -20,6 +25,12 @@ public class RecipeCatalogConfig extends WebMvcConfigurerAdapter {
         JndiDataSourceLookup dsLookup = new JndiDataSourceLookup();
         DataSource dataSource = dsLookup.getDataSource("jdbc/RecipeCatalog");       
         return dataSource;
+    }
+    
+    @Override
+    public void addArgumentResolvers(List<HandlerMethodArgumentResolver> argumentResolvers) {
+        argumentResolvers.add(new PaginationHandlerMethodArgumentResolver());
+        super.addArgumentResolvers(argumentResolvers);
     }
     
 }

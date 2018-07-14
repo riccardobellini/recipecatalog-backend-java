@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import com.bellini.recipecatalog.dao.v1.dishtype.DishTypeRepository;
 import com.bellini.recipecatalog.exception.dishtype.DuplicateDishTypeException;
 import com.bellini.recipecatalog.exception.dishtype.NotExistingDishTypeException;
+import com.bellini.recipecatalog.model.common.pagination.PaginationInfo;
 import com.bellini.recipecatalog.model.v1.DishType;
 
 @Service
@@ -18,8 +19,8 @@ public class DishTypeServiceImpl implements DishTypeService {
     private DishTypeRepository repo;
 
     @Override
-    public Collection<DishType> getAll() {
-        return repo.getAll();
+    public Collection<DishType> getAll(PaginationInfo pgInfo) {
+        return repo.getAll(pgInfo.getOffset(), pgInfo.getLimit());
     }
 
     @Override
@@ -32,8 +33,8 @@ public class DishTypeServiceImpl implements DishTypeService {
     }
 
     @Override
-    public Collection<DishType> get(String name) {
-        return repo.get(name);
+    public Collection<DishType> get(String name, PaginationInfo pgInfo) {
+        return repo.get(name, pgInfo.getOffset(), pgInfo.getLimit());
     }
 
     @Override

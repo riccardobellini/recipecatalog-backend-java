@@ -6,17 +6,19 @@ import com.bellini.recipecatalog.model.v1.DishType;
 
 public interface DishTypeRepository {
 
-    Collection<DishType> getAll();
+    Collection<DishType> getAll(long offset, int limit);
 
     /**
      * Create a new dish type
      * 
      * @param dt
+     * @param offset
+     * @param limit
      * @return the id of the newly created dish type
      */
     long create(DishType dt);
 
-    Collection<DishType> get(String name);
+    Collection<DishType> get(String name, long offset, int limit);
 
     /**
      * 

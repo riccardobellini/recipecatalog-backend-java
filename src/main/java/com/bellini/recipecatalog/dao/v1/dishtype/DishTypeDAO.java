@@ -24,10 +24,13 @@ public class DishTypeDAO implements DishTypeRepository {
     private DataSource dataSource;
 
     @Override
-    public Collection<DishType> getAll() {
+    public Collection<DishType> getAll(long offset, int limit) {
         Collection<DishType> result = new ArrayList<>();
         String selectSql = allSelectSQL();
         try (Connection conn = dataSource.getConnection(); PreparedStatement stmt = conn.prepareStatement(selectSql)) {
+            int i = 1;
+            stmt.setLong(i++, offset);
+            stmt.setInt(i++, limit);
             try (ResultSet rs = stmt.executeQuery()) {
                 while (rs.next()) {
                     DishType dt = new DishType();
@@ -57,7 +60,8 @@ public class DishTypeDAO implements DishTypeRepository {
     private String allSelectSQL() {
         StringBuilder sb = new StringBuilder();
         sb.append("SELECT ID, NAME, CREATION_TIME, LAST_MODIFICATION_TIME ");
-        sb.append("FROM DISHTYPE");
+        sb.append("FROM DISHTYPE ");
+        sb.append("LIMIT ?, ?");
         return sb.toString();
     }
 
@@ -92,12 +96,15 @@ public class DishTypeDAO implements DishTypeRepository {
     }
 
     @Override
-    public Collection<DishType> get(String name) {
+    public Collection<DishType> get(String name, long offset, int limit) {
         Collection<DishType> result = new ArrayList<>();
         String selectSql = getByNameSelectSQL();
         try (Connection conn = dataSource.getConnection(); PreparedStatement stmt = conn.prepareStatement(selectSql)) {
             String searchFor = "%" + name.toLowerCase() + "%";
-            stmt.setString(1, searchFor);
+            int i = 1;
+            stmt.setString(i++, searchFor);
+            stmt.setLong(i++, offset);
+            stmt.setInt(i++, limit);
             try (ResultSet rs = stmt.executeQuery()) {
                 while (rs.next()) {
                     DishType dt = new DishType();
@@ -128,7 +135,8 @@ public class DishTypeDAO implements DishTypeRepository {
         StringBuilder sb = new StringBuilder();
         sb.append("SELECT ID, NAME, CREATION_TIME, LAST_MODIFICATION_TIME ");
         sb.append("FROM DISHTYPE ");
-        sb.append("WHERE LOWER(NAME) LIKE ?");
+        sb.append("WHERE LOWER(NAME) LIKE ? ");
+        sb.append("LIMIT ?, ?");
         return sb.toString();
     }
 
