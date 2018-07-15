@@ -1,7 +1,6 @@
 package com.bellini.recipecatalog.service.v1.dishtype;
 
 import java.time.Instant;
-import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
@@ -36,8 +35,8 @@ public class DishTypeServiceImpl implements DishTypeService {
     }
 
     @Override
-    public Collection<DishType> get(String name, PaginationInfo pgInfo) {
-        return repo.findByNameIgnoreCaseContaining(name, PageRequest.of(1, 1));
+    public Iterable<DishType> get(String name, PaginationInfo pgInfo) {
+        return repo.findByNameIgnoreCaseContaining(name, PageRequest.of(0, 3));
     }
 
     @Override

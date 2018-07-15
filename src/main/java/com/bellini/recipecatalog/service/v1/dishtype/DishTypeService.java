@@ -1,7 +1,5 @@
 package com.bellini.recipecatalog.service.v1.dishtype;
 
-import java.util.Collection;
-
 import org.springframework.stereotype.Service;
 
 import com.bellini.recipecatalog.model.common.pagination.PaginationInfo;
@@ -14,7 +12,7 @@ public interface DishTypeService {
 
     DishType create(DishType dt);
 
-    Collection<DishType> get(String name, PaginationInfo pgInfo);
+    Iterable<DishType> get(String name, PaginationInfo pgInfo);
 
     DishType get(Long id);
 
