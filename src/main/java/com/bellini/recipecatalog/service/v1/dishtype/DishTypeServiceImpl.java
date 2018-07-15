@@ -7,6 +7,7 @@ import java.util.Optional;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import com.bellini.recipecatalog.dao.v1.dishtype.DishTypeRepository;
@@ -36,7 +37,7 @@ public class DishTypeServiceImpl implements DishTypeService {
 
     @Override
     public Collection<DishType> get(String name, PaginationInfo pgInfo) {
-        return repo.findByNameIgnoreCaseContaining(name);
+        return repo.findByNameIgnoreCaseContaining(name, PageRequest.of(1, 1));
     }
 
     @Override
