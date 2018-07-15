@@ -6,7 +6,7 @@ import org.springframework.data.repository.PagingAndSortingRepository;
 
 import com.bellini.recipecatalog.model.v1.DishType;
 
-public interface DishTypeCrudRepository extends PagingAndSortingRepository<DishType, Long> {
+public interface DishTypeRepository extends PagingAndSortingRepository<DishType, Long> {
 
 //    Collection<DishType> findAll();
     Collection<DishType> findByNameIgnoreCase(String name);

@@ -9,7 +9,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.bellini.recipecatalog.dao.v1.dishtype.DishTypeCrudRepository;
+import com.bellini.recipecatalog.dao.v1.dishtype.DishTypeRepository;
 import com.bellini.recipecatalog.exception.dishtype.DuplicateDishTypeException;
 import com.bellini.recipecatalog.exception.dishtype.NotExistingDishTypeException;
 import com.bellini.recipecatalog.model.common.pagination.PaginationInfo;
@@ -19,7 +19,7 @@ import com.bellini.recipecatalog.model.v1.DishType;
 public class DishTypeServiceImpl implements DishTypeService {
 
     @Autowired
-    private DishTypeCrudRepository repo;
+    private DishTypeRepository repo;
 
     @Override
     public Iterable<DishType> getAll(PaginationInfo pgInfo) {
