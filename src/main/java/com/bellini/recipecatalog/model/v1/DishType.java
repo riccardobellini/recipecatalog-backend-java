@@ -1,16 +1,32 @@
 package com.bellini.recipecatalog.model.v1;
 
 import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Table;
+
+@Entity
+@Table(name = "DISHTYPE")
 public class DishType {
 
+    @Id
+    @GeneratedValue(strategy=GenerationType.IDENTITY)
+    @Column(name = "ID")
     private Long id;
 
+    @Column(name = "NAME")
     private String name;
     
-    private Instant creationTime;
+    @Column(name = "CREATION_TIME")
+    private Instant creationTime = Instant.now().truncatedTo(ChronoUnit.SECONDS);
     
-    private Instant lastModificationTime;
+    @Column(name = "LAST_MODIFICATION_TIME")
+    private Instant lastModificationTime = Instant.now().truncatedTo(ChronoUnit.SECONDS);
 
     public String getName() {
         return name;
@@ -33,7 +49,7 @@ public class DishType {
     }
 
     public void setCreationTime(Instant creationTime) {
-        this.creationTime = creationTime;
+        this.creationTime = creationTime.truncatedTo(ChronoUnit.SECONDS);
     }
 
     public Instant getLastModificationTime() {
@@ -41,7 +57,7 @@ public class DishType {
     }
 
     public void setLastModificationTime(Instant lastModificationTime) {
-        this.lastModificationTime = lastModificationTime;
+        this.lastModificationTime = lastModificationTime.truncatedTo(ChronoUnit.SECONDS);
     }
     
 }

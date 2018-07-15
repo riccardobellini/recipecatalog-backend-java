@@ -1,12 +1,15 @@
 package com.bellini.recipecatalog.service.v1.dishtype;
 
+import java.time.Instant;
 import java.util.Collection;
+import java.util.List;
+import java.util.Optional;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.bellini.recipecatalog.dao.v1.dishtype.DishTypeRepository;
+import com.bellini.recipecatalog.dao.v1.dishtype.DishTypeCrudRepository;
 import com.bellini.recipecatalog.exception.dishtype.DuplicateDishTypeException;
 import com.bellini.recipecatalog.exception.dishtype.NotExistingDishTypeException;
 import com.bellini.recipecatalog.model.common.pagination.PaginationInfo;
@@ -14,32 +17,35 @@ import com.bellini.recipecatalog.model.v1.DishType;
 
 @Service
 public class DishTypeServiceImpl implements DishTypeService {
-    
+
     @Autowired
-    private DishTypeRepository repo;
+    private DishTypeCrudRepository repo;
 
     @Override
-    public Collection<DishType> getAll(PaginationInfo pgInfo) {
-        return repo.getAll(pgInfo.getOffset(), pgInfo.getLimit());
+    public Iterable<DishType> getAll(PaginationInfo pgInfo) {
+        return repo.findAll();
     }
 
     @Override
     public DishType create(DishType dt) {
-        if (repo.getByExactName(dt.getName()) != null) {
+        if (!repo.findByNameIgnoreCase(dt.getName()).isEmpty()) {
             throw new DuplicateDishTypeException(dt);
         }
-        long id = repo.create(dt);
-        return repo.get(id);
+        return repo.save(dt);
     }
 
     @Override
     public Collection<DishType> get(String name, PaginationInfo pgInfo) {
-        return repo.get(name, pgInfo.getOffset(), pgInfo.getLimit());
+        return repo.findByNameIgnoreCaseContaining(name);
     }
 
     @Override
     public DishType get(Long id) {
-        return repo.get(id);
+        Optional<DishType> optDt = repo.findById(id);
+        if (!optDt.isPresent()) {
+            throw new NotExistingDishTypeException(id);
+        }
+        return optDt.get();
     }
 
     @Override
@@ -50,24 +56,25 @@ public class DishTypeServiceImpl implements DishTypeService {
         if (dt == null || StringUtils.isEmpty(dt.getName())) {
             throw new IllegalArgumentException("Invalid dishtype");
         }
+        // FIXME refactor
         // search for name conflict
-        DishType sought = repo.getByExactName(dt.getName());
-        if (sought == null || sought.getId() == id) {
-            int updated = repo.update(id, dt);
-            if (updated == 1) {
-                return repo.get(id);
+        List<DishType> soughtList = (List<DishType>) repo.findByNameIgnoreCase(dt.getName());
+        if (soughtList.isEmpty() || soughtList.get(0).getId().equals(id)) {
+            Optional<DishType> toUpdate = repo.findById(id);
+            if (!toUpdate.isPresent()) {
+                throw new NotExistingDishTypeException(id);
             }
-            throw new RuntimeException("No record updated!");
+            // update only the name and modification time
+            toUpdate.get().setName(dt.getName());
+            toUpdate.get().setLastModificationTime(Instant.now());
+            return repo.save(toUpdate.get());
         }
         throw new DuplicateDishTypeException(dt);
     }
-    
+
     @Override
     public void delete(Long id) {
-        int deleted = repo.delete(id);
-        if (deleted == 0) {
-            throw new NotExistingDishTypeException(id);
-        }
+        repo.deleteById(id);
     }
 
 }

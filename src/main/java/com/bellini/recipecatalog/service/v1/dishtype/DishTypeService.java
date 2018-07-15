@@ -10,7 +10,7 @@ import com.bellini.recipecatalog.model.v1.DishType;
 @Service
 public interface DishTypeService {
 
-    Collection<DishType> getAll(PaginationInfo pgInfo);
+    Iterable<DishType> getAll(PaginationInfo pgInfo);
 
     DishType create(DishType dt);
 
