@@ -13,6 +13,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
+import org.springframework.data.web.PageableHandlerMethodArgumentResolver;
 import org.springframework.jdbc.datasource.lookup.JndiDataSourceLookup;
 import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
@@ -21,8 +22,6 @@ import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
-
-import com.bellini.recipecatalog.utils.resolver.PaginationHandlerMethodArgumentResolver;
 
 @Configuration
 @EnableWebMvc
@@ -40,7 +39,7 @@ public class RecipeCatalogConfig extends WebMvcConfigurerAdapter {
     
     @Override
     public void addArgumentResolvers(List<HandlerMethodArgumentResolver> argumentResolvers) {
-        argumentResolvers.add(new PaginationHandlerMethodArgumentResolver());
+        argumentResolvers.add(new PageableHandlerMethodArgumentResolver());
         super.addArgumentResolvers(argumentResolvers);
     }
     

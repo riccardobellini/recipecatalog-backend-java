@@ -1,6 +1,8 @@
 package com.bellini.recipecatalog.controller.v1.dishtype;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -16,7 +18,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.bellini.recipecatalog.exception.dishtype.NotExistingDishTypeException;
-import com.bellini.recipecatalog.model.common.pagination.PaginationInfo;
 import com.bellini.recipecatalog.model.v1.DishType;
 import com.bellini.recipecatalog.service.v1.dishtype.DishTypeService;
 
@@ -28,12 +29,12 @@ public class DishTypeController {
     private DishTypeService dishTypeService;
 
     @GetMapping(path = "", produces = { MediaType.APPLICATION_JSON_UTF8_VALUE })
-    public ResponseEntity<Iterable<DishType>> getAllDishTypes(@RequestParam(name="q", required = false) String name, PaginationInfo pgInfo) {
+    public ResponseEntity<Iterable<DishType>> getAllDishTypes(@RequestParam(name="q", required = false) String name, @PageableDefault(page = 0, size = 10) Pageable pageable) {
         Iterable<DishType> list = null;
         if (name != null) {
-            list = dishTypeService.get(name, pgInfo);
+            list = dishTypeService.get(name, pageable);
         } else {
-            list = dishTypeService.getAll(pgInfo);
+            list = dishTypeService.getAll(pageable);
         }
         return new ResponseEntity<Iterable<DishType>>(
                 list, HttpStatus.OK

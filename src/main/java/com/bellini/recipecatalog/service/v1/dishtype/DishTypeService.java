@@ -1,18 +1,18 @@
 package com.bellini.recipecatalog.service.v1.dishtype;
 
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import com.bellini.recipecatalog.model.common.pagination.PaginationInfo;
 import com.bellini.recipecatalog.model.v1.DishType;
 
 @Service
 public interface DishTypeService {
 
-    Iterable<DishType> getAll(PaginationInfo pgInfo);
+    Iterable<DishType> getAll(Pageable pageable);
 
     DishType create(DishType dt);
 
-    Iterable<DishType> get(String name, PaginationInfo pgInfo);
+    Iterable<DishType> get(String name, Pageable pageable);
 
     DishType get(Long id);
 

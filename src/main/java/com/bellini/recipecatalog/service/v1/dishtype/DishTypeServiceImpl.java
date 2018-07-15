@@ -6,13 +6,12 @@ import java.util.Optional;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.bellini.recipecatalog.dao.v1.dishtype.DishTypeRepository;
 import com.bellini.recipecatalog.exception.dishtype.DuplicateDishTypeException;
 import com.bellini.recipecatalog.exception.dishtype.NotExistingDishTypeException;
-import com.bellini.recipecatalog.model.common.pagination.PaginationInfo;
 import com.bellini.recipecatalog.model.v1.DishType;
 
 @Service
@@ -22,8 +21,8 @@ public class DishTypeServiceImpl implements DishTypeService {
     private DishTypeRepository repo;
 
     @Override
-    public Iterable<DishType> getAll(PaginationInfo pgInfo) {
-        return repo.findAll();
+    public Iterable<DishType> getAll(Pageable pageable) {
+        return repo.findAll(pageable);
     }
 
     @Override
@@ -35,8 +34,8 @@ public class DishTypeServiceImpl implements DishTypeService {
     }
 
     @Override
-    public Iterable<DishType> get(String name, PaginationInfo pgInfo) {
-        return repo.findByNameIgnoreCaseContaining(name, PageRequest.of(0, 3));
+    public Iterable<DishType> get(String name, Pageable pageable) {
+        return repo.findByNameIgnoreCaseContaining(name, pageable);
     }
 
     @Override
