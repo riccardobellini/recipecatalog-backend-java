@@ -29,7 +29,7 @@ public class BookServiceImpl implements BookService {
     }
 
     private PageRequest createSortedPageRequest(Pageable pageable) {
-        Sort.Order order = new Sort.Order(Direction.ASC, "Name").ignoreCase();
+        Sort.Order order = new Sort.Order(Direction.ASC, "Title").ignoreCase();
         Sort sort = Sort.by(order);
         PageRequest pgReq = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), sort);
         return pgReq;
@@ -37,24 +37,24 @@ public class BookServiceImpl implements BookService {
 
     @Override
     public Book create(Book b) {
-        if (!repo.findByNameIgnoreCase(b.getName()).isEmpty()) {
+        if (!repo.findByTitleIgnoreCase(b.getTitle()).isEmpty()) {
             throw new DuplicateBookException(b);
         }
         return repo.save(b);
     }
 
     @Override
-    public Iterable<Book> get(String name, Pageable pageable) {
-        return repo.findByNameIgnoreCaseContaining(name, createSortedPageRequest(pageable));
+    public Iterable<Book> get(String title, Pageable pageable) {
+        return repo.findByTitleIgnoreCaseContaining(title, createSortedPageRequest(pageable));
     }
 
     @Override
     public Book get(Long id) {
-        Optional<Book> optDt = repo.findById(id);
-        if (!optDt.isPresent()) {
+        Optional<Book> optBk = repo.findById(id);
+        if (!optBk.isPresent()) {
             throw new NotExistingBookException(id);
         }
-        return optDt.get();
+        return optBk.get();
     }
 
     @Override
@@ -62,19 +62,19 @@ public class BookServiceImpl implements BookService {
         if (id == null) {
             throw new IllegalArgumentException("Invalid id");
         }
-        if (b == null || StringUtils.isEmpty(b.getName())) {
-            throw new IllegalArgumentException("Invalid dishtype");
+        if (b == null || StringUtils.isEmpty(b.getTitle())) {
+            throw new IllegalArgumentException("Invalid book");
         }
         // FIXME refactor
         // search for name conflict
-        List<Book> soughtList = (List<Book>) repo.findByNameIgnoreCase(b.getName());
+        List<Book> soughtList = (List<Book>) repo.findByTitleIgnoreCase(b.getTitle());
         if (soughtList.isEmpty() || soughtList.get(0).getId().equals(id)) {
             Optional<Book> toUpdate = repo.findById(id);
             if (!toUpdate.isPresent()) {
                 throw new NotExistingBookException(id);
             }
             // update only the name and modification time
-            toUpdate.get().setName(b.getName());
+            toUpdate.get().setTitle(b.getTitle());
             toUpdate.get().setLastModificationTime(Instant.now());
             return repo.save(toUpdate.get());
         }

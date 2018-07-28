@@ -17,6 +17,6 @@ public class DuplicateBookException extends RuntimeException {
 
     @Override
     public String getMessage() {
-        return "A record with name \"" + book.getName() + "\" already exists";
+        return "A record with title \"" + book.getTitle() + "\" already exists";
     }
 }

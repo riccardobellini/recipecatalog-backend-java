@@ -19,8 +19,8 @@ public class Book {
     @Column(name = "ID")
     private Long id;
 
-    @Column(name = "NAME")
-    private String name;
+    @Column(name = "TITLE")
+    private String title;
     
     @Column(name = "CREATION_TIME")
     private Instant creationTime = Instant.now().truncatedTo(ChronoUnit.SECONDS);
@@ -28,12 +28,12 @@ public class Book {
     @Column(name = "LAST_MODIFICATION_TIME")
     private Instant lastModificationTime = Instant.now().truncatedTo(ChronoUnit.SECONDS);
 
-    public String getName() {
-        return name;
+    public String getTitle() {
+        return title;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setTitle(String title) {
+        this.title = title;
     }
 
     public Long getId() {

@@ -6,5 +6,5 @@ import com.bellini.recipecatalog.model.v1.Book;
 
 public interface BookCustomRepository {
 
-    Iterable<Book> findByNameIgnoreCaseContaining(String name, Pageable page);
+    Iterable<Book> findByTitleIgnoreCaseContaining(String title, Pageable page);
 }

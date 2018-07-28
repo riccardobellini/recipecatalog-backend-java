@@ -18,16 +18,16 @@ public class BookRepositoryImpl implements BookCustomRepository {
 
     @SuppressWarnings("unchecked")
     @Override
-    public Iterable<Book> findByNameIgnoreCaseContaining(String name, Pageable page) {
+    public Iterable<Book> findByTitleIgnoreCaseContaining(String title, Pageable page) {
         
-        Query q = emf.createQuery("SELECT b FROM Book b WHERE b.name LIKE :bName")
-            .setParameter("bName", "%" + name + "%")
+        Query q = emf.createQuery("SELECT b FROM Book b WHERE b.title LIKE :bTitle")
+            .setParameter("bTitle", "%" + title + "%")
             .setFirstResult((int) page.getOffset())
             .setMaxResults(page.getPageSize());
         List<Book> bookList = q.getResultList();
         
-        Query qTotal = emf.createQuery("SELECT count(b.id) FROM Book b WHERE b.name LIKE :bName")
-            .setParameter("bName", "%" + name + "%");
+        Query qTotal = emf.createQuery("SELECT count(b.id) FROM Book b WHERE b.title LIKE :bTitle")
+            .setParameter("bTitle", "%" + title + "%");
         long total = (long) qTotal.getSingleResult();
         
         return new PageImpl<>(bookList, page, total);
