@@ -9,7 +9,5 @@ import com.bellini.recipecatalog.model.v1.Book;
 public interface BookRepository extends PagingAndSortingRepository<Book, Long>, BookCustomRepository {
 
     Collection<Book> findByTitleIgnoreCase(String title);
-    
-    Collection<Book> findByTitleIgnoreCaseContaining(String title);
-    
+
 }

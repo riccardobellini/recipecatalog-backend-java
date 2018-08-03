@@ -1,11 +1,12 @@
 package com.bellini.recipecatalog.service.v1.book;
 
 import java.time.Instant;
-import java.util.List;
+import java.util.Collection;
 import java.util.Optional;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -24,7 +25,7 @@ public class BookServiceImpl implements BookService {
     private BookRepository repo;
 
     @Override
-    public Iterable<Book> getAll(Pageable pageable) {
+    public Page<Book> getAll(Pageable pageable) {
         return repo.findAll(createSortedPageRequest(pageable));
     }
 
@@ -40,11 +41,14 @@ public class BookServiceImpl implements BookService {
         if (!repo.findByTitleIgnoreCase(b.getTitle()).isEmpty()) {
             throw new DuplicateBookException(b);
         }
+        // setting creation/modification timestamps
+        b.setCreationTime(Instant.now());
+        b.setLastModificationTime(Instant.now());
         return repo.save(b);
     }
 
     @Override
-    public Iterable<Book> get(String title, Pageable pageable) {
+    public Page<Book> get(String title, Pageable pageable) {
         return repo.findByTitleIgnoreCaseContaining(title, createSortedPageRequest(pageable));
     }
 
@@ -67,8 +71,8 @@ public class BookServiceImpl implements BookService {
         }
         // FIXME refactor
         // search for name conflict
-        List<Book> soughtList = (List<Book>) repo.findByTitleIgnoreCase(b.getTitle());
-        if (soughtList.isEmpty() || soughtList.get(0).getId().equals(id)) {
+        Collection<Book> soughtList = repo.findByTitleIgnoreCase(b.getTitle());
+        if (soughtList.isEmpty() || soughtList.iterator().next().getId().equals(id)) {
             Optional<Book> toUpdate = repo.findById(id);
             if (!toUpdate.isPresent()) {
                 throw new NotExistingBookException(id);
