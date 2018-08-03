@@ -6,6 +6,7 @@ import java.util.Optional;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -24,7 +25,7 @@ public class DishTypeServiceImpl implements DishTypeService {
     private DishTypeRepository repo;
 
     @Override
-    public Iterable<DishType> getAll(Pageable pageable) {
+    public Page<DishType> getAll(Pageable pageable) {
         return repo.findAll(createSortedPageRequest(pageable));
     }
 
@@ -40,11 +41,14 @@ public class DishTypeServiceImpl implements DishTypeService {
         if (!repo.findByNameIgnoreCase(dt.getName()).isEmpty()) {
             throw new DuplicateDishTypeException(dt);
         }
+        // set creation/modification timestamps
+        dt.setCreationTime(Instant.now());
+        dt.setLastModificationTime(Instant.now());
         return repo.save(dt);
     }
 
     @Override
-    public Iterable<DishType> get(String name, Pageable pageable) {
+    public Page<DishType> get(String name, Pageable pageable) {
         return repo.findByNameIgnoreCaseContaining(name, createSortedPageRequest(pageable));
     }
 

@@ -1,6 +1,11 @@
 package com.bellini.recipecatalog.controller.v1.dishtype;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpEntity;
@@ -19,6 +24,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.bellini.recipecatalog.exception.dishtype.NotExistingDishTypeException;
 import com.bellini.recipecatalog.model.v1.DishType;
+import com.bellini.recipecatalog.model.v1.dto.dishtype.DishTypeDTO;
+import com.bellini.recipecatalog.model.v1.dto.dishtype.DishTypeModificationDTO;
+import com.bellini.recipecatalog.model.v1.mapper.dishtype.DishTypeModificationMapper;
+import com.bellini.recipecatalog.model.v1.mapper.dishtype.DishTypeResponseMapper;
 import com.bellini.recipecatalog.service.v1.dishtype.DishTypeService;
 
 @RestController
@@ -29,38 +38,40 @@ public class DishTypeController {
     private DishTypeService dishTypeService;
 
     @GetMapping(path = "", produces = { MediaType.APPLICATION_JSON_UTF8_VALUE })
-    public ResponseEntity<Iterable<DishType>> getAllDishTypes(@RequestParam(name="q", required = false) String name, @PageableDefault(page = 0, size = 10) Pageable pageable) {
-        Iterable<DishType> list = null;
+    public ResponseEntity<Iterable<DishTypeDTO>> getAllDishTypes(@RequestParam(name = "q", required = false) String name, @PageableDefault(page = 0, size = 10) Pageable pageable) {
+        Page<DishType> page = null;
         if (name != null) {
-            list = dishTypeService.get(name, pageable);
+            page = dishTypeService.get(name, pageable);
         } else {
-            list = dishTypeService.getAll(pageable);
+            page = dishTypeService.getAll(pageable);
         }
-        return new ResponseEntity<Iterable<DishType>>(
-                list, HttpStatus.OK
-        );
+        List<DishTypeDTO> result = page.getContent().stream()
+                .map(dt -> DishTypeResponseMapper.getInstance().toDto(dt))
+                .collect(Collectors.toList());
+        return new ResponseEntity<>(
+                new PageImpl<>(result, pageable, page.getTotalElements()), HttpStatus.OK);
     }
 
     @PostMapping(consumes = { MediaType.APPLICATION_JSON_UTF8_VALUE }, produces = { MediaType.APPLICATION_JSON_UTF8_VALUE })
-    public ResponseEntity<DishType> createDishType(@RequestBody DishType dt) {
-        DishType insertedDt = dishTypeService.create(dt);
-        return new ResponseEntity<DishType>(insertedDt, HttpStatus.CREATED);
+    public ResponseEntity<DishTypeDTO> createDishType(@RequestBody DishTypeModificationDTO dt) {
+        DishType insertedDt = dishTypeService.create(DishTypeModificationMapper.getInstance().fromDto(dt));
+        return new ResponseEntity<>(DishTypeResponseMapper.getInstance().toDto(insertedDt), HttpStatus.CREATED);
     }
 
     @GetMapping(path = "/{id}")
-    public ResponseEntity<DishType> getSingleDishType(@PathVariable(value = "id") Long id) {
+    public ResponseEntity<DishTypeDTO> getSingleDishType(@PathVariable(value = "id") Long id) {
         DishType dt = dishTypeService.get(id);
 
         if (dt == null) {
             throw new NotExistingDishTypeException(id);
         }
 
-        return new ResponseEntity<DishType>(dt, HttpStatus.OK);
+        return new ResponseEntity<>(DishTypeResponseMapper.getInstance().toDto(dt), HttpStatus.OK);
     }
 
     @PutMapping(path = "/{id}", consumes = { MediaType.APPLICATION_JSON_UTF8_VALUE }, produces = { MediaType.APPLICATION_JSON_UTF8_VALUE })
-    public ResponseEntity<DishType> update(@PathVariable(value = "id") Long id, @RequestBody DishType dt) {
-        return new ResponseEntity<DishType>(dishTypeService.update(id, dt), HttpStatus.OK);
+    public ResponseEntity<DishTypeDTO> update(@PathVariable(value = "id") Long id, @RequestBody DishTypeModificationDTO dt) {
+        return new ResponseEntity<>(DishTypeResponseMapper.getInstance().toDto(dishTypeService.update(id, DishTypeModificationMapper.getInstance().fromDto(dt))), HttpStatus.OK);
     }
 
     @DeleteMapping(path = "/{id}")
