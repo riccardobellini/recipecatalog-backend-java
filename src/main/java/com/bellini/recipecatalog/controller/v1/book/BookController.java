@@ -1,5 +1,8 @@
 package com.bellini.recipecatalog.controller.v1.book;
 
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
@@ -19,6 +22,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.bellini.recipecatalog.exception.dishtype.NotExistingDishTypeException;
 import com.bellini.recipecatalog.model.v1.Book;
+import com.bellini.recipecatalog.model.v1.dto.book.BookDTO;
+import com.bellini.recipecatalog.model.v1.mapper.book.BookResponseMapper;
 import com.bellini.recipecatalog.service.v1.book.BookService;
 
 @RestController
@@ -29,14 +34,17 @@ public class BookController {
     private BookService bookService;
 
     @GetMapping(path = "", produces = { MediaType.APPLICATION_JSON_UTF8_VALUE })
-    public ResponseEntity<Iterable<Book>> getAllBooks(@RequestParam(name="q", required = false) String name, @PageableDefault(page = 0, size = 10) Pageable pageable) {
+    public ResponseEntity<Iterable<BookDTO>> getAllBooks(@RequestParam(name="q", required = false) String name, @PageableDefault(page = 0, size = 10) Pageable pageable) {
         Iterable<Book> list = null;
         if (name != null) {
             list = bookService.get(name, pageable);
         } else {
             list = bookService.getAll(pageable);
         }
-        return new ResponseEntity<>(list, HttpStatus.OK);
+        Iterable<BookDTO> result = StreamSupport.stream(list.spliterator(), true)
+                .map(book -> BookResponseMapper.getInstance().toDto(book))
+                .collect(Collectors.toList());
+        return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
     @PostMapping(consumes = { MediaType.APPLICATION_JSON_UTF8_VALUE }, produces = { MediaType.APPLICATION_JSON_UTF8_VALUE })

@@ -6,7 +6,7 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.bellini.recipecatalog.controller.v1.publication.PublicationRepository;
+import com.bellini.recipecatalog.dao.v1.publication.PublicationRepository;
 import com.bellini.recipecatalog.exception.ingredient.NotExistingIngredientException;
 import com.bellini.recipecatalog.exception.publication.DuplicatePublicationException;
 import com.bellini.recipecatalog.exception.publication.NotExistingPublicationException;
