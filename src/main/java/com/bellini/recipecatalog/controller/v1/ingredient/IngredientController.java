@@ -1,6 +1,11 @@
 package com.bellini.recipecatalog.controller.v1.ingredient;
 
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpEntity;
@@ -19,6 +24,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.bellini.recipecatalog.exception.ingredient.NotExistingIngredientException;
 import com.bellini.recipecatalog.model.v1.Ingredient;
+import com.bellini.recipecatalog.model.v1.dto.ingredient.IngredientDTO;
+import com.bellini.recipecatalog.model.v1.mapper.ingredient.IngredientResponseMapper;
 import com.bellini.recipecatalog.service.v1.ingredient.IngredientService;
 
 @RestController
@@ -29,14 +36,17 @@ public class IngredientController {
     private IngredientService ingredientService;
 
     @GetMapping(path = "", produces = { MediaType.APPLICATION_JSON_UTF8_VALUE })
-    public ResponseEntity<Iterable<Ingredient>> getAllIngredients(@RequestParam(name="q", required = false) String name, @PageableDefault(page = 0, size = 10) Pageable pageable) {
-        Iterable<Ingredient> list = null;
+    public ResponseEntity<Iterable<IngredientDTO>> getAllIngredients(@RequestParam(name = "q", required = false) String name, @PageableDefault(page = 0, size = 10) Pageable pageable) {
+        Page<Ingredient> list = null;
         if (name != null) {
             list = ingredientService.get(name, pageable);
         } else {
             list = ingredientService.getAll(pageable);
         }
-        return new ResponseEntity<>(list, HttpStatus.OK);
+        List<IngredientDTO> result = StreamSupport.stream(list.spliterator(), true)
+                .map(ingr -> IngredientResponseMapper.getInstance().toDto(ingr))
+                .collect(Collectors.toList());
+        return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
     @PostMapping(consumes = { MediaType.APPLICATION_JSON_UTF8_VALUE }, produces = { MediaType.APPLICATION_JSON_UTF8_VALUE })
