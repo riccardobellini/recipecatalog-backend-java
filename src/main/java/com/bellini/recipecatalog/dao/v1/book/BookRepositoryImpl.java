@@ -6,6 +6,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.Query;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 
@@ -18,7 +19,7 @@ public class BookRepositoryImpl implements BookCustomRepository {
 
     @SuppressWarnings("unchecked")
     @Override
-    public Iterable<Book> findByTitleIgnoreCaseContaining(String title, Pageable page) {
+    public Page<Book> findByTitleIgnoreCaseContaining(String title, Pageable page) {
         
         Query q = emf.createQuery("SELECT b FROM Book b WHERE b.title LIKE :bTitle")
             .setParameter("bTitle", "%" + title + "%")

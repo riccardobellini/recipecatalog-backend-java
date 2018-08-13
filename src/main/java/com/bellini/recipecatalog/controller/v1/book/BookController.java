@@ -1,9 +1,11 @@
 package com.bellini.recipecatalog.controller.v1.book;
 
+import java.util.List;
 import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpEntity;
@@ -23,6 +25,8 @@ import org.springframework.web.bind.annotation.RestController;
 import com.bellini.recipecatalog.exception.dishtype.NotExistingDishTypeException;
 import com.bellini.recipecatalog.model.v1.Book;
 import com.bellini.recipecatalog.model.v1.dto.book.BookDTO;
+import com.bellini.recipecatalog.model.v1.dto.book.BookModificationDTO;
+import com.bellini.recipecatalog.model.v1.mapper.book.BookModificationMapper;
 import com.bellini.recipecatalog.model.v1.mapper.book.BookResponseMapper;
 import com.bellini.recipecatalog.service.v1.book.BookService;
 
@@ -35,38 +39,38 @@ public class BookController {
 
     @GetMapping(path = "", produces = { MediaType.APPLICATION_JSON_UTF8_VALUE })
     public ResponseEntity<Iterable<BookDTO>> getAllBooks(@RequestParam(name="q", required = false) String name, @PageableDefault(page = 0, size = 10) Pageable pageable) {
-        Iterable<Book> list = null;
+        Page<Book> page = null;
         if (name != null) {
-            list = bookService.get(name, pageable);
+            page = bookService.get(name, pageable);
         } else {
-            list = bookService.getAll(pageable);
+            page = bookService.getAll(pageable);
         }
-        Iterable<BookDTO> result = StreamSupport.stream(list.spliterator(), true)
+        List<BookDTO> result = page.getContent().stream()
                 .map(book -> BookResponseMapper.getInstance().toDto(book))
                 .collect(Collectors.toList());
-        return new ResponseEntity<>(result, HttpStatus.OK);
+        return new ResponseEntity<>(new PageImpl<>(result, pageable, page.getTotalElements()), HttpStatus.OK);
     }
 
     @PostMapping(consumes = { MediaType.APPLICATION_JSON_UTF8_VALUE }, produces = { MediaType.APPLICATION_JSON_UTF8_VALUE })
-    public ResponseEntity<Book> createBook(@RequestBody Book b) {
-        Book insertedBk = bookService.create(b);
-        return new ResponseEntity<>(insertedBk, HttpStatus.CREATED);
+    public ResponseEntity<BookDTO> createBook(@RequestBody BookModificationDTO b) {
+        Book insertedBk = bookService.create(BookModificationMapper.getInstance().fromDto(b));
+        return new ResponseEntity<>(BookResponseMapper.getInstance().toDto(insertedBk), HttpStatus.CREATED);
     }
 
     @GetMapping(path = "/{id}")
-    public ResponseEntity<Book> getSingleBook(@PathVariable(value = "id") Long id) {
+    public ResponseEntity<BookDTO> getSingleBook(@PathVariable(value = "id") Long id) {
         Book b = bookService.get(id);
 
         if (b == null) {
             throw new NotExistingDishTypeException(id);
         }
 
-        return new ResponseEntity<>(b, HttpStatus.OK);
+        return new ResponseEntity<>(BookResponseMapper.getInstance().toDto(b), HttpStatus.OK);
     }
 
     @PutMapping(path = "/{id}", consumes = { MediaType.APPLICATION_JSON_UTF8_VALUE }, produces = { MediaType.APPLICATION_JSON_UTF8_VALUE })
-    public ResponseEntity<Book> update(@PathVariable(value = "id") Long id, @RequestBody Book dt) {
-        return new ResponseEntity<Book>(bookService.update(id, dt), HttpStatus.OK);
+    public ResponseEntity<BookDTO> update(@PathVariable(value = "id") Long id, @RequestBody BookModificationDTO b) {
+        return new ResponseEntity<>(BookResponseMapper.getInstance().toDto(bookService.update(id, BookModificationMapper.getInstance().fromDto(b))), HttpStatus.OK);
     }
 
     @DeleteMapping(path = "/{id}")

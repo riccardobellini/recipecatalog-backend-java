@@ -6,6 +6,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.Query;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 
@@ -18,7 +19,7 @@ public class IngredientRepositoryImpl implements IngredientCustomRepository {
 
     @SuppressWarnings("unchecked")
     @Override
-    public Iterable<Ingredient> findByNameIgnoreCaseContaining(String name, Pageable page) {
+    public Page<Ingredient> findByNameIgnoreCaseContaining(String name, Pageable page) {
         
         Query q = emf.createQuery("SELECT i FROM Ingredient i WHERE i.name LIKE :iName")
             .setParameter("iName", "%" + name + "%")

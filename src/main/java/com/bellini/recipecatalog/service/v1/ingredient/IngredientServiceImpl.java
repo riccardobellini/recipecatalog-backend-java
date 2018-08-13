@@ -6,6 +6,7 @@ import java.util.Optional;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -24,7 +25,7 @@ public class IngredientServiceImpl implements IngredientService {
     private IngredientRepository repo;
 
     @Override
-    public Iterable<Ingredient> getAll(Pageable pageable) {
+    public Page<Ingredient> getAll(Pageable pageable) {
         return repo.findAll(createSortedPageRequest(pageable));
     }
 
@@ -44,7 +45,7 @@ public class IngredientServiceImpl implements IngredientService {
     }
 
     @Override
-    public Iterable<Ingredient> get(String name, Pageable pageable) {
+    public Page<Ingredient> get(String name, Pageable pageable) {
         return repo.findByNameIgnoreCaseContaining(name, createSortedPageRequest(pageable));
     }
 

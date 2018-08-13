@@ -8,9 +8,6 @@ import com.bellini.recipecatalog.model.v1.DishType;
 
 public interface DishTypeRepository extends PagingAndSortingRepository<DishType, Long>, DishTypeCustomRepository {
 
-//    Page<DishType> findAllByOrderByNameIgnoreCase(Pageable pageable);
     Collection<DishType> findByNameIgnoreCase(String name);
-    
-    Collection<DishType> findByNameIgnoreCaseContaining(String name);
-    
+
 }
