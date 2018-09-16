@@ -2,14 +2,18 @@ package com.bellini.recipecatalog.model.v1;
 
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
@@ -33,44 +37,50 @@ public class Recipe {
 
     @Column(name = "IMAGE_KEY")
     private String imageKey;
+    
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(name = "INGREDIENT_RECIPE",
+            joinColumns = { @JoinColumn(name = "ID_RECIPE") },
+            inverseJoinColumns = { @JoinColumn(name = "ID_INGREDIENT")})
+    private List<Ingredient> ingredients = new ArrayList<>();
 
-    public final Long getId() {
+    public Long getId() {
         return id;
     }
 
-    public final void setId(Long id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
-    public final String getTitle() {
+    public String getTitle() {
         return title;
     }
 
-    public final void setTitle(String title) {
+    public void setTitle(String title) {
         this.title = title;
     }
 
-    public final Instant getCreationTime() {
+    public Instant getCreationTime() {
         return creationTime;
     }
 
-    public final void setCreationTime(Instant creationTime) {
+    public void setCreationTime(Instant creationTime) {
         this.creationTime = creationTime;
     }
 
-    public final Instant getLastModificationTime() {
+    public Instant getLastModificationTime() {
         return lastModificationTime;
     }
 
-    public final void setLastModificationTime(Instant lastModificationTime) {
+    public void setLastModificationTime(Instant lastModificationTime) {
         this.lastModificationTime = lastModificationTime;
     }
 
-    public final String getImageKey() {
+    public String getImageKey() {
         return imageKey;
     }
 
-    public final void setImageKey(String imageKey) {
+    public void setImageKey(String imageKey) {
         this.imageKey = imageKey;
     }
 
@@ -82,12 +92,19 @@ public class Recipe {
     })
     private Book book;
 
-    public final Book getBook() {
+    public Book getBook() {
         return book;
     }
 
-    public final void setBook(Book book) {
+    public void setBook(Book book) {
         this.book = book;
     }
 
+    public List<Ingredient> getIngredients() {
+        return ingredients;
+    }
+
+    public void setIngredients(List<Ingredient> ingredients) {
+        this.ingredients = ingredients;
+    }
 }

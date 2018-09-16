@@ -2,12 +2,16 @@ package com.bellini.recipecatalog.model.v1;
 
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 
 @Entity(name = "Ingredient")
@@ -27,6 +31,9 @@ public class Ingredient {
     
     @Column(name = "LAST_MODIFICATION_TIME")
     private Instant lastModificationTime = Instant.now().truncatedTo(ChronoUnit.SECONDS);
+    
+    @ManyToMany(fetch = FetchType.EAGER, mappedBy = "ingredients")
+    private List<Recipe> recipes = new ArrayList<>();
 
     public String getName() {
         return name;
@@ -58,6 +65,14 @@ public class Ingredient {
 
     public void setLastModificationTime(Instant lastModificationTime) {
         this.lastModificationTime = lastModificationTime.truncatedTo(ChronoUnit.SECONDS);
+    }
+
+    public List<Recipe> getRecipes() {
+        return recipes;
+    }
+
+    public void setRecipes(List<Recipe> recipes) {
+        this.recipes = recipes;
     }
     
 }
