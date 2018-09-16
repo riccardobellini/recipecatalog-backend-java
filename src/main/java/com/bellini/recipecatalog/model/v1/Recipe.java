@@ -14,7 +14,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
-import javax.persistence.OneToOne;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 @Entity(name = "Recipe")
@@ -84,12 +84,10 @@ public class Recipe {
         this.imageKey = imageKey;
     }
 
-    @OneToOne
-    @JoinTable(name = "BOOK_RECIPE", joinColumns = {
-            @JoinColumn(name = "ID_BOOK", referencedColumnName = "ID")
-    }, inverseJoinColumns = {
-            @JoinColumn(name = "ID_RECIPE", referencedColumnName = "ID", unique = true)
-    })
+    @ManyToOne
+    @JoinTable(name = "BOOK_RECIPE",
+            joinColumns = { @JoinColumn(name = "ID_RECIPE", insertable = false, updatable = false)},
+            inverseJoinColumns = { @JoinColumn(name = "ID_BOOK", insertable = false, updatable = false) })
     private Book book;
 
     public Book getBook() {
