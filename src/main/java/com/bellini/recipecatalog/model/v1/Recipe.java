@@ -38,7 +38,7 @@ public class Recipe {
     @Column(name = "IMAGE_KEY")
     private String imageKey;
     
-    @ManyToMany(fetch = FetchType.EAGER)
+    @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "INGREDIENT_RECIPE",
             joinColumns = { @JoinColumn(name = "ID_RECIPE") },
             inverseJoinColumns = { @JoinColumn(name = "ID_INGREDIENT")})

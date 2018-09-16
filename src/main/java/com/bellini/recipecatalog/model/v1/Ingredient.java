@@ -32,7 +32,7 @@ public class Ingredient {
     @Column(name = "LAST_MODIFICATION_TIME")
     private Instant lastModificationTime = Instant.now().truncatedTo(ChronoUnit.SECONDS);
     
-    @ManyToMany(fetch = FetchType.EAGER, mappedBy = "ingredients")
+    @ManyToMany(fetch = FetchType.LAZY, mappedBy = "ingredients")
     private List<Recipe> recipes = new ArrayList<>();
 
     public String getName() {
