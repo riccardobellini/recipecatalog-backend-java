@@ -89,11 +89,11 @@ public class Recipe {
                     @JoinColumn(name = "ID_BOOK", insertable = false, updatable = false) })
     private Book book;
 
-    @ManyToOne(targetEntity = Publication.class)
-    @JoinTable(name = "BOOK_RECIPE", joinColumns = {
-            @JoinColumn(name = "ID_RECIPE", insertable = false, updatable = false) }, inverseJoinColumns = {
-                    @JoinColumn(name = "ID_PUBLICATION", insertable = false, updatable = false) })
-    private Publication publication;
+//    @ManyToOne(targetEntity = Publication.class)
+//    @JoinTable(name = "BOOK_RECIPE", joinColumns = {
+//            @JoinColumn(name = "ID_RECIPE", insertable = false, updatable = false) }, inverseJoinColumns = {
+//                    @JoinColumn(name = "ID_PUBLICATION", insertable = false, updatable = false) })
+//    private Publication publication;
 
     public Book getBook() {
         return book;
@@ -111,12 +111,12 @@ public class Recipe {
         this.ingredients = ingredients;
     }
 
-    public Publication getPublication() {
-        return this.publication;
-    }
+//    public Publication getPublication() {
+//        return this.publication;
+//    }
 
-    public void setPublication(Publication publication) {
-        this.publication = publication;
-    }
+//    public void setPublication(Publication publication) {
+//        this.publication = publication;
+//    }
 
 }

@@ -5,7 +5,6 @@ import java.time.ZoneOffset;
 
 import com.bellini.recipecatalog.model.v1.Recipe;
 import com.bellini.recipecatalog.model.v1.dto.book.BookDTO;
-import com.bellini.recipecatalog.model.v1.dto.publication.PublicationDTO;
 import com.bellini.recipecatalog.model.v1.dto.recipe.RecipeDTO;
 import com.bellini.recipecatalog.model.v1.mapper.Mapper;
 
@@ -48,13 +47,13 @@ public class RecipeResponseMapper implements Mapper<Recipe, RecipeDTO> {
             dto.setBook(bDto);
         }
 
-        if (param.getPublication() != null) {
-            PublicationDTO pDto = new PublicationDTO();
-            pDto.setId(param.getPublication().getId());
-            pDto.setVolume(param.getPublication().getVolume());
-            pDto.setYear(param.getPublication().getYear());
-            dto.setPublication(pDto);
-        }
+//        if (param.getPublication() != null) {
+//            PublicationDTO pDto = new PublicationDTO();
+//            pDto.setId(param.getPublication().getId());
+//            pDto.setVolume(param.getPublication().getVolume());
+//            pDto.setYear(param.getPublication().getYear());
+//            dto.setPublication(pDto);
+//        }
 
         return dto;
     }
