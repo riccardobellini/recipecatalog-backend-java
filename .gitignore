@@ -32,6 +32,7 @@ target/
 .classpath
 .project
 .settings
+eclipse-formatter.xml
 
 # Spring
 application.properties
