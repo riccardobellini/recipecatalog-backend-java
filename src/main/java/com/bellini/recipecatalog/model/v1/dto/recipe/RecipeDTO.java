@@ -3,6 +3,7 @@ package com.bellini.recipecatalog.model.v1.dto.recipe;
 import java.time.ZonedDateTime;
 
 import com.bellini.recipecatalog.model.v1.dto.book.BookDTO;
+import com.bellini.recipecatalog.model.v1.dto.publication.PublicationDTO;
 import com.fasterxml.jackson.annotation.JsonFormat;
 
 public class RecipeDTO {
@@ -14,6 +15,7 @@ public class RecipeDTO {
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ssXXX")
     private ZonedDateTime lastModificationTime;
     private BookDTO book;
+    private PublicationDTO publication;
 
     public Long getId() {
         return id;
@@ -53,6 +55,14 @@ public class RecipeDTO {
 
     public void setLastModificationTime(ZonedDateTime lastModificationTime) {
         this.lastModificationTime = lastModificationTime;
+    }
+
+    public PublicationDTO getPublication() {
+        return this.publication;
+    }
+
+    public void setPublication(PublicationDTO publication) {
+        this.publication = publication;
     }
 
 }

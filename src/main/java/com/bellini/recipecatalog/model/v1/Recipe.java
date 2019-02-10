@@ -37,11 +37,10 @@ public class Recipe {
 
     @Column(name = "IMAGE_KEY")
     private String imageKey;
-    
+
     @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(name = "INGREDIENT_RECIPE",
-            joinColumns = { @JoinColumn(name = "ID_RECIPE") },
-            inverseJoinColumns = { @JoinColumn(name = "ID_INGREDIENT")})
+    @JoinTable(name = "INGREDIENT_RECIPE", joinColumns = { @JoinColumn(name = "ID_RECIPE") }, inverseJoinColumns = {
+            @JoinColumn(name = "ID_INGREDIENT") })
     private List<Ingredient> ingredients = new ArrayList<>();
 
     public Long getId() {
@@ -84,11 +83,17 @@ public class Recipe {
         this.imageKey = imageKey;
     }
 
-    @ManyToOne
-    @JoinTable(name = "BOOK_RECIPE",
-            joinColumns = { @JoinColumn(name = "ID_RECIPE", insertable = false, updatable = false)},
-            inverseJoinColumns = { @JoinColumn(name = "ID_BOOK", insertable = false, updatable = false) })
+    @ManyToOne(targetEntity = Book.class)
+    @JoinTable(name = "BOOK_RECIPE", joinColumns = {
+            @JoinColumn(name = "ID_RECIPE", insertable = false, updatable = false) }, inverseJoinColumns = {
+                    @JoinColumn(name = "ID_BOOK", insertable = false, updatable = false) })
     private Book book;
+
+    @ManyToOne(targetEntity = Publication.class)
+    @JoinTable(name = "BOOK_RECIPE", joinColumns = {
+            @JoinColumn(name = "ID_RECIPE", insertable = false, updatable = false) }, inverseJoinColumns = {
+                    @JoinColumn(name = "ID_PUBLICATION", insertable = false, updatable = false) })
+    private Publication publication;
 
     public Book getBook() {
         return book;
@@ -105,4 +110,13 @@ public class Recipe {
     public void setIngredients(List<Ingredient> ingredients) {
         this.ingredients = ingredients;
     }
+
+    public Publication getPublication() {
+        return this.publication;
+    }
+
+    public void setPublication(Publication publication) {
+        this.publication = publication;
+    }
+
 }
