@@ -6,6 +6,8 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
+import com.bellini.recipecatalog.model.v1.DishType;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -14,8 +16,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
-
-import com.bellini.recipecatalog.model.v1.DishType;
 
 @Repository
 public class DishTypeRepositoryImpl implements DishTypeRepository {
@@ -61,8 +61,18 @@ public class DishTypeRepositoryImpl implements DishTypeRepository {
 
     @Override
     public Optional<DishType> findById(Long id) {
-        // TODO Auto-generated method stub
-        return null;
+        List<DishType> dtList = jdbcTemplate.query(byIdSelectSQL(), (stmt) -> {
+            stmt.setLong(1, id);
+        }, defaultMapper());
+        return !dtList.isEmpty() ? Optional.of(dtList.get(0)) : Optional.empty();
+    }
+
+    private String byIdSelectSQL() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("SELECT dt.ID, dt.NAME, dt.CREATION_TIME, dt.LAST_MODIFICATION_TIME ");
+        sb.append("FROM DISHTYPE dt ");
+        sb.append("WHERE dt.ID = ?");
+        return sb.toString();
     }
 
     @Override
