@@ -1,5 +1,7 @@
 package com.bellini.recipecatalog.dao.v1.dishtype;
 
+import java.sql.PreparedStatement;
+import java.sql.Statement;
 import java.sql.Timestamp;
 import java.time.Instant;
 import java.util.Collection;
@@ -15,6 +17,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.stereotype.Repository;
 
 @Repository
@@ -25,7 +28,17 @@ public class DishTypeRepositoryImpl implements DishTypeRepository {
 
     @Override
     public Collection<DishType> findByNameIgnoreCase(String name) {
-        return null;
+        return jdbcTemplate.query(byNameIgnoreCaseSelectSQL(), (stmt) -> {
+            stmt.setString(1, name);
+        }, defaultMapper());
+    }
+
+    private String byNameIgnoreCaseSelectSQL() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("SELECT dt.ID, dt.NAME, dt.CREATION_TIME, dt.LAST_MODIFICATION_TIME ");
+        sb.append("FROM DISHTYPE dt ");
+        sb.append("WHERE LOWER(dt.NAME) = LOWER(?)");
+        return sb.toString();
     }
 
     @Override
@@ -55,8 +68,25 @@ public class DishTypeRepositoryImpl implements DishTypeRepository {
 
     @Override
     public DishType save(DishType dt) {
-        // TODO Auto-generated method stub
+        GeneratedKeyHolder keyHolder = new GeneratedKeyHolder();
+        int changed = jdbcTemplate.update((conn) -> {
+            PreparedStatement stmt = conn.prepareStatement(insertSQL(), Statement.RETURN_GENERATED_KEYS);
+            stmt.setString(1, dt.getName());
+            return stmt;
+        }, keyHolder);
+        if (changed == 1) {
+            long newId = keyHolder.getKey().longValue();
+            return findById(newId).get();
+        }
         return null;
+    }
+
+    private String insertSQL() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("INSERT INTO DISHTYPE ");
+        sb.append("(NAME, CREATION_TIME, LAST_MODIFICATION_TIME) VALUES ");
+        sb.append("(?, UTC_TIMESTAMP(), UTC_TIMESTAMP())");
+        return sb.toString();
     }
 
     @Override
