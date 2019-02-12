@@ -12,15 +12,13 @@ public interface IngredientRepository {
 
     Collection<Ingredient> findByNameIgnoreCase(String name);
 
-    Collection<Ingredient> findByNameIgnoreCaseContaining(String name);
-
     Page<Ingredient> findByNameIgnoreCaseContaining(String name, Pageable page);
 
     Page<Ingredient> findAll(Pageable page);
-    
+
     Ingredient save(Ingredient ingr);
-    
+
     Optional<Ingredient> findById(Long id);
-    
+
     void deleteById(Long id);
 }

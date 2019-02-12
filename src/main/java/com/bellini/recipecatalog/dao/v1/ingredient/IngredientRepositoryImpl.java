@@ -42,15 +42,35 @@ public class IngredientRepositoryImpl implements IngredientRepository {
     }
 
     @Override
-    public Collection<Ingredient> findByNameIgnoreCaseContaining(String name) {
-        // TODO Auto-generated method stub
-        return null;
+    public Page<Ingredient> findByNameIgnoreCaseContaining(String name, Pageable page) {
+        final String sought = "%" + name + "%";
+        List<Ingredient> result = jdbcTemplate.query(byNameIgnoreCaseContainingSelectSQL(false), (stmt) -> {
+            stmt.setString(1, sought);
+            stmt.setInt(2, page.getPageNumber() * page.getPageSize());
+            stmt.setInt(3, page.getPageSize());
+        }, defaultMapper());
+        Long count = getRowCountByNameIgnoreCaseContaining(name);
+        return new PageImpl<>(result, PageRequest.of(page.getPageNumber(), page.getPageSize()), count);
     }
 
-    @Override
-    public Page<Ingredient> findByNameIgnoreCaseContaining(String name, Pageable page) {
-        // TODO Auto-generated method stub
-        return null;
+    private Long getRowCountByNameIgnoreCaseContaining(String name) {
+        final String sought = "%" + name + "%";
+        return jdbcTemplate.queryForObject(byNameIgnoreCaseContainingSelectSQL(true), Long.class, sought);
+    }
+
+    private String byNameIgnoreCaseContainingSelectSQL(boolean count) {
+        StringBuilder sb = new StringBuilder();
+        if (count) {
+            sb.append("SELECT COUNT(*) AS total ");
+        } else {
+            sb.append("SELECT i.ID, i.NAME, i.CREATION_TIME, i.LAST_MODIFICATION_TIME ");
+        }
+        sb.append("FROM INGREDIENT i ");
+        sb.append("WHERE LOWER(i.NAME) LIKE LOWER(?) ");
+        if (!count) {
+            sb.append("LIMIT ?, ?");
+        }
+        return sb.toString();
     }
 
     @Override
