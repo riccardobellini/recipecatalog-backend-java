@@ -80,7 +80,7 @@ public class DishTypeRepositoryImpl implements DishTypeRepository {
         StringBuilder sb = new StringBuilder();
         sb.append("SELECT dt.ID, dt.NAME, dt.CREATION_TIME, dt.LAST_MODIFICATION_TIME ");
         sb.append("FROM DISHTYPE dt ");
-        sb.append("ORDER BY dt.NAME asc ");
+        sb.append("ORDER BY dt.NAME ASC ");
         sb.append("LIMIT ?, ?");
         return sb.toString();
     }
