@@ -1,5 +1,7 @@
 package com.bellini.recipecatalog.dao.v1.book;
 
+import java.sql.PreparedStatement;
+import java.sql.Statement;
 import java.sql.Timestamp;
 import java.time.Instant;
 import java.util.Collection;
@@ -12,6 +14,7 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.stereotype.Repository;
 
 import com.bellini.recipecatalog.model.v1.Book;
@@ -24,8 +27,17 @@ public class BookRepositoryImpl implements BookRepository {
 
     @Override
     public Collection<Book> findByTitleIgnoreCase(String title) {
-        // TODO Auto-generated method stub
-        return null;
+        return jdbcTemplate.query(byTitleIgnoreCaseSelectSQL(), (stmt) -> {
+            stmt.setString(1, title);
+        }, defaultMapper());
+    }
+
+    private String byTitleIgnoreCaseSelectSQL() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("SELECT bk.ID, bk.TITLE, bk.CREATION_TIME, bk.LAST_MODIFICATION_TIME ");
+        sb.append("FROM BOOK bk ");
+        sb.append("WHERE LOWER(bk.TITLE) = LOWER(?)");
+        return sb.toString();
     }
 
     @Override
@@ -49,14 +61,41 @@ public class BookRepositoryImpl implements BookRepository {
 
     @Override
     public Book save(Book book) {
-        // TODO Auto-generated method stub
+        GeneratedKeyHolder keyHolder = new GeneratedKeyHolder();
+        int changed = jdbcTemplate.update((conn) -> {
+            PreparedStatement stmt = conn.prepareStatement(insertSQL(), Statement.RETURN_GENERATED_KEYS);
+            stmt.setString(1, book.getTitle());
+            return stmt;
+        }, keyHolder);
+        if (changed == 1) {
+            long newId = keyHolder.getKey().longValue();
+            return findById(newId).get();
+        }
         return null;
+    }
+
+    private String insertSQL() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("INSERT INTO BOOK ");
+        sb.append("(TITLE, CREATION_TIME, LAST_MODIFICATION_TIME) VALUES ");
+        sb.append("(?, UTC_TIMESTAMP(), UTC_TIMESTAMP())");
+        return sb.toString();
     }
 
     @Override
     public Optional<Book> findById(Long id) {
-        // TODO Auto-generated method stub
-        return null;
+        List<Book> result = jdbcTemplate.query(byIdSelectSQL(), (stmt) -> {
+            stmt.setLong(1, id);
+        }, defaultMapper());
+        return !result.isEmpty() ? Optional.of(result.get(0)) : Optional.empty();
+    }
+
+    private String byIdSelectSQL() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("SELECT bk.ID, bk.TITLE, bk.CREATION_TIME, bk.LAST_MODIFICATION_TIME ");
+        sb.append("FROM BOOK bk ");
+        sb.append("WHERE bk.ID = ?");
+        return sb.toString();
     }
 
     @Override
