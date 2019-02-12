@@ -53,8 +53,12 @@ public class DishTypeRepositoryImpl implements DishTypeRepository {
             stmt.setInt(1, pageRequest.getPageNumber() * pageRequest.getPageSize());
             stmt.setInt(2, pageRequest.getPageSize());
         }, defaultMapper());
-        Long count = jdbcTemplate.queryForObject(countSQL(), Long.class);
+        Long count = getRowCount();
         return new PageImpl<>(result, PageRequest.of(pageRequest.getPageNumber(), pageRequest.getPageSize()), count);
+    }
+
+    private Long getRowCount() {
+        return jdbcTemplate.queryForObject(countSQL(), Long.class);
     }
 
     private String allSelectSQL() {
