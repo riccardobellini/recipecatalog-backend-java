@@ -1,5 +1,7 @@
 package com.bellini.recipecatalog.dao.v1.ingredient;
 
+import java.sql.PreparedStatement;
+import java.sql.Statement;
 import java.sql.Timestamp;
 import java.time.Instant;
 import java.util.Collection;
@@ -13,6 +15,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.stereotype.Repository;
 
 import com.bellini.recipecatalog.model.v1.Ingredient;
@@ -25,8 +28,17 @@ public class IngredientRepositoryImpl implements IngredientRepository {
 
     @Override
     public Collection<Ingredient> findByNameIgnoreCase(String name) {
-        // TODO Auto-generated method stub
-        return null;
+        return jdbcTemplate.query(byNameIgnoreCaseSelectSQL(), (stmt) -> {
+            stmt.setString(1, name);
+        }, defaultMapper());
+    }
+
+    private String byNameIgnoreCaseSelectSQL() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("SELECT i.ID, i.NAME, i.CREATION_TIME, i.LAST_MODIFICATION_TIME ");
+        sb.append("FROM INGREDIENT i ");
+        sb.append("WHERE LOWER(i.NAME) = LOWER(?)");
+        return sb.toString();
     }
 
     @Override
@@ -62,14 +74,41 @@ public class IngredientRepositoryImpl implements IngredientRepository {
 
     @Override
     public Ingredient save(Ingredient ingr) {
-        // TODO Auto-generated method stub
+        GeneratedKeyHolder keyHolder = new GeneratedKeyHolder();
+        int changed = jdbcTemplate.update((conn) -> {
+            PreparedStatement stmt = conn.prepareStatement(insertSQL(), Statement.RETURN_GENERATED_KEYS);
+            stmt.setString(1, ingr.getName());
+            return stmt;
+        }, keyHolder);
+        if (changed == 1) {
+            long newId = keyHolder.getKey().longValue();
+            return findById(newId).get();
+        }
         return null;
+    }
+
+    private String insertSQL() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("INSERT INTO INGREDIENT ");
+        sb.append("(NAME, CREATION_TIME, LAST_MODIFICATION_TIME) VALUES ");
+        sb.append("(?, UTC_TIMESTAMP(), UTC_TIMESTAMP())");
+        return sb.toString();
     }
 
     @Override
     public Optional<Ingredient> findById(Long id) {
-        // TODO Auto-generated method stub
-        return null;
+        List<Ingredient> ingrList = jdbcTemplate.query(byIdSelectSQL(), (stmt) -> {
+            stmt.setLong(1, id);
+        }, defaultMapper());
+        return !ingrList.isEmpty() ? Optional.of(ingrList.get(0)) : Optional.empty();
+    }
+
+    private String byIdSelectSQL() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("SELECT i.ID, i.NAME, i.CREATION_TIME, i.LAST_MODIFICATION_TIME ");
+        sb.append("FROM INGREDIENT i ");
+        sb.append("WHERE i.ID = ?");
+        return sb.toString();
     }
 
     @Override
