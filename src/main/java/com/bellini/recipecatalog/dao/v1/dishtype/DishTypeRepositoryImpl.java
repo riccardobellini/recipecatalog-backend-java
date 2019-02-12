@@ -107,8 +107,16 @@ public class DishTypeRepositoryImpl implements DishTypeRepository {
 
     @Override
     public void deleteById(Long id) {
-        // TODO Auto-generated method stub
+        jdbcTemplate.update(byIdDeleteSQL(), (stmt) -> {
+            stmt.setLong(1, id);
+        });
+    }
 
+    private String byIdDeleteSQL() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("DELETE FROM DISHTYPE ");
+        sb.append("WHERE ID = ?");
+        return sb.toString();
     }
 
     private RowMapper<DishType> defaultMapper() {
