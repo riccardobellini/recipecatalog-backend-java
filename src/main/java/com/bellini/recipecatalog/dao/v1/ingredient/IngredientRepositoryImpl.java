@@ -133,8 +133,16 @@ public class IngredientRepositoryImpl implements IngredientRepository {
 
     @Override
     public void deleteById(Long id) {
-        // TODO Auto-generated method stub
+        jdbcTemplate.update(byIdDeleteSQL(), (stmt) -> {
+            stmt.setLong(1, id);
+        });
+    }
 
+    private String byIdDeleteSQL() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("DELETE FROM INGREDIENT ");
+        sb.append("WHERE ID = ?");
+        return sb.toString();
     }
 
     private RowMapper<Ingredient> defaultMapper() {
