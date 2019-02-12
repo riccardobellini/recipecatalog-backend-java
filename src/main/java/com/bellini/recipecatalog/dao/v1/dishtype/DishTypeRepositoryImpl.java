@@ -43,21 +43,32 @@ public class DishTypeRepositoryImpl implements DishTypeRepository {
 
     @Override
     public Page<DishType> findByNameIgnoreCaseContaining(String name, Pageable page) {
-        List<DishType> result = jdbcTemplate.query(byNameIgnoreCaseContainingSelectSQL(), (stmt) -> {
+        List<DishType> result = jdbcTemplate.query(byNameIgnoreCaseContainingSelectSQL(false), (stmt) -> {
             stmt.setString(1, "%" + name + "%");
             stmt.setInt(2, page.getPageNumber() * page.getPageSize());
             stmt.setInt(3, page.getPageSize());
         }, defaultMapper());
-        Long count = getRowCount();
+        Long count = getRowCountByNameIgnoreCaseContaining(name);
         return new PageImpl<>(result, PageRequest.of(page.getPageNumber(), page.getPageSize()), count);
     }
 
-    private String byNameIgnoreCaseContainingSelectSQL() {
+    private Long getRowCountByNameIgnoreCaseContaining(String name) {
+        final String sought = "%" + name + "%";
+        return jdbcTemplate.queryForObject(byNameIgnoreCaseContainingSelectSQL(true), Long.class, sought);
+    }
+
+    private String byNameIgnoreCaseContainingSelectSQL(boolean count) {
         StringBuilder sb = new StringBuilder();
-        sb.append("SELECT dt.ID, dt.NAME, dt.CREATION_TIME, dt.LAST_MODIFICATION_TIME ");
+        if (count) {
+            sb.append("SELECT COUNT(*) AS total ");
+        } else {
+            sb.append("SELECT dt.ID, dt.NAME, dt.CREATION_TIME, dt.LAST_MODIFICATION_TIME ");
+        }
         sb.append("FROM DISHTYPE dt ");
         sb.append("WHERE LOWER(dt.NAME) LIKE LOWER(?) ");
-        sb.append("LIMIT ?, ?");
+        if (!count) {
+            sb.append("LIMIT ?, ?");
+        }
         return sb.toString();
     }
 
