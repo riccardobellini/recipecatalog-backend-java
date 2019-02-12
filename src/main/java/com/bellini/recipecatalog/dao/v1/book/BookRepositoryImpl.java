@@ -100,8 +100,16 @@ public class BookRepositoryImpl implements BookRepository {
 
     @Override
     public void deleteById(Long id) {
-        // TODO Auto-generated method stub
+        jdbcTemplate.update(byIdDeleteSQL(), (stmt) -> {
+            stmt.setLong(1, id);
+        });
+    }
 
+    private String byIdDeleteSQL() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("DELETE FROM BOOK ");
+        sb.append("WHERE ID = ?");
+        return sb.toString();
     }
 
     @Override
