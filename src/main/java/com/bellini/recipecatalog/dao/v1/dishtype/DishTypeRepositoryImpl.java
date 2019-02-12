@@ -43,8 +43,23 @@ public class DishTypeRepositoryImpl implements DishTypeRepository {
 
     @Override
     public Page<DishType> findByNameIgnoreCaseContaining(String name, Pageable page) {
-        // TODO Auto-generated method stub
-        return null;
+        List<DishType> result = jdbcTemplate.query(byNameIgnoreCaseContainingSelectSQL(), (stmt) -> {
+            stmt.setString(1, "%" + name + "%");
+            stmt.setInt(2, page.getPageNumber() * page.getPageSize());
+            stmt.setInt(3, page.getPageSize());
+        }, defaultMapper());
+        Long count = getRowCount();
+        return new PageImpl<>(result, PageRequest.of(page.getPageNumber(), page.getPageSize()), count);
+    }
+
+    private String byNameIgnoreCaseContainingSelectSQL() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("SELECT dt.ID, dt.NAME, dt.CREATION_TIME, dt.LAST_MODIFICATION_TIME ");
+        sb.append("FROM DISHTYPE dt ");
+        sb.append("WHERE LOWER(dt.NAME) LIKE LOWER(?) ");
+        sb.append("LIMIT ?, ?");
+        return sb.toString();
+
     }
 
     @Override
