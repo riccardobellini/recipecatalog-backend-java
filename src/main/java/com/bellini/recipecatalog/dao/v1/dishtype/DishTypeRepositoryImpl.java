@@ -59,7 +59,6 @@ public class DishTypeRepositoryImpl implements DishTypeRepository {
         sb.append("WHERE LOWER(dt.NAME) LIKE LOWER(?) ");
         sb.append("LIMIT ?, ?");
         return sb.toString();
-
     }
 
     @Override
