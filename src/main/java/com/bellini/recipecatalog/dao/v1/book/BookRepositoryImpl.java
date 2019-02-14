@@ -114,8 +114,34 @@ public class BookRepositoryImpl implements BookRepository {
 
     @Override
     public Page<Book> findByTitleIgnoreCaseContaining(String title, Pageable page) {
-        // TODO Auto-generated method stub
-        return null;
+        List<Book> result = jdbcTemplate.query(byTitleIgnoreCaseContainingSelectSQL(false), (stmt) -> {
+            stmt.setString(1, "%" + title + "%");
+            stmt.setInt(2, page.getPageNumber() * page.getPageSize());
+            stmt.setInt(3, page.getPageSize());
+        }, defaultMapper());
+        Long count = getRowCountByTitleIgnoreCaseContaining(title);
+        return new PageImpl<>(result, page, count);
+    }
+
+    private Long getRowCountByTitleIgnoreCaseContaining(String title) {
+        final String sought = "%" + title + "%";
+        return jdbcTemplate.queryForObject(byTitleIgnoreCaseContainingSelectSQL(true), Long.class, sought);
+    }
+
+    private String byTitleIgnoreCaseContainingSelectSQL(boolean count) {
+        StringBuilder sb = new StringBuilder();
+        if (!count) {
+            sb.append("SELECT bk.ID, bk.TITLE, bk.CREATION_TIME, bk.LAST_MODIFICATION_TIME ");
+        } else {
+            sb.append("SELECT COUNT(*) ");
+        }
+        sb.append("FROM BOOK bk ");
+        sb.append("WHERE LOWER(bk.TITLE) LIKE LOWER(?) ");
+        if (!count) {
+            sb.append("ORDER BY bk.TITLE ASC ");
+            sb.append("LIMIT ?, ?");
+        }
+        return sb.toString();
     }
 
     private Long getRowCount() {
