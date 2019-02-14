@@ -67,6 +67,7 @@ public class DishTypeRepositoryImpl implements DishTypeRepository {
         sb.append("FROM DISHTYPE dt ");
         sb.append("WHERE LOWER(dt.NAME) LIKE LOWER(?) ");
         if (!count) {
+            sb.append("ORDER BY dt.NAME ASC ");
             sb.append("LIMIT ?, ?");
         }
         return sb.toString();
