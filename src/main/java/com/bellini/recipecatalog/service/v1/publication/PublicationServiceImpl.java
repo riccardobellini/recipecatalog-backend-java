@@ -7,7 +7,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.bellini.recipecatalog.dao.v1.publication.PublicationRepository;
-import com.bellini.recipecatalog.exception.ingredient.NotExistingIngredientException;
 import com.bellini.recipecatalog.exception.publication.DuplicatePublicationException;
 import com.bellini.recipecatalog.exception.publication.NotExistingPublicationException;
 import com.bellini.recipecatalog.model.v1.Publication;
@@ -30,7 +29,7 @@ public class PublicationServiceImpl implements PublicationService {
     public Publication get(Long id) {
         Optional<Publication> optPub = repo.findById(id);
         if (!optPub.isPresent()) {
-            throw new NotExistingIngredientException(id);
+            throw new NotExistingPublicationException(id);
         }
         return optPub.get();
     }
