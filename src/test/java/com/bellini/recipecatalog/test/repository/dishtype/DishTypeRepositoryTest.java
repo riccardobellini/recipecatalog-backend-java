@@ -165,4 +165,21 @@ public class DishTypeRepositoryTest {
         // should not exist anymore
         assertFalse(optElement.isPresent());
     }
+
+    @Test
+    public void save_shouldUpdateElement() {
+        final DishType newDt = testUpdateDishType();
+        DishType stored = repo.save((long) 4, newDt);
+        assertThat(stored, notNullValue());
+        assertThat(stored.getName(), is("Bread & Doughs"));
+        System.out.println("Modification: " + stored.getLastModificationTime() + "\tCreation: " + stored.getCreationTime());
+        assertTrue(stored.getLastModificationTime().isAfter(stored.getCreationTime()));
+    }
+
+    private DishType testUpdateDishType() {
+        DishType dt = new DishType();
+        dt.setName("Bread & Doughs");
+        return dt;
+    }
+
 }
