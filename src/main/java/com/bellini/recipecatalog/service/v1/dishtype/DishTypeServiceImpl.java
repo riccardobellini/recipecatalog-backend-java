@@ -73,14 +73,14 @@ public class DishTypeServiceImpl implements DishTypeService {
         // search for name conflict
         List<DishType> soughtList = (List<DishType>) repo.findByNameIgnoreCase(dt.getName());
         if (soughtList.isEmpty() || soughtList.get(0).getId().equals(id)) {
-            Optional<DishType> toUpdate = repo.findById(id);
-            if (!toUpdate.isPresent()) {
+            Optional<DishType> toUpdateOpt = repo.findById(id);
+            if (!toUpdateOpt.isPresent()) {
                 throw new NotExistingDishTypeException(id);
             }
-            // update only the name and modification time
-            toUpdate.get().setName(dt.getName());
-            toUpdate.get().setLastModificationTime(Instant.now());
-            return repo.save(toUpdate.get());
+            // update only the name
+            final DishType toUpdate = toUpdateOpt.get();
+            toUpdate.setName(dt.getName());
+            return repo.save(toUpdate);
         }
         throw new DuplicateDishTypeException(dt);
     }

@@ -120,6 +120,29 @@ public class DishTypeRepositoryImpl implements DishTypeRepository {
     }
 
     @Override
+    public DishType save(Long id, DishType dt) {
+        int changed = jdbcTemplate.update((conn) -> {
+            PreparedStatement stmt = conn.prepareStatement(updateSQL());
+            int i = 1;
+            stmt.setString(i++, dt.getName());
+            stmt.setLong(i++, id);
+            return stmt;
+        });
+        if (changed == 1) {
+            return findById(id).get();
+        }
+        return null;
+    }
+
+    private String updateSQL() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("UPDATE DISHTYPE ");
+        sb.append("SET NAME = ?, LAST_MODIFICATION_TIME = UTC_TIMESTAMP(3) ");
+        sb.append("WHERE ID = ?");
+        return sb.toString();
+    }
+
+    @Override
     public Optional<DishType> findById(Long id) {
         List<DishType> dtList = jdbcTemplate.query(byIdSelectSQL(), (stmt) -> {
             stmt.setLong(1, id);

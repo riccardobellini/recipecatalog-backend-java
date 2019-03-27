@@ -19,6 +19,8 @@ public interface DishTypeRepository {
 
     DishType save(DishType dt);
 
+    DishType save(Long id, DishType dt);
+
     Optional<DishType> findById(Long id);
 
     void deleteById(Long id);
