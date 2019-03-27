@@ -16,10 +16,10 @@ public class DishType {
     private String name;
 
     // @Column(name = "CREATION_TIME")
-    private Instant creationTime = Instant.now().truncatedTo(ChronoUnit.SECONDS);
+    private Instant creationTime = Instant.now().truncatedTo(ChronoUnit.MILLIS);
 
     // @Column(name = "LAST_MODIFICATION_TIME")
-    private Instant lastModificationTime = Instant.now().truncatedTo(ChronoUnit.SECONDS);
+    private Instant lastModificationTime = Instant.now().truncatedTo(ChronoUnit.MILLIS);
 
     public String getName() {
         return name;
@@ -42,7 +42,7 @@ public class DishType {
     }
 
     public void setCreationTime(Instant creationTime) {
-        this.creationTime = creationTime.truncatedTo(ChronoUnit.SECONDS);
+        this.creationTime = creationTime.truncatedTo(ChronoUnit.MILLIS);
     }
 
     public Instant getLastModificationTime() {
@@ -50,7 +50,7 @@ public class DishType {
     }
 
     public void setLastModificationTime(Instant lastModificationTime) {
-        this.lastModificationTime = lastModificationTime.truncatedTo(ChronoUnit.SECONDS);
+        this.lastModificationTime = lastModificationTime.truncatedTo(ChronoUnit.MILLIS);
     }
 
     @Override

@@ -115,7 +115,7 @@ public class DishTypeRepositoryImpl implements DishTypeRepository {
         StringBuilder sb = new StringBuilder();
         sb.append("INSERT INTO DISHTYPE ");
         sb.append("(NAME, CREATION_TIME, LAST_MODIFICATION_TIME) VALUES ");
-        sb.append("(?, UTC_TIMESTAMP(), UTC_TIMESTAMP())");
+        sb.append("(?, UTC_TIMESTAMP(3), UTC_TIMESTAMP(3))");
         return sb.toString();
     }
 
