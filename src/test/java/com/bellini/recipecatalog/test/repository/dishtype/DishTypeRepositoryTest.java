@@ -3,10 +3,12 @@ package com.bellini.recipecatalog.test.repository.dishtype;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
+import static org.junit.Assert.*;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 
 import org.hamcrest.Matchers;
 import org.junit.Test;
@@ -134,6 +136,21 @@ public class DishTypeRepositoryTest {
         DishType dt = new DishType();
         dt.setName("Cake");
         return dt;
+    }
+
+    @Test
+    public void findById_shouldReturnCorrectElement() {
+        Optional<DishType> dtOpt = repo.findById((long) 6);
+        assertThat(dtOpt, notNullValue());
+        assertTrue(dtOpt.isPresent());
+        assertThat(dtOpt.get().getId(), comparesEqualTo((long) 6));
+    }
+
+    @Test
+    public void findById_shouldReturnEmptyOptionalWhenNotFound() {
+        Optional<DishType> dtOpt = repo.findById((long) 11); // not existent id
+        assertThat(dtOpt, notNullValue());
+        assertFalse(dtOpt.isPresent());
     }
 
 }
