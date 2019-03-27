@@ -12,20 +12,22 @@ import org.hamcrest.Matchers;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
-import org.springframework.context.annotation.ComponentScan;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.test.context.jdbc.Sql;
+import org.springframework.test.context.jdbc.Sql.ExecutionPhase;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.bellini.recipecatalog.dao.v1.dishtype.DishTypeRepository;
 import com.bellini.recipecatalog.model.v1.DishType;
 
+@SpringBootTest
 @RunWith(SpringRunner.class)
-@JdbcTest
 @Transactional
-@ComponentScan(basePackages = { "com.bellini.recipecatalog.dao" })
+@Sql(executionPhase = ExecutionPhase.BEFORE_TEST_METHOD, scripts = { "classpath:db_seed/dishtype/data.sql" })
+@Sql(executionPhase = ExecutionPhase.AFTER_TEST_METHOD, scripts = { "classpath:db_seed/dishtype/clean-data.sql" })
 public class DishTypeRepositoryTest {
 
     @Autowired
@@ -95,8 +97,8 @@ public class DishTypeRepositoryTest {
 
         assertThat(result, notNullValue());
         assertThat(result, allOf(
-            hasItem(Matchers.<DishType>hasProperty("name", is("Roast"))),
-            hasItem(Matchers.<DishType>hasProperty("name", is("Pasta")))));
+                hasItem(Matchers.<DishType>hasProperty("name", is("Roast"))),
+                hasItem(Matchers.<DishType>hasProperty("name", is("Pasta")))));
     }
 
     @Test
@@ -118,6 +120,20 @@ public class DishTypeRepositoryTest {
 
         // check that the lists are equal
         assertThat(contentToCheck, is(content));
+    }
+
+    @Test
+    public void save_shouldStoreElement() {
+        DishType dt = testDishType();
+        DishType stored = repo.save(dt);
+
+        assertThat(stored, hasProperty("id", allOf(notNullValue(), greaterThan((long) 0))));
+    }
+
+    private DishType testDishType() {
+        DishType dt = new DishType();
+        dt.setName("Cake");
+        return dt;
     }
 
 }
