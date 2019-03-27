@@ -111,7 +111,7 @@ public class IngredientRepositoryImpl implements IngredientRepository {
         StringBuilder sb = new StringBuilder();
         sb.append("INSERT INTO INGREDIENT ");
         sb.append("(NAME, CREATION_TIME, LAST_MODIFICATION_TIME) VALUES ");
-        sb.append("(?, UTC_TIMESTAMP(), UTC_TIMESTAMP())");
+        sb.append("(?, UTC_TIMESTAMP(3), UTC_TIMESTAMP(3))");
         return sb.toString();
     }
 
@@ -133,7 +133,7 @@ public class IngredientRepositoryImpl implements IngredientRepository {
     private String updateSQL() {
         StringBuilder sb = new StringBuilder();
         sb.append("UPDATE INGREDIENT ");
-        sb.append("SET NAME = ?, LAST_MODIFICATION_TIME = UTC_TIMESTAMP()) ");
+        sb.append("SET NAME = ?, LAST_MODIFICATION_TIME = UTC_TIMESTAMP(3)) ");
         sb.append("WHERE ID = ?");
         return sb.toString();
     }
