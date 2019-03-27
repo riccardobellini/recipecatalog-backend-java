@@ -5,6 +5,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import org.junit.Test;
@@ -51,7 +52,8 @@ public class DishTypeRepositoryTest {
 
     @Test
     public void findAll_shouldHandlePaginationCorrectly() {
-        final List<DishType> content = repo.findAll(PageRequest.of(0, Integer.MAX_VALUE)).getContent(); // retrieve all elements
+        final List<DishType> content = repo.findAll(PageRequest.of(0, Integer.MAX_VALUE)).getContent(); // retrieve all
+                                                                                                        // elements
         // fetch two items each time until no results are available
         int startFrom = 0, fetch = 2, total = 0;
         List<DishType> contentToCheck = new ArrayList<>();
@@ -68,6 +70,23 @@ public class DishTypeRepositoryTest {
 
         // check that the lists are equal
         assertThat(contentToCheck, is(content));
+    }
+
+    @Test
+    public void findByNameIgnoreCase_shouldReturnTheSameResult() {
+        Collection<DishType> resultUpperCase = repo.findByNameIgnoreCase("Salad");
+        Collection<DishType> resultLowerCase = repo.findByNameIgnoreCase("salad");
+
+        // collections should be equal
+        assertThat(resultUpperCase, is(resultLowerCase));
+    }
+
+    @Test
+    public void findByNameIgnoreCase_shouldReturnNotNullAndEmptyWhenNoMatch() {
+        Collection<DishType> result = repo.findByNameIgnoreCase("UnknownDishType");
+
+        assertThat(result, notNullValue());
+        assertThat(result, empty());
     }
 
 }
