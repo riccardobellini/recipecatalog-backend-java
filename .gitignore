@@ -39,4 +39,5 @@ application.properties
 
 # VS Code
 .vscode/
+*.code-workspace
 
