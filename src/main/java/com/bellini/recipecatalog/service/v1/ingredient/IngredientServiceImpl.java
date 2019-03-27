@@ -1,6 +1,5 @@
 package com.bellini.recipecatalog.service.v1.ingredient;
 
-import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
 
@@ -70,14 +69,14 @@ public class IngredientServiceImpl implements IngredientService {
         // search for name conflict
         List<Ingredient> soughtList = (List<Ingredient>) repo.findByNameIgnoreCase(ingr.getName());
         if (soughtList.isEmpty() || soughtList.get(0).getId().equals(id)) {
-            Optional<Ingredient> toUpdate = repo.findById(id);
-            if (!toUpdate.isPresent()) {
+            Optional<Ingredient> toUpdateOpt = repo.findById(id);
+            if (!toUpdateOpt.isPresent()) {
                 throw new NotExistingIngredientException(id);
             }
-            // update only the name and modification time
-            toUpdate.get().setName(ingr.getName());
-            toUpdate.get().setLastModificationTime(Instant.now());
-            return repo.save(toUpdate.get());
+            // update only the name
+            final Ingredient toUpdate = toUpdateOpt.get();
+            toUpdate.setName(ingr.getName());
+            return repo.save(id, toUpdate);
         }
         throw new DuplicateIngredientException(ingr);
     }

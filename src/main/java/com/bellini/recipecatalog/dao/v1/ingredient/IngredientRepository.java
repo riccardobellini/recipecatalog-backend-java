@@ -18,6 +18,8 @@ public interface IngredientRepository {
 
     Ingredient save(Ingredient ingr);
 
+    Ingredient save(Long id, Ingredient ingr);
+
     Optional<Ingredient> findById(Long id);
 
     void deleteById(Long id);

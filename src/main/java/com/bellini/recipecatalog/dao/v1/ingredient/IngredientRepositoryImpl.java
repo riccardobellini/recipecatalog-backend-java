@@ -116,6 +116,29 @@ public class IngredientRepositoryImpl implements IngredientRepository {
     }
 
     @Override
+    public Ingredient save(Long id, Ingredient ingr) {
+        int changed = jdbcTemplate.update((conn) -> {
+            PreparedStatement stmt = conn.prepareStatement(updateSQL());
+            int i = 1;
+            stmt.setString(i++, ingr.getName());
+            stmt.setLong(i++, id);
+            return stmt;
+        });
+        if (changed == 1) {
+            return findById(id).get();
+        }
+        return null;
+    }
+
+    private String updateSQL() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("UPDATE INGREDIENT ");
+        sb.append("SET NAME = ?, LAST_MODIFICATION_TIME = UTC_TIMESTAMP()) ");
+        sb.append("WHERE ID = ?");
+        return sb.toString();
+    }
+
+    @Override
     public Optional<Ingredient> findById(Long id) {
         List<Ingredient> ingrList = jdbcTemplate.query(byIdSelectSQL(), (stmt) -> {
             stmt.setLong(1, id);
