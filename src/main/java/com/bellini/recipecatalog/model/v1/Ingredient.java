@@ -2,38 +2,27 @@ package com.bellini.recipecatalog.model.v1;
 
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
-import java.util.List;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.ManyToMany;
-import javax.persistence.Table;
-
-@Entity(name = "Ingredient")
-@Table(name = "INGREDIENT")
+//@Entity(name = "Ingredient")
+//@Table(name = "INGREDIENT")
 public class Ingredient {
 
-    @Id
-    @GeneratedValue(strategy=GenerationType.IDENTITY)
-    @Column(name = "ID")
+//    @Id
+//    @GeneratedValue(strategy=GenerationType.IDENTITY)
+//    @Column(name = "ID")
     private Long id;
 
-    @Column(name = "NAME")
+//    @Column(name = "NAME")
     private String name;
-    
-    @Column(name = "CREATION_TIME")
+
+//    @Column(name = "CREATION_TIME")
     private Instant creationTime = Instant.now().truncatedTo(ChronoUnit.SECONDS);
-    
-    @Column(name = "LAST_MODIFICATION_TIME")
+
+//    @Column(name = "LAST_MODIFICATION_TIME")
     private Instant lastModificationTime = Instant.now().truncatedTo(ChronoUnit.SECONDS);
-    
-    @ManyToMany(fetch = FetchType.LAZY, mappedBy = "ingredients")
-    private List<Recipe> recipes = new ArrayList<>();
+
+//    @ManyToMany(fetch = FetchType.LAZY, mappedBy = "ingredients")
+//    private List<Recipe> recipes = new ArrayList<>();
 
     public String getName() {
         return name;
@@ -67,12 +56,42 @@ public class Ingredient {
         this.lastModificationTime = lastModificationTime.truncatedTo(ChronoUnit.SECONDS);
     }
 
-    public List<Recipe> getRecipes() {
-        return recipes;
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((id == null) ? 0 : id.hashCode());
+        return result;
     }
 
-    public void setRecipes(List<Recipe> recipes) {
-        this.recipes = recipes;
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        Ingredient other = (Ingredient) obj;
+        if (id == null) {
+            if (other.id != null)
+                return false;
+        } else if (!id.equals(other.id))
+            return false;
+        return true;
     }
-    
+
+    @Override
+    public String toString() {
+        return "Ingredient [id=" + id + ", name=" + name + "]";
+    }
+
+//    public List<Recipe> getRecipes() {
+//        return recipes;
+//    }
+
+//    public void setRecipes(List<Recipe> recipes) {
+//        this.recipes = recipes;
+//    }
+
 }
