@@ -133,7 +133,7 @@ public class IngredientRepositoryImpl implements IngredientRepository {
     private String updateSQL() {
         StringBuilder sb = new StringBuilder();
         sb.append("UPDATE INGREDIENT ");
-        sb.append("SET NAME = ?, LAST_MODIFICATION_TIME = UTC_TIMESTAMP(3)) ");
+        sb.append("SET NAME = ?, LAST_MODIFICATION_TIME = UTC_TIMESTAMP(3) ");
         sb.append("WHERE ID = ?");
         return sb.toString();
     }

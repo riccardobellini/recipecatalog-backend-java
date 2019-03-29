@@ -164,4 +164,32 @@ public class IngredientRepositoryTest {
         assertThat(dtOpt, notNullValue());
         assertFalse(dtOpt.isPresent());
     }
+
+    @Test
+    public void deleteById_shouldRemoveCorrectElement() {
+        // ensure to remove an element which exists
+        Optional<Ingredient> optElement = repo.findById((long) 5);
+        assertTrue(optElement.isPresent());
+        final Ingredient elem = optElement.get();
+        repo.deleteById(elem.getId());
+        // try to retrieve the same element
+        optElement = repo.findById(elem.getId());
+        // should not exist anymore
+        assertFalse(optElement.isPresent());
+    }
+
+    @Test
+    public void save_shouldUpdateElement() {
+        final Ingredient newIngr = testUpdateIngredient();
+        Ingredient stored = repo.save((long) 4, newIngr);
+        assertThat(stored, notNullValue());
+        assertThat(stored.getName(), is("Catfish"));
+        assertTrue(stored.getLastModificationTime().isAfter(stored.getCreationTime()));
+    }
+
+    private Ingredient testUpdateIngredient() {
+        Ingredient ingr = new Ingredient();
+        ingr.setName("Catfish");
+        return ingr;
+    }
 }
