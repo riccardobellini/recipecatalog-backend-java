@@ -83,6 +83,29 @@ public class BookRepositoryImpl implements BookRepository {
     }
 
     @Override
+    public Book save(Long id, Book book) {
+        int changed = jdbcTemplate.update((conn) -> {
+            PreparedStatement stmt = conn.prepareStatement(updateSQL());
+            int i = 1;
+            stmt.setString(i++, book.getTitle());
+            stmt.setLong(i++, id);
+            return stmt;
+        });
+        if (changed == 1) {
+            return findById(id).get();
+        }
+        return null;
+    }
+
+    private String updateSQL() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("UPDATE BOOK ");
+        sb.append("SET TITLE = ?, LAST_MODIFICATION_TIME = UTC_TIMESTAMP(3) ");
+        sb.append("WHERE ID = ?");
+        return sb.toString();
+    }
+
+    @Override
     public Optional<Book> findById(Long id) {
         List<Book> result = jdbcTemplate.query(byIdSelectSQL(), (stmt) -> {
             stmt.setLong(1, id);

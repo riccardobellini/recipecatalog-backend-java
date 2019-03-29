@@ -18,6 +18,8 @@ public interface BookRepository {
 
     Book save(Book book);
 
+    Book save(Long id, Book book);
+
     Optional<Book> findById(Long id);
 
     void deleteById(Long id);

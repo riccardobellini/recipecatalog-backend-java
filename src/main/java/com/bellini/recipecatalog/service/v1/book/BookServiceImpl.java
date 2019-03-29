@@ -73,14 +73,14 @@ public class BookServiceImpl implements BookService {
         // search for name conflict
         Collection<Book> soughtList = repo.findByTitleIgnoreCase(b.getTitle());
         if (soughtList.isEmpty() || soughtList.iterator().next().getId().equals(id)) {
-            Optional<Book> toUpdate = repo.findById(id);
-            if (!toUpdate.isPresent()) {
+            Optional<Book> toUpdateOpt = repo.findById(id);
+            if (!toUpdateOpt.isPresent()) {
                 throw new NotExistingBookException(id);
             }
-            // update only the name and modification time
-            toUpdate.get().setTitle(b.getTitle());
-            toUpdate.get().setLastModificationTime(Instant.now());
-            return repo.save(toUpdate.get());
+            // update only the title
+            Book toUpdate = toUpdateOpt.get();
+            toUpdate.setTitle(b.getTitle());
+            return repo.save(id, toUpdate);
         }
         throw new DuplicateBookException(b);
     }
