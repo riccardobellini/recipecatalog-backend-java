@@ -3,12 +3,14 @@ package com.bellini.recipecatalog.test.repository.ingredient;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.comparesEqualTo;
+import static org.hamcrest.Matchers.empty;
 import static org.hamcrest.Matchers.emptyIterable;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.not;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import org.junit.Test;
@@ -74,5 +76,22 @@ public class IngredientRepositoryTest {
 
         // check that the lists are equal
         assertThat(contentToCheck, is(content));
+    }
+
+    @Test
+    public void findByNameIgnoreCase_shouldReturnTheSameResult() {
+        Collection<Ingredient> resultUpperCase = repo.findByNameIgnoreCase("Chicken");
+        Collection<Ingredient> resultLowerCase = repo.findByNameIgnoreCase("chicken");
+
+        // collections should be equal
+        assertThat(resultUpperCase, is(resultLowerCase));
+    }
+
+    @Test
+    public void findByNameIgnoreCase_shouldReturnNotNullAndEmptyWhenNoMatch() {
+        Collection<Ingredient> result = repo.findByNameIgnoreCase("UnknownIngredient");
+
+        assertThat(result, notNullValue());
+        assertThat(result, empty());
     }
 }
