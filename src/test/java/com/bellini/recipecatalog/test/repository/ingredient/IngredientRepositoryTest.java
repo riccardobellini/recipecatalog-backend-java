@@ -6,7 +6,9 @@ import static org.hamcrest.Matchers.allOf;
 import static org.hamcrest.Matchers.comparesEqualTo;
 import static org.hamcrest.Matchers.empty;
 import static org.hamcrest.Matchers.emptyIterable;
+import static org.hamcrest.Matchers.greaterThan;
 import static org.hamcrest.Matchers.hasItem;
+import static org.hamcrest.Matchers.hasProperty;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.not;
@@ -129,5 +131,19 @@ public class IngredientRepositoryTest {
 
         // check that the lists are equal
         assertThat(contentToCheck, is(content));
+    }
+    
+    @Test
+    public void save_shouldStoreElement() {
+        Ingredient ingr = testDishType();
+        Ingredient stored = repo.save(ingr);
+
+        assertThat(stored, hasProperty("id", allOf(notNullValue(), greaterThan((long) 0))));
+    }
+
+    private Ingredient testDishType() {
+        Ingredient ingr = new Ingredient();
+        ingr.setName("Tuna");
+        return ingr;
     }
 }
