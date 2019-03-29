@@ -12,10 +12,13 @@ import static org.hamcrest.Matchers.hasProperty;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.not;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 
 import org.hamcrest.Matchers;
 import org.junit.Test;
@@ -132,7 +135,7 @@ public class IngredientRepositoryTest {
         // check that the lists are equal
         assertThat(contentToCheck, is(content));
     }
-    
+
     @Test
     public void save_shouldStoreElement() {
         Ingredient ingr = testDishType();
@@ -145,5 +148,20 @@ public class IngredientRepositoryTest {
         Ingredient ingr = new Ingredient();
         ingr.setName("Tuna");
         return ingr;
+    }
+
+    @Test
+    public void findById_shouldReturnCorrectElement() {
+        Optional<Ingredient> dtOpt = repo.findById((long) 6);
+        assertThat(dtOpt, notNullValue());
+        assertTrue(dtOpt.isPresent());
+        assertThat(dtOpt.get().getId(), comparesEqualTo((long) 6));
+    }
+
+    @Test
+    public void findById_shouldReturnEmptyOptionalWhenNotFound() {
+        Optional<Ingredient> dtOpt = repo.findById((long) 11); // not existent id
+        assertThat(dtOpt, notNullValue());
+        assertFalse(dtOpt.isPresent());
     }
 }
