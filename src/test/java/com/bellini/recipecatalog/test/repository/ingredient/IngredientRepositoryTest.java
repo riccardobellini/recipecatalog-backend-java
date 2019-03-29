@@ -2,9 +2,11 @@ package com.bellini.recipecatalog.test.repository.ingredient;
 
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.allOf;
 import static org.hamcrest.Matchers.comparesEqualTo;
 import static org.hamcrest.Matchers.empty;
 import static org.hamcrest.Matchers.emptyIterable;
+import static org.hamcrest.Matchers.hasItem;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.not;
@@ -13,6 +15,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import org.hamcrest.Matchers;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -93,5 +96,38 @@ public class IngredientRepositoryTest {
 
         assertThat(result, notNullValue());
         assertThat(result, empty());
+    }
+
+    @Test
+    public void findByNameIgnoreCaseContaining_shouldReturnCorrectResults() {
+        Page<Ingredient> result = repo.findByNameIgnoreCaseContaining("ic", PageRequest.of(0, 10));
+
+        assertThat(result, notNullValue());
+        assertThat(result, allOf(
+                hasItem(Matchers.<Ingredient>hasProperty("name", is("Rice"))),
+                hasItem(Matchers.<Ingredient>hasProperty("name", is("Chicken"))),
+                hasItem(Matchers.<Ingredient>hasProperty("name", is("Artichoke"))),
+                hasItem(Matchers.<Ingredient>hasProperty("name", is("Ricotta")))));
+    }
+
+    @Test
+    public void findByNameIgnoreCaseContaining_shouldHandlePaginationCorrectly() {
+        final List<Ingredient> content = repo.findByNameIgnoreCaseContaining("ic", PageRequest.of(0, Integer.MAX_VALUE)).getContent(); // retrieve all elements
+        // fetch two items each time until no results are available
+        int startFrom = 0, fetch = 1, total = 0;
+        List<Ingredient> contentToCheck = new ArrayList<>();
+        List<Ingredient> tmpContent = null;
+        do {
+            tmpContent = repo.findByNameIgnoreCaseContaining("ic", PageRequest.of(startFrom, fetch)).getContent();
+            total += tmpContent.size();
+            contentToCheck.addAll(tmpContent);
+            ++startFrom;
+        } while (!tmpContent.isEmpty());
+
+        // check for matching number of elements
+        assertThat(total, comparesEqualTo(4));
+
+        // check that the lists are equal
+        assertThat(contentToCheck, is(content));
     }
 }
