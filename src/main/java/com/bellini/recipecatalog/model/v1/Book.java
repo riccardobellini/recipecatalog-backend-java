@@ -2,43 +2,30 @@ package com.bellini.recipecatalog.model.v1;
 
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
-import java.util.List;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
-
-@Entity(name = "Book")
-@Table(name = "BOOK")
+//@Entity(name = "Book")
+//@Table(name = "BOOK")
 public class Book {
 
-    @Id
-    @GeneratedValue(strategy=GenerationType.IDENTITY)
-    @Column(name = "ID")
+//    @Id
+//    @GeneratedValue(strategy=GenerationType.IDENTITY)
+//    @Column(name = "ID")
     private Long id;
 
-    @Column(name = "TITLE")
+//    @Column(name = "TITLE")
     private String title;
-    
-    @Column(name = "CREATION_TIME")
-    private Instant creationTime = Instant.now().truncatedTo(ChronoUnit.SECONDS);
-    
-    @Column(name = "LAST_MODIFICATION_TIME")
-    private Instant lastModificationTime = Instant.now().truncatedTo(ChronoUnit.SECONDS);
-    
-    @OneToMany(fetch = FetchType.LAZY)
-    @JoinTable(name = "BOOK_RECIPE",
-            joinColumns = { @JoinColumn(name = "ID_BOOK") },
-            inverseJoinColumns = { @JoinColumn(name = "ID_RECIPE") })
-    private List<Recipe> recipes = new ArrayList<>();
+
+//    @Column(name = "CREATION_TIME")
+    private Instant creationTime = Instant.now().truncatedTo(ChronoUnit.MILLIS);
+
+//    @Column(name = "LAST_MODIFICATION_TIME")
+    private Instant lastModificationTime = Instant.now().truncatedTo(ChronoUnit.MILLIS);
+
+//    @OneToMany(fetch = FetchType.LAZY)
+//    @JoinTable(name = "BOOK_RECIPE",
+//            joinColumns = { @JoinColumn(name = "ID_BOOK") },
+//            inverseJoinColumns = { @JoinColumn(name = "ID_RECIPE") })
+//    private List<Recipe> recipes = new ArrayList<>();
 
     public String getTitle() {
         return title;
@@ -61,7 +48,7 @@ public class Book {
     }
 
     public void setCreationTime(Instant creationTime) {
-        this.creationTime = creationTime.truncatedTo(ChronoUnit.SECONDS);
+        this.creationTime = creationTime.truncatedTo(ChronoUnit.MILLIS);
     }
 
     public Instant getLastModificationTime() {
@@ -69,15 +56,45 @@ public class Book {
     }
 
     public void setLastModificationTime(Instant lastModificationTime) {
-        this.lastModificationTime = lastModificationTime.truncatedTo(ChronoUnit.SECONDS);
+        this.lastModificationTime = lastModificationTime.truncatedTo(ChronoUnit.MILLIS);
     }
 
-    public List<Recipe> getRecipes() {
-        return recipes;
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((id == null) ? 0 : id.hashCode());
+        return result;
     }
 
-    public void setRecipes(List<Recipe> recipes) {
-        this.recipes = recipes;
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        Book other = (Book) obj;
+        if (id == null) {
+            if (other.id != null)
+                return false;
+        } else if (!id.equals(other.id))
+            return false;
+        return true;
     }
+
+    @Override
+    public String toString() {
+        return "Book [id=" + id + ", title=" + title + "]";
+    }
+
+//    public List<Recipe> getRecipes() {
+//        return recipes;
+//    }
+//
+//    public void setRecipes(List<Recipe> recipes) {
+//        this.recipes = recipes;
+//    }
 
 }
