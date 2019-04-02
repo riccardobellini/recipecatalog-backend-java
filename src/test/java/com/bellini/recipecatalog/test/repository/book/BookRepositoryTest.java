@@ -3,10 +3,12 @@ package com.bellini.recipecatalog.test.repository.book;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
+import static org.junit.Assert.*;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 
 import org.hamcrest.Matchers;
 import org.junit.Test;
@@ -134,5 +136,20 @@ public class BookRepositoryTest {
         Book dt = new Book();
         dt.setTitle("Il meglio di Sale & Pepe");
         return dt;
+    }
+
+    @Test
+    public void findById_shouldReturnCorrectElement() {
+        Optional<Book> bookOpt = repo.findById((long) 2);
+        assertThat(bookOpt, notNullValue());
+        assertTrue(bookOpt.isPresent());
+        assertThat(bookOpt.get().getId(), comparesEqualTo((long) 2));
+    }
+
+    @Test
+    public void findById_shouldReturnEmptyOptionalWhenNotFound() {
+        Optional<Book> bookOpt = repo.findById((long) 11); // not existent id
+        assertThat(bookOpt, notNullValue());
+        assertFalse(bookOpt.isPresent());
     }
 }
