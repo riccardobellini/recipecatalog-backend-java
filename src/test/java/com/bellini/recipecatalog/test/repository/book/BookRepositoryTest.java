@@ -121,4 +121,18 @@ public class BookRepositoryTest {
         // check that the lists are equal
         assertThat(contentToCheck, is(content));
     }
+
+    @Test
+    public void save_shouldStoreElement() {
+        Book dt = testBook();
+        Book stored = repo.save(dt);
+
+        assertThat(stored, hasProperty("id", allOf(notNullValue(), greaterThan((long) 0))));
+    }
+
+    private Book testBook() {
+        Book dt = new Book();
+        dt.setTitle("Il meglio di Sale & Pepe");
+        return dt;
+    }
 }
