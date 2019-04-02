@@ -165,4 +165,19 @@ public class BookRepositoryTest {
         // should not exist anymore
         assertFalse(optElement.isPresent());
     }
+
+    @Test
+    public void save_shouldUpdateElement() {
+        final Book newBook = testUpdateBook();
+        Book stored = repo.save((long) 4, newBook);
+        assertThat(stored, notNullValue());
+        assertThat(stored.getTitle(), is("Mi Piace Cucinare"));
+        assertTrue(stored.getLastModificationTime().isAfter(stored.getCreationTime()));
+    }
+
+    private Book testUpdateBook() {
+        Book book = new Book();
+        book.setTitle("Mi Piace Cucinare");
+        return book;
+    }
 }
