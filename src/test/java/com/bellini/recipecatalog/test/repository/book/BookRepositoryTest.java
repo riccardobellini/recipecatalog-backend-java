@@ -152,4 +152,17 @@ public class BookRepositoryTest {
         assertThat(bookOpt, notNullValue());
         assertFalse(bookOpt.isPresent());
     }
+
+    @Test
+    public void deleteById_shouldRemoveCorrectElement() {
+        // ensure to remove an element which exists
+        Optional<Book> optElement = repo.findById((long) 3);
+        assertTrue(optElement.isPresent());
+        final Book elem = optElement.get();
+        repo.deleteById(elem.getId());
+        // try to retrieve the same element
+        optElement = repo.findById(elem.getId());
+        // should not exist anymore
+        assertFalse(optElement.isPresent());
+    }
 }
