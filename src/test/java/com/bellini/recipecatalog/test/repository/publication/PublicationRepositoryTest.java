@@ -4,6 +4,9 @@ import static org.hamcrest.CoreMatchers.allOf;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
+import static org.junit.Assert.*;
+
+import java.util.Optional;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -40,5 +43,25 @@ public class PublicationRepositoryTest {
         pub.setVolume(3);
         pub.setYear(2014);
         return pub;
+    }
+
+    @Test
+    public void findByVolumeAndYear_shouldReturnCorrectResult() {
+        Optional<Publication> optPub = repo.findByVolumeAndYear(9, 2015);
+
+        assertThat(optPub, notNullValue());
+        assertTrue(optPub.isPresent());
+        final Publication pub = optPub.get();
+        assertThat(pub, hasProperty("id", comparesEqualTo((long) 8)));
+        assertThat(pub, hasProperty("volume", comparesEqualTo((int) 9)));
+        assertThat(pub, hasProperty("year", comparesEqualTo((int) 2015)));
+    }
+
+    @Test
+    public void findByVolumeAndYear_shouldReturnEmptyOptionalWhenNotFound() {
+        Optional<Publication> optPub = repo.findByVolumeAndYear(300, 4000); // not existent id
+
+        assertThat(optPub, notNullValue());
+        assertFalse(optPub.isPresent());
     }
 }
