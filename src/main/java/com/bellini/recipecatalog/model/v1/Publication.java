@@ -3,33 +3,26 @@ package com.bellini.recipecatalog.model.v1;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Table;
-
-@Entity(name = "Publication")
-@Table(name = "PUBLICATION")
+//@Entity(name = "Publication")
+//@Table(name = "PUBLICATION")
 public class Publication {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "ID")
+    // @Id
+    // @GeneratedValue(strategy = GenerationType.IDENTITY)
+    // @Column(name = "ID")
     private Long id;
 
-    @Column(name = "VOLUME")
+    // @Column(name = "VOLUME")
     private Integer volume;
 
-    @Column(name = "YEAR")
+    // @Column(name = "YEAR")
     private Integer year;
 
-    @Column(name = "CREATION_TIME")
-    private Instant creationTime = Instant.now().truncatedTo(ChronoUnit.SECONDS);
+    // @Column(name = "CREATION_TIME")
+    private Instant creationTime = Instant.now().truncatedTo(ChronoUnit.MILLIS);
 
-    @Column(name = "LAST_MODIFICATION_TIME")
-    private Instant lastModificationTime = Instant.now().truncatedTo(ChronoUnit.SECONDS);
+    // @Column(name = "LAST_MODIFICATION_TIME")
+    private Instant lastModificationTime = Instant.now().truncatedTo(ChronoUnit.MILLIS);
 
     public Long getId() {
         return id;
@@ -60,7 +53,7 @@ public class Publication {
     }
 
     public void setCreationTime(Instant creationTime) {
-        this.creationTime = creationTime.truncatedTo(ChronoUnit.SECONDS);
+        this.creationTime = creationTime.truncatedTo(ChronoUnit.MILLIS);
     }
 
     public Instant getLastModificationTime() {
@@ -68,7 +61,7 @@ public class Publication {
     }
 
     public void setLastModificationTime(Instant lastModificationTime) {
-        this.lastModificationTime = lastModificationTime.truncatedTo(ChronoUnit.SECONDS);
+        this.lastModificationTime = lastModificationTime.truncatedTo(ChronoUnit.MILLIS);
     }
 
 }

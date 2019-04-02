@@ -41,7 +41,7 @@ public class PublicationRepositoryImpl implements PublicationRepository {
         StringBuilder sb = new StringBuilder();
         sb.append("INSERT INTO PUBLICATION ");
         sb.append("(VOLUME, YEAR, CREATION_TIME, LAST_MODIFICATION_TIME) ");
-        sb.append("VALUES (?, ?, UTC_TIMESTAMP(), UTC_TIMESTAMP())");
+        sb.append("VALUES (?, ?, UTC_TIMESTAMP(3), UTC_TIMESTAMP(3))");
         return sb.toString();
     }
 
