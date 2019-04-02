@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import org.hamcrest.Matchers;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -88,5 +89,36 @@ public class BookRepositoryTest {
 
         assertThat(result, notNullValue());
         assertThat(result, empty());
+    }
+
+    @Test
+    public void findByNameIgnoreCaseContaining_shouldReturnCorrectResults() {
+        Page<Book> result = repo.findByTitleIgnoreCaseContaining("cuc", PageRequest.of(0, 10));
+
+        assertThat(result, notNullValue());
+        assertThat(result, allOf(
+                hasItem(Matchers.<Book>hasProperty("title", is("La Cucina Italiana"))),
+                hasItem(Matchers.<Book>hasProperty("title", is("Ci Piace Cucinare")))));
+    }
+
+    @Test
+    public void findByNameIgnoreCaseContaining_shouldHandlePaginationCorrectly() {
+        final List<Book> content = repo.findByTitleIgnoreCaseContaining("cuc", PageRequest.of(0, Integer.MAX_VALUE)).getContent(); // retrieve all elements
+        // fetch two items each time until no results are available
+        int startFrom = 0, fetch = 1, total = 0;
+        List<Book> contentToCheck = new ArrayList<>();
+        List<Book> tmpContent = null;
+        do {
+            tmpContent = repo.findByTitleIgnoreCaseContaining("cuc", PageRequest.of(startFrom, fetch)).getContent();
+            total += tmpContent.size();
+            contentToCheck.addAll(tmpContent);
+            ++startFrom;
+        } while (!tmpContent.isEmpty());
+
+        // check for matching number of elements
+        assertThat(total, comparesEqualTo(2));
+
+        // check that the lists are equal
+        assertThat(contentToCheck, is(content));
     }
 }
