@@ -9,7 +9,7 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.jdbc.core.JdbcTemplate;
 
 @SpringBootConfiguration
-@ComponentScan(basePackages = { "com.bellini.recipecatalog.dao.v1.dishtype", "com.bellini.recipecatalog.dao.v1.ingredient", "com.bellini.recipecatalog.dao.v1.book" })
+@ComponentScan(basePackages = { "com.bellini.recipecatalog.dao.v1.dishtype", "com.bellini.recipecatalog.dao.v1.ingredient", "com.bellini.recipecatalog.dao.v1.book", "com.bellini.recipecatalog.dao.v1.publication" })
 @EnableAutoConfiguration
 public class RecipeCatalogTestConfig {
 
