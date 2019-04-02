@@ -59,7 +59,7 @@ public class PublicationRepositoryTest {
 
     @Test
     public void findByVolumeAndYear_shouldReturnEmptyOptionalWhenNotFound() {
-        Optional<Publication> optPub = repo.findByVolumeAndYear(300, 4000); // not existent id
+        Optional<Publication> optPub = repo.findByVolumeAndYear(300, 4000); // not existent <volume, year>
 
         assertThat(optPub, notNullValue());
         assertFalse(optPub.isPresent());
