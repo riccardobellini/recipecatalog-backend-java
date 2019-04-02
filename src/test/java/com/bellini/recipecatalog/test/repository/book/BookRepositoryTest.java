@@ -5,6 +5,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import org.junit.Test;
@@ -70,5 +71,22 @@ public class BookRepositoryTest {
 
         // check that the lists are equal
         assertThat(contentToCheck, is(content));
+    }
+
+    @Test
+    public void findByTitleIgnoreCase_shouldReturnTheSameResult() {
+        Collection<Book> resultUpperCase = repo.findByTitleIgnoreCase("Da Noi");
+        Collection<Book> resultLowerCase = repo.findByTitleIgnoreCase("da noi");
+
+        // collections should be equal
+        assertThat(resultUpperCase, is(resultLowerCase));
+    }
+
+    @Test
+    public void findByNamTitleIgnoreCase_shouldReturnNotNullAndEmptyWhenNoMatch() {
+        Collection<Book> result = repo.findByTitleIgnoreCase("UnknownBook");
+
+        assertThat(result, notNullValue());
+        assertThat(result, empty());
     }
 }
