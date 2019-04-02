@@ -64,4 +64,23 @@ public class PublicationRepositoryTest {
         assertThat(optPub, notNullValue());
         assertFalse(optPub.isPresent());
     }
+
+    @Test
+    public void findById_shouldReturnCorrectElement() {
+        Optional<Publication> optPub = repo.findById((long) 8);
+
+        assertThat(optPub, notNullValue());
+        assertTrue(optPub.isPresent());
+        assertThat(optPub.get(), allOf(
+                hasProperty("volume", comparesEqualTo(9)),
+                hasProperty("year", comparesEqualTo(2015))));
+    }
+
+    @Test
+    public void findById_shouldReturnEmptyOptionalWhenNotFound() {
+        Optional<Publication> optPub = repo.findById((long) 11);// not existent id
+
+        assertThat(optPub, notNullValue());
+        assertFalse(optPub.isPresent());
+    }
 }
