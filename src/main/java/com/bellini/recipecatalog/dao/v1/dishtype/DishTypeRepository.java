@@ -3,11 +3,11 @@ package com.bellini.recipecatalog.dao.v1.dishtype;
 import java.util.Collection;
 import java.util.Optional;
 
-import com.bellini.recipecatalog.model.v1.DishType;
-
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+
+import com.bellini.recipecatalog.model.v1.DishType;
 
 public interface DishTypeRepository {
 
@@ -24,5 +24,7 @@ public interface DishTypeRepository {
     Optional<DishType> findById(Long id);
 
     void deleteById(Long id);
+
+    Collection<DishType> findByRecipeId(Long recipeId);
 
 }

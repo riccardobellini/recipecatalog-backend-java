@@ -8,8 +8,6 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
-import com.bellini.recipecatalog.model.v1.DishType;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -19,6 +17,8 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.stereotype.Repository;
+
+import com.bellini.recipecatalog.model.v1.DishType;
 
 @Repository
 public class DishTypeRepositoryImpl implements DishTypeRepository {
@@ -191,6 +191,22 @@ public class DishTypeRepositoryImpl implements DishTypeRepository {
 
     private String countSQL() {
         return "SELECT COUNT(*) AS total FROM DISHTYPE";
+    }
+
+    @Override
+    public Collection<DishType> findByRecipeId(Long recipeId) {
+        return jdbcTemplate.query(byRecipeIdSelectSQL(), (stmt) -> {
+            stmt.setLong(1, recipeId);
+        }, defaultMapper());
+    }
+
+    private String byRecipeIdSelectSQL() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("SELECT dt.ID, dt.NAME, dt.CREATION_TIME, dt.LAST_MODIFICATION_TIME ");
+        sb.append("FROM DISHTYPE dt JOIN DISHTYPE_RECIPE dtr ON dt.ID = dtr.ID_DISHTYPE ");
+        sb.append("WHERE dtr.ID_RECIPE = ? ");
+        sb.append("ORDER BY dt.NAME ASC");
+        return sb.toString();
     }
 
 }
