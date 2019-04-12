@@ -23,4 +23,6 @@ public interface IngredientRepository {
     Optional<Ingredient> findById(Long id);
 
     void deleteById(Long id);
+
+    Collection<Ingredient> findByRecipeId(Long recipeId);
 }

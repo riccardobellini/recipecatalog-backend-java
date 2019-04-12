@@ -193,4 +193,20 @@ public class IngredientRepositoryImpl implements IngredientRepository {
         return "SELECT COUNT(*) AS total FROM INGREDIENT";
     }
 
+    @Override
+    public Collection<Ingredient> findByRecipeId(Long recipeId) {
+        return jdbcTemplate.query(byRecipeIdSelectSQL(), (stmt) -> {
+            stmt.setLong(1, recipeId);
+        }, defaultMapper());
+    }
+
+    private String byRecipeIdSelectSQL() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("SELECT i.ID, i.NAME, i.CREATION_TIME, i.LAST_MODIFICATION_TIME ");
+        sb.append("FROM INGREDIENT i JOIN INGREDIENT_RECIPE ir ON i.ID = ir.ID_INGREDIENT ");
+        sb.append("WHERE ir.ID_RECIPE = ? ");
+        sb.append("ORDER BY i.NAME ASC");
+        return sb.toString();
+    }
+
 }
