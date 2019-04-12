@@ -4,6 +4,7 @@ import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.allOf;
 import static org.hamcrest.Matchers.comparesEqualTo;
+import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.hamcrest.Matchers.empty;
 import static org.hamcrest.Matchers.emptyIterable;
 import static org.hamcrest.Matchers.greaterThan;
@@ -191,5 +192,24 @@ public class IngredientRepositoryTest {
         Ingredient ingr = new Ingredient();
         ingr.setName("Catfish");
         return ingr;
+    }
+
+    @SuppressWarnings("unchecked")
+    @Test
+    public void findByRecipeId_shouldReturnCorrectElements() {
+        Collection<Ingredient> result = repo.findByRecipeId((long) 1);
+        assertThat(result, notNullValue());
+        assertFalse(result.isEmpty());
+        assertThat(result, hasSize(2));
+        assertThat(result, containsInAnyOrder(
+                hasProperty("id", is((long) 6)),
+                hasProperty("id", is((long) 7))));
+    }
+
+    @Test
+    public void findByRecipeId_shouldReturnNotNullAndEmptyWhenNoMatch() {
+        Collection<Ingredient> result = repo.findByRecipeId((long) 10000);
+        assertThat(result, notNullValue());
+        assertThat(result, empty());
     }
 }
