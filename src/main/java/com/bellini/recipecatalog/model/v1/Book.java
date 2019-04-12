@@ -3,29 +3,12 @@ package com.bellini.recipecatalog.model.v1;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 
-//@Entity(name = "Book")
-//@Table(name = "BOOK")
 public class Book {
 
-//    @Id
-//    @GeneratedValue(strategy=GenerationType.IDENTITY)
-//    @Column(name = "ID")
     private Long id;
-
-//    @Column(name = "TITLE")
     private String title;
-
-//    @Column(name = "CREATION_TIME")
     private Instant creationTime = Instant.now().truncatedTo(ChronoUnit.MILLIS);
-
-//    @Column(name = "LAST_MODIFICATION_TIME")
     private Instant lastModificationTime = Instant.now().truncatedTo(ChronoUnit.MILLIS);
-
-//    @OneToMany(fetch = FetchType.LAZY)
-//    @JoinTable(name = "BOOK_RECIPE",
-//            joinColumns = { @JoinColumn(name = "ID_BOOK") },
-//            inverseJoinColumns = { @JoinColumn(name = "ID_RECIPE") })
-//    private List<Recipe> recipes = new ArrayList<>();
 
     public String getTitle() {
         return title;
@@ -88,13 +71,5 @@ public class Book {
     public String toString() {
         return "Book [id=" + id + ", title=" + title + "]";
     }
-
-//    public List<Recipe> getRecipes() {
-//        return recipes;
-//    }
-//
-//    public void setRecipes(List<Recipe> recipes) {
-//        this.recipes = recipes;
-//    }
 
 }

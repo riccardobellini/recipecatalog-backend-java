@@ -5,42 +5,13 @@ import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
-
-@Entity(name = "Recipe")
-@Table(name = "RECIPE")
 public class Recipe {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "ID")
     private Long id;
-
-    @Column(name = "TITLE")
     private String title;
-
-    @Column(name = "CREATION_TIME")
-    private Instant creationTime = Instant.now().truncatedTo(ChronoUnit.SECONDS);
-
-    @Column(name = "LAST_MODIFICATION_TIME")
-    private Instant lastModificationTime = Instant.now().truncatedTo(ChronoUnit.SECONDS);
-
-    @Column(name = "IMAGE_KEY")
+    private Instant creationTime = Instant.now().truncatedTo(ChronoUnit.MILLIS);
+    private Instant lastModificationTime = Instant.now().truncatedTo(ChronoUnit.MILLIS);
     private String imageKey;
-
-    @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(name = "INGREDIENT_RECIPE", joinColumns = { @JoinColumn(name = "ID_RECIPE") }, inverseJoinColumns = {
-            @JoinColumn(name = "ID_INGREDIENT") })
     private List<Ingredient> ingredients = new ArrayList<>();
 
     public Long getId() {
@@ -64,7 +35,7 @@ public class Recipe {
     }
 
     public void setCreationTime(Instant creationTime) {
-        this.creationTime = creationTime;
+        this.creationTime = creationTime.truncatedTo(ChronoUnit.MILLIS);
     }
 
     public Instant getLastModificationTime() {
@@ -72,7 +43,7 @@ public class Recipe {
     }
 
     public void setLastModificationTime(Instant lastModificationTime) {
-        this.lastModificationTime = lastModificationTime;
+        this.lastModificationTime = lastModificationTime.truncatedTo(ChronoUnit.MILLIS);
     }
 
     public String getImageKey() {
@@ -83,17 +54,7 @@ public class Recipe {
         this.imageKey = imageKey;
     }
 
-    @ManyToOne(targetEntity = Book.class)
-    @JoinTable(name = "BOOK_RECIPE", joinColumns = {
-            @JoinColumn(name = "ID_RECIPE", insertable = false, updatable = false) }, inverseJoinColumns = {
-                    @JoinColumn(name = "ID_BOOK", insertable = false, updatable = false) })
     private Book book;
-
-//    @ManyToOne(targetEntity = Publication.class)
-//    @JoinTable(name = "BOOK_RECIPE", joinColumns = {
-//            @JoinColumn(name = "ID_RECIPE", insertable = false, updatable = false) }, inverseJoinColumns = {
-//                    @JoinColumn(name = "ID_PUBLICATION", insertable = false, updatable = false) })
-//    private Publication publication;
 
     public Book getBook() {
         return book;
@@ -110,13 +71,5 @@ public class Recipe {
     public void setIngredients(List<Ingredient> ingredients) {
         this.ingredients = ingredients;
     }
-
-//    public Publication getPublication() {
-//        return this.publication;
-//    }
-
-//    public void setPublication(Publication publication) {
-//        this.publication = publication;
-//    }
 
 }

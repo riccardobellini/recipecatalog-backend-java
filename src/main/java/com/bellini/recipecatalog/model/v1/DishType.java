@@ -3,22 +3,11 @@ package com.bellini.recipecatalog.model.v1;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 
-//@Entity(name = "DishType")
-//@Table(name = "DISHTYPE")
 public class DishType {
 
-    // @Id
-    // @GeneratedValue(strategy=GenerationType.IDENTITY)
-    // @Column(name = "ID")
     private Long id;
-
-    // @Column(name = "NAME")
     private String name;
-
-    // @Column(name = "CREATION_TIME")
     private Instant creationTime = Instant.now().truncatedTo(ChronoUnit.MILLIS);
-
-    // @Column(name = "LAST_MODIFICATION_TIME")
     private Instant lastModificationTime = Instant.now().truncatedTo(ChronoUnit.MILLIS);
 
     public String getName() {

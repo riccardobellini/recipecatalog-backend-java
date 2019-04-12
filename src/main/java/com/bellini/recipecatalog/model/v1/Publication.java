@@ -3,25 +3,12 @@ package com.bellini.recipecatalog.model.v1;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 
-//@Entity(name = "Publication")
-//@Table(name = "PUBLICATION")
 public class Publication {
 
-    // @Id
-    // @GeneratedValue(strategy = GenerationType.IDENTITY)
-    // @Column(name = "ID")
     private Long id;
-
-    // @Column(name = "VOLUME")
     private Integer volume;
-
-    // @Column(name = "YEAR")
     private Integer year;
-
-    // @Column(name = "CREATION_TIME")
     private Instant creationTime = Instant.now().truncatedTo(ChronoUnit.MILLIS);
-
-    // @Column(name = "LAST_MODIFICATION_TIME")
     private Instant lastModificationTime = Instant.now().truncatedTo(ChronoUnit.MILLIS);
 
     public Long getId() {
