@@ -2,8 +2,19 @@ package com.bellini.recipecatalog.test.repository.dishtype;
 
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.*;
-import static org.junit.Assert.*;
+import static org.hamcrest.Matchers.allOf;
+import static org.hamcrest.Matchers.comparesEqualTo;
+import static org.hamcrest.Matchers.containsInAnyOrder;
+import static org.hamcrest.Matchers.empty;
+import static org.hamcrest.Matchers.emptyIterable;
+import static org.hamcrest.Matchers.greaterThan;
+import static org.hamcrest.Matchers.hasItem;
+import static org.hamcrest.Matchers.hasProperty;
+import static org.hamcrest.Matchers.hasSize;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.not;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -180,6 +191,25 @@ public class DishTypeRepositoryTest {
         DishType dt = new DishType();
         dt.setName("Bread & Doughs");
         return dt;
+    }
+
+    @SuppressWarnings("unchecked")
+    @Test
+    public void findByRecipeId_shouldReturnCorrectElements() {
+        Collection<DishType> result = repo.findByRecipeId((long) 1);
+        assertThat(result, notNullValue());
+        assertFalse(result.isEmpty());
+        assertThat(result, hasSize(2));
+        assertThat(result, containsInAnyOrder(
+                hasProperty("id", is((long) 2)),
+                hasProperty("id", is((long) 9))));
+    }
+
+    @Test
+    public void findByRecipeId_shouldReturnNotNullAndEmptyWhenNoMatch() {
+        Collection<DishType> result = repo.findByRecipeId((long) 10000);
+        assertThat(result, notNullValue());
+        assertThat(result, empty());
     }
 
 }
