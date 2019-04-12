@@ -24,4 +24,6 @@ public interface BookRepository {
 
     void deleteById(Long id);
 
+    Optional<Book> findByRecipeId(Long recipeId);
+
 }

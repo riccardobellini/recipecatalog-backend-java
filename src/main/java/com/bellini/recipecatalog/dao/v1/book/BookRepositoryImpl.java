@@ -191,4 +191,20 @@ public class BookRepositoryImpl implements BookRepository {
             return book;
         };
     }
+
+    @Override
+    public Optional<Book> findByRecipeId(Long recipeId) {
+        List<Book> result = jdbcTemplate.query(byRecipeIdSelectSQL(), (stmt) -> {
+            stmt.setLong(1, recipeId);
+        }, defaultMapper());
+        return !result.isEmpty() ? Optional.of(result.get(0)) : Optional.empty();
+    }
+
+    public String byRecipeIdSelectSQL() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("SELECT bk.ID, bk.TITLE, bk.CREATION_TIME, bk.LAST_MODIFICATION_TIME ");
+        sb.append("FROM BOOK bk JOIN BOOK_RECIPE bkr ON bk.ID = bkr.ID_BOOK ");
+        sb.append("WHERE bkr.ID_RECIPE = ?");
+        return sb.toString();
+    }
 }
