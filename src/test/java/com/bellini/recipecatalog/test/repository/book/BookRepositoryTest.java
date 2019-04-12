@@ -2,8 +2,18 @@ package com.bellini.recipecatalog.test.repository.book;
 
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.*;
-import static org.junit.Assert.*;
+import static org.hamcrest.Matchers.allOf;
+import static org.hamcrest.Matchers.comparesEqualTo;
+import static org.hamcrest.Matchers.empty;
+import static org.hamcrest.Matchers.emptyIterable;
+import static org.hamcrest.Matchers.greaterThan;
+import static org.hamcrest.Matchers.hasItem;
+import static org.hamcrest.Matchers.hasProperty;
+import static org.hamcrest.Matchers.hasSize;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.not;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -179,5 +189,20 @@ public class BookRepositoryTest {
         Book book = new Book();
         book.setTitle("Mi Piace Cucinare");
         return book;
+    }
+
+    @Test
+    public void findByRecipeId_shouldReturnCorrectElement() {
+        Optional<Book> optBook = repo.findByRecipeId((long) 1);
+        assertThat(optBook, notNullValue());
+        assertTrue(optBook.isPresent());
+        assertThat(optBook.get(), hasProperty("id", is((long) 2)));
+    }
+
+    @Test
+    public void findByRecipeId_shouldReturnEmptyOptionalWhenNotFound() {
+        Optional<Book> optBook = repo.findByRecipeId((long) 1000);
+        assertThat(optBook, notNullValue());
+        assertFalse(optBook.isPresent());
     }
 }
