@@ -1,5 +1,7 @@
 package com.bellini.recipecatalog.dao.v1.recipe;
 
+import java.sql.Timestamp;
+import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
 
@@ -11,6 +13,10 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
 
+import com.bellini.recipecatalog.dao.v1.book.BookRepository;
+import com.bellini.recipecatalog.dao.v1.dishtype.DishTypeRepository;
+import com.bellini.recipecatalog.dao.v1.ingredient.IngredientRepository;
+import com.bellini.recipecatalog.model.v1.Book;
 import com.bellini.recipecatalog.model.v1.Recipe;
 
 @Repository
@@ -19,6 +25,15 @@ public class RecipeRepositoryImpl implements RecipeRepository {
     @Autowired
     private JdbcTemplate jdbcTemplate;
 
+    @Autowired
+    private DishTypeRepository dishTypeRepo;
+
+    @Autowired
+    private IngredientRepository ingredientRepo;
+
+    @Autowired
+    private BookRepository bookRepo;
+
     @Override
     public Page<Recipe> findAll(Pageable page) {
         List<Recipe> result = jdbcTemplate.query(allSelectSQL(), (stmt) -> {
@@ -26,6 +41,14 @@ public class RecipeRepositoryImpl implements RecipeRepository {
             stmt.setInt(2, page.getPageSize());
         }, defaultMapper());
         Long count = getRowCount();
+        for (Recipe rec : result) {
+            rec.setDishtypes(dishTypeRepo.findByRecipeId(rec.getId()));
+            rec.setIngredients(ingredientRepo.findByRecipeId(rec.getId()));
+            Optional<Book> optBook = bookRepo.findByRecipeId(rec.getId());
+            if (optBook.isPresent()) {
+                rec.setBook(optBook.get());
+            }
+        }
         return new PageImpl<>(result, page, count);
     }
 
@@ -71,7 +94,16 @@ public class RecipeRepositoryImpl implements RecipeRepository {
     private RowMapper<Recipe> defaultMapper() {
         return (rs, row) -> {
             Recipe recipe = new Recipe();
-            // TODO
+            recipe.setId(rs.getLong("ID"));
+            recipe.setTitle(rs.getString("TITLE"));
+            Timestamp creationTimestamp = rs.getTimestamp("CREATION_TIME");
+            if (creationTimestamp != null) {
+                recipe.setCreationTime(Instant.ofEpochMilli(creationTimestamp.getTime()));
+            }
+            Timestamp lastModificationTimestamp = rs.getTimestamp("LAST_MODIFICATION_TIME");
+            if (lastModificationTimestamp != null) {
+                recipe.setLastModificationTime(Instant.ofEpochMilli(lastModificationTimestamp.getTime()));
+            }
             return recipe;
         };
     }

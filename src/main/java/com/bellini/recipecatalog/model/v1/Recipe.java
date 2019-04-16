@@ -3,7 +3,7 @@ package com.bellini.recipecatalog.model.v1;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
-import java.util.List;
+import java.util.Collection;
 
 public class Recipe {
 
@@ -12,7 +12,8 @@ public class Recipe {
     private Instant creationTime = Instant.now().truncatedTo(ChronoUnit.MILLIS);
     private Instant lastModificationTime = Instant.now().truncatedTo(ChronoUnit.MILLIS);
     private String imageKey;
-    private List<Ingredient> ingredients = new ArrayList<>();
+    private Collection<Ingredient> ingredients = new ArrayList<>();
+    private Collection<DishType> dishtypes = new ArrayList<>();
 
     public Long getId() {
         return id;
@@ -64,12 +65,20 @@ public class Recipe {
         this.book = book;
     }
 
-    public List<Ingredient> getIngredients() {
+    public Collection<Ingredient> getIngredients() {
         return ingredients;
     }
 
-    public void setIngredients(List<Ingredient> ingredients) {
+    public void setIngredients(Collection<Ingredient> ingredients) {
         this.ingredients = ingredients;
+    }
+
+    public Collection<DishType> getDishtypes() {
+        return dishtypes;
+    }
+
+    public void setDishtypes(Collection<DishType> dishtypes) {
+        this.dishtypes = dishtypes;
     }
 
 }
