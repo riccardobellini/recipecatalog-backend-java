@@ -27,4 +27,6 @@ public interface DishTypeRepository {
 
     Collection<DishType> findByRecipeId(Long recipeId);
 
+    void attachToRecipe(Long dtId, Long recId);
+
 }

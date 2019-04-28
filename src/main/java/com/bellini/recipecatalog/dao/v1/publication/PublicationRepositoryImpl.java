@@ -110,4 +110,38 @@ public class PublicationRepositoryImpl implements PublicationRepository {
         };
     }
 
+    @Override
+    public Optional<Publication> findByRecipeId(Long id) {
+        List<Publication> result = jdbcTemplate.query(byRecipeIdSelectSQL(), (stmt) -> {
+            stmt.setLong(1, id);
+        }, defaultMapper());
+        return !result.isEmpty() ? Optional.of(result.get(0)) : Optional.empty();
+    }
+
+    private String byRecipeIdSelectSQL() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("SELECT pub.ID, pub.VOLUME, pub.YEAR, pub.CREATION_TIME, pub.LAST_MODIFICATION_TIME ");
+        sb.append("FROM PUBLICATION pub JOIN BOOK_RECIPE br ON br.ID_PUBLICATION = pub.ID ");
+        sb.append("WHERE br.ID_RECIPE = ?");
+        return sb.toString();
+    }
+
+    @Override
+    public void attachToRecipe(Long pubId, Long recId) {
+        jdbcTemplate.update((conn) -> {
+            PreparedStatement stmt = conn.prepareStatement(publicationRecipeUpdateSQL());
+            stmt.setLong(1, pubId);
+            stmt.setLong(2, recId);
+            return stmt;
+        });
+    }
+
+    private String publicationRecipeUpdateSQL() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("UPDATE BOOK_RECIPE ");
+        sb.append("SET ID_PUBLICATION = ? ");
+        sb.append("WHERE ID_RECIPE = ?");
+        return sb.toString();
+    }
+
 }

@@ -207,4 +207,23 @@ public class BookRepositoryImpl implements BookRepository {
         sb.append("WHERE bkr.ID_RECIPE = ?");
         return sb.toString();
     }
+
+    @Override
+    public void attachToRecipe(Long bookId, Long recId) {
+        jdbcTemplate.update((conn) -> {
+            PreparedStatement stmt = conn.prepareStatement(bookRecipeInsertSQL());
+            stmt.setLong(1, recId);
+            stmt.setLong(2, bookId);
+            return stmt;
+        });
+    }
+
+    private String bookRecipeInsertSQL() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("INSERT INTO BOOK_RECIPE ");
+        sb.append("(ID_RECIPE, ID_BOOK) ");
+        sb.append("VALUES ");
+        sb.append("(?, ?)");
+        return sb.toString();
+    }
 }

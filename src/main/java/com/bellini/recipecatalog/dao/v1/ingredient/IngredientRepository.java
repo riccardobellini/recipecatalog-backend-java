@@ -25,4 +25,6 @@ public interface IngredientRepository {
     void deleteById(Long id);
 
     Collection<Ingredient> findByRecipeId(Long recipeId);
+
+    void attachToRecipe(Long ingrId, Long recId);
 }

@@ -26,4 +26,6 @@ public interface BookRepository {
 
     Optional<Book> findByRecipeId(Long recipeId);
 
+    void attachToRecipe(Long bookId, Long recId);
+
 }

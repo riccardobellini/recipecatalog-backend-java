@@ -11,6 +11,10 @@ public interface PublicationRepository {
     Optional<Publication> findByVolumeAndYear(Integer volume, Integer year);
 
     Optional<Publication> findById(Long id);
-    
+
+    Optional<Publication> findByRecipeId(Long id);
+
     void deleteById(Long id);
+
+    void attachToRecipe(Long pubId, Long recId);
 }

@@ -209,4 +209,23 @@ public class DishTypeRepositoryImpl implements DishTypeRepository {
         return sb.toString();
     }
 
+    @Override
+    public void attachToRecipe(Long dtId, Long recId) {
+        jdbcTemplate.update((conn) -> {
+            PreparedStatement stmt = conn.prepareStatement(dishtypeRecipeInsertSQL());
+            stmt.setLong(1, recId);
+            stmt.setLong(2, dtId);
+            return stmt;
+        });
+    }
+
+    private String dishtypeRecipeInsertSQL() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("INSERT INTO DISHTYPE_RECIPE ");
+        sb.append("(ID_RECIPE, ID_DISHTYPE) ");
+        sb.append("VALUES ");
+        sb.append("(?, ?)");
+        return sb.toString();
+    }
+
 }

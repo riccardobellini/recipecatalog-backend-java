@@ -14,6 +14,7 @@ public class Recipe {
     private String imageKey;
     private Collection<Ingredient> ingredients = new ArrayList<>();
     private Collection<DishType> dishtypes = new ArrayList<>();
+    private Publication publication;
 
     public Long getId() {
         return id;
@@ -79,6 +80,14 @@ public class Recipe {
 
     public void setDishtypes(Collection<DishType> dishtypes) {
         this.dishtypes = dishtypes;
+    }
+
+    public Publication getPublication() {
+        return publication;
+    }
+
+    public void setPublication(Publication publication) {
+        this.publication = publication;
     }
 
 }

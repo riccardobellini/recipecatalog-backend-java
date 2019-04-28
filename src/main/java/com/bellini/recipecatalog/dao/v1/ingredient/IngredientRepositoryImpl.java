@@ -209,4 +209,23 @@ public class IngredientRepositoryImpl implements IngredientRepository {
         return sb.toString();
     }
 
+    @Override
+    public void attachToRecipe(Long ingrId, Long recId) {
+        jdbcTemplate.update((conn) -> {
+            PreparedStatement stmt = conn.prepareStatement(ingredientRecipeInsertSQL());
+            stmt.setLong(1, recId);
+            stmt.setLong(2, ingrId);
+            return stmt;
+        });
+    }
+
+    private String ingredientRecipeInsertSQL() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("INSERT INTO INGREDIENT_RECIPE ");
+        sb.append("(ID_RECIPE, ID_INGREDIENT) ");
+        sb.append("VALUES ");
+        sb.append("(?, ?)");
+        return sb.toString();
+    }
+
 }
