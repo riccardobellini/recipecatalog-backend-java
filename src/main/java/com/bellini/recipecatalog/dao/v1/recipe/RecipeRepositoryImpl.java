@@ -142,7 +142,21 @@ public class RecipeRepositoryImpl implements RecipeRepository {
         List<Recipe> result = jdbcTemplate.query(byIdSelectSQL(), (stmt) -> {
             stmt.setLong(1, id);
         }, defaultMapper());
-        return !result.isEmpty() ? Optional.of(result.get(0)) : Optional.empty();
+        if (!result.isEmpty()) {
+            Recipe rec = result.get(0);
+            rec.setDishtypes(dishTypeRepo.findByRecipeId(rec.getId()));
+            rec.setIngredients(ingredientRepo.findByRecipeId(rec.getId()));
+            Optional<Book> optBook = bookRepo.findByRecipeId(rec.getId());
+            if (optBook.isPresent()) {
+                rec.setBook(optBook.get());
+            }
+            Optional<Publication> optPub = pubRepo.findByRecipeId(rec.getId());
+            if (optPub.isPresent()) {
+                rec.setPublication(optPub.get());
+            }
+            return Optional.of(rec);
+        }
+        return Optional.empty();
     }
 
     private String byIdSelectSQL() {
