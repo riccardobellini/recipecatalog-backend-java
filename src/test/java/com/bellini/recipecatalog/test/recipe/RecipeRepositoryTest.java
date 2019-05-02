@@ -3,28 +3,30 @@ package com.bellini.recipecatalog.test.recipe;
 import static org.mockito.Mockito.times;
 
 import java.time.Instant;
+import java.util.Collections;
 import java.util.Optional;
-
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.Mock;
-import org.mockito.Mockito;
-import org.mockito.MockitoAnnotations;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.test.context.jdbc.Sql;
-import org.springframework.test.context.jdbc.Sql.ExecutionPhase;
-import org.springframework.test.context.junit4.SpringRunner;
-import org.springframework.transaction.annotation.Transactional;
 
 import com.bellini.recipecatalog.dao.v1.book.BookRepository;
 import com.bellini.recipecatalog.dao.v1.dishtype.DishTypeRepository;
 import com.bellini.recipecatalog.dao.v1.ingredient.IngredientRepository;
 import com.bellini.recipecatalog.dao.v1.publication.PublicationRepository;
 import com.bellini.recipecatalog.dao.v1.recipe.RecipeRepository;
+import com.bellini.recipecatalog.dao.v1.recipe.RecipeRepositoryImpl;
 import com.bellini.recipecatalog.model.v1.Book;
+
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.Mockito;
+import org.mockito.MockitoAnnotations;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.test.context.jdbc.Sql;
+import org.springframework.test.context.jdbc.Sql.ExecutionPhase;
+import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.transaction.annotation.Transactional;
 
 @SpringBootTest
 @RunWith(SpringRunner.class)
@@ -33,21 +35,20 @@ import com.bellini.recipecatalog.model.v1.Book;
 @Sql(executionPhase = ExecutionPhase.AFTER_TEST_METHOD, scripts = { "classpath:db_seed/recipe/clean-data.sql" })
 public class RecipeRepositoryTest {
 
-    @Mock
+    @MockBean
     private BookRepository bookRepo;
 
-    @Mock
+    @MockBean
     private DishTypeRepository dishTypeRepo;
 
-    @Mock
+    @MockBean
     private IngredientRepository ingredientRepo;
 
-    @Mock
+    @MockBean
     private PublicationRepository pubRepo;
 
     @Autowired
-//    @InjectMocks
-    private RecipeRepository recipeRepo;
+    private RecipeRepository recipeRepo = new RecipeRepositoryImpl();
 
     @Before
     public void init() {
@@ -55,11 +56,21 @@ public class RecipeRepositoryTest {
     }
 
     @Test
-    public void findAll_shouldReturnCorrectElements() {
-        Mockito.when(bookRepo.findByRecipeId(org.mockito.ArgumentMatchers.any(Long.class))).thenReturn(Optional.of(dummyBook()));
+    public void findAll_shouldCallCorrectMethods() {
+        Mockito.when(bookRepo.findByRecipeId(org.mockito.ArgumentMatchers.any(Long.class)))
+                .thenReturn(Optional.of(dummyBook()));
+        Mockito.when(dishTypeRepo.findByRecipeId(org.mockito.ArgumentMatchers.any(Long.class)))
+                .thenReturn(Collections.emptyList());
+        Mockito.when(ingredientRepo.findByRecipeId(org.mockito.ArgumentMatchers.any(Long.class)))
+                .thenReturn(Collections.emptyList());
+        Mockito.when(pubRepo.findByRecipeId(org.mockito.ArgumentMatchers.any(Long.class)))
+                .thenReturn(Optional.ofNullable(null));
         recipeRepo.findAll(PageRequest.of(0, 50));
-        Mockito.verify(bookRepo, times(2)).findById(org.mockito.ArgumentMatchers.any(Long.class));
-//        assertFalse(result.isPresent());
+
+        Mockito.verify(bookRepo, times(2)).findByRecipeId(org.mockito.ArgumentMatchers.any(Long.class));
+        Mockito.verify(dishTypeRepo, times(2)).findByRecipeId(org.mockito.ArgumentMatchers.any(Long.class));
+        Mockito.verify(ingredientRepo, times(2)).findByRecipeId(org.mockito.ArgumentMatchers.any(Long.class));
+        Mockito.verify(pubRepo, times(2)).findByRecipeId(org.mockito.ArgumentMatchers.any(Long.class));
     }
 
     private Book dummyBook() {
