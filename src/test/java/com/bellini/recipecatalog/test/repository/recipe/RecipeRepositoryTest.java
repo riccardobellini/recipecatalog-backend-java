@@ -1,4 +1,4 @@
-package com.bellini.recipecatalog.test.recipe;
+package com.bellini.recipecatalog.test.repository.recipe;
 
 import static org.mockito.Mockito.times;
 
