@@ -96,7 +96,7 @@ public class RecipeRepositoryImpl implements RecipeRepository {
         StringBuilder sb = new StringBuilder();
         sb.append("SELECT rc.ID, rc.TITLE, rc.IMAGE_KEY, CREATION_TIME, LAST_MODIFICATION_TIME ");
         sb.append("FROM RECIPE rc ");
-        sb.append("WHERE ic.ID = ?");
+        sb.append("WHERE rc.ID = ?");
         return sb.toString();
     }
 

@@ -2,10 +2,12 @@ package com.bellini.recipecatalog.test.repository.recipe;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
+import static org.junit.Assert.assertTrue;
 
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -70,6 +72,14 @@ public class RecipeRepositoryTest {
 
         // check that the lists are equal
         assertThat(contentToCheck, is(content));
+    }
+
+    @Test
+    public void findById_shouldReturnCorrectElement() {
+        Optional<Recipe> optRecipe = recipeRepo.findById(2L);
+        assertThat(optRecipe, notNullValue());
+        assertTrue(optRecipe.isPresent());
+        assertThat(optRecipe.get().getId(), comparesEqualTo(2L));
     }
 
     private Book dummyBook() {
