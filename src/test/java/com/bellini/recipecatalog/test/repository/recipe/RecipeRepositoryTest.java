@@ -1,32 +1,26 @@
 package com.bellini.recipecatalog.test.repository.recipe;
 
-import static org.mockito.Mockito.times;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.*;
 
 import java.time.Instant;
-import java.util.Collections;
-import java.util.Optional;
+import java.util.ArrayList;
+import java.util.List;
 
-import com.bellini.recipecatalog.dao.v1.book.BookRepository;
-import com.bellini.recipecatalog.dao.v1.dishtype.DishTypeRepository;
-import com.bellini.recipecatalog.dao.v1.ingredient.IngredientRepository;
-import com.bellini.recipecatalog.dao.v1.publication.PublicationRepository;
-import com.bellini.recipecatalog.dao.v1.recipe.RecipeRepository;
-import com.bellini.recipecatalog.dao.v1.recipe.RecipeRepositoryImpl;
-import com.bellini.recipecatalog.model.v1.Book;
-
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.Mockito;
-import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.jdbc.Sql.ExecutionPhase;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.transaction.annotation.Transactional;
+
+import com.bellini.recipecatalog.dao.v1.recipe.RecipeRepository;
+import com.bellini.recipecatalog.model.v1.Book;
+import com.bellini.recipecatalog.model.v1.Recipe;
 
 @SpringBootTest
 @RunWith(SpringRunner.class)
@@ -35,42 +29,47 @@ import org.springframework.transaction.annotation.Transactional;
 @Sql(executionPhase = ExecutionPhase.AFTER_TEST_METHOD, scripts = { "classpath:db_seed/recipe/clean-data.sql" })
 public class RecipeRepositoryTest {
 
-    @MockBean
-    private BookRepository bookRepo;
-
-    @MockBean
-    private DishTypeRepository dishTypeRepo;
-
-    @MockBean
-    private IngredientRepository ingredientRepo;
-
-    @MockBean
-    private PublicationRepository pubRepo;
-
     @Autowired
-    private RecipeRepository recipeRepo = new RecipeRepositoryImpl();
+    private RecipeRepository recipeRepo;
 
-    @Before
-    public void init() {
-        MockitoAnnotations.initMocks(this);
+    @Test
+    public void findAll_shouldReturnNotNull() {
+        Page<Recipe> result = recipeRepo.findAll(PageRequest.of(0, Integer.MAX_VALUE));
+        assertThat(result, notNullValue());
     }
 
     @Test
-    public void findAll_shouldCallCorrectMethods() {
-        Mockito.when(bookRepo.findByRecipeId(org.mockito.ArgumentMatchers.any(Long.class)))
-                .thenReturn(Optional.of(dummyBook()));
-        Mockito.when(dishTypeRepo.findByRecipeId(org.mockito.ArgumentMatchers.any(Long.class)))
-                .thenReturn(Collections.emptyList());
-        Mockito.when(ingredientRepo.findByRecipeId(org.mockito.ArgumentMatchers.any(Long.class)))
-                .thenReturn(Collections.emptyList());
-        Mockito.when(pubRepo.findByRecipeId(org.mockito.ArgumentMatchers.any(Long.class)))
-                .thenReturn(Optional.ofNullable(null));
-        recipeRepo.findAll(PageRequest.of(0, 50));
+    public void findAll_shouldReturnNotEmptyAndCorrectPageSize() {
+        Page<Recipe> result = recipeRepo.findAll(PageRequest.of(0, 1));
+        assertThat(result, not(emptyIterable()));
+        assertThat(result.getContent(), hasSize(1));
+    }
 
-        Mockito.verify(bookRepo, times(2)).findByRecipeId(org.mockito.ArgumentMatchers.any(Long.class));
-        Mockito.verify(dishTypeRepo, times(2)).findByRecipeId(org.mockito.ArgumentMatchers.any(Long.class));
-        Mockito.verify(ingredientRepo, times(2)).findByRecipeId(org.mockito.ArgumentMatchers.any(Long.class));
-        Mockito.verify(pubRepo, times(2)).findByRecipeId(org.mockito.ArgumentMatchers.any(Long.class));
+    @Test
+    public void findAll_shouldReturnEmptyForIncorrectPageSize() {
+        Page<Recipe> result = recipeRepo.findAll(PageRequest.of(50, 5)); // this page does not exist
+        assertThat(result, emptyIterable());
+    }
+
+    @Test
+    public void findAll_shouldHandlePaginationCorrectly() {
+        final List<Recipe> content = recipeRepo.findAll(PageRequest.of(0, Integer.MAX_VALUE)).getContent(); // retrieve all elements
+        // fetch one items each time until no results are available
+        int startFrom = 0, fetch = 1, total = 0;
+        List<Recipe> contentToCheck = new ArrayList<>();
+        List<Recipe> tmpContent = null;
+        do {
+            tmpContent = recipeRepo.findAll(PageRequest.of(startFrom, fetch)).getContent();
+            total += tmpContent.size();
+            contentToCheck.addAll(tmpContent);
+            ++startFrom;
+        } while (!tmpContent.isEmpty());
+
+        // check for matching number of elements
+        assertThat(total, comparesEqualTo(2));
+
+        // check that the lists are equal
+        assertThat(contentToCheck, is(content));
     }
 
     private Book dummyBook() {
