@@ -13,5 +13,7 @@ public interface RecipeRepository {
 
     Recipe save(Recipe recipe);
 
+    Recipe save(Long id, Recipe recipe);
+
     Optional<Recipe> findById(Long id);
 }

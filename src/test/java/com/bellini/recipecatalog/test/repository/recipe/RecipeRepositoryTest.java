@@ -4,7 +4,6 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.assertTrue;
 
-import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -21,7 +20,6 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.bellini.recipecatalog.dao.v1.recipe.RecipeRepository;
-import com.bellini.recipecatalog.model.v1.Book;
 import com.bellini.recipecatalog.model.v1.Recipe;
 
 @SpringBootTest
@@ -82,12 +80,34 @@ public class RecipeRepositoryTest {
         assertThat(optRecipe.get().getId(), comparesEqualTo(2L));
     }
 
-    private Book dummyBook() {
-        Book bk = new Book();
-        bk.setTitle("Dummy");
-        bk.setId(1L);
-        bk.setCreationTime(Instant.now());
-        bk.setLastModificationTime(Instant.now());
-        return bk;
+    @Test
+    public void save_shouldStoreElement() {
+        Recipe rec = dummyRecipe();
+        Recipe stored = recipeRepo.save(rec);
+
+        assertThat(stored, notNullValue());
+        assertThat(stored, hasProperty("id", greaterThan(0L)));
+    }
+
+    private Recipe dummyRecipe() {
+        Recipe rec = new Recipe();
+        rec.setTitle("Dummy");
+        return rec;
+    }
+
+    @Test
+    public void save_shouldUpdateElement() {
+        final Recipe newRecipe = testUpdateRecipe();
+        Recipe updated = recipeRepo.save(1L, newRecipe);
+
+        assertThat(updated, notNullValue());
+        assertThat(updated.getTitle(), is("Pasta cacio e pepe"));
+        assertTrue(updated.getLastModificationTime().isAfter(updated.getCreationTime()));
+    }
+
+    private Recipe testUpdateRecipe() {
+        Recipe rec = new Recipe();
+        rec.setTitle("Pasta cacio e pepe");
+        return rec;
     }
 }

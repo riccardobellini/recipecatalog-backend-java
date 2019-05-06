@@ -54,7 +54,6 @@ public class RecipeRepositoryImpl implements RecipeRepository {
     @Override
     public Recipe save(Recipe recipe) {
         Long recipeId = storeRecipe(recipe);
-        // store other elements only if recipe id is valid
         if (recipeId != null) {
             return findById(recipeId).get();
         }
@@ -80,7 +79,29 @@ public class RecipeRepositoryImpl implements RecipeRepository {
         sb.append("INSERT INTO RECIPE ");
         sb.append("(TITLE, CREATION_TIME, LAST_MODIFICATION_TIME) ");
         sb.append("VALUES ");
-        sb.append("(?, UTC_TIMESTAMP(3), UTC_TIMESTAMP(3) ");
+        sb.append("(?, UTC_TIMESTAMP(3), UTC_TIMESTAMP(3))");
+        return sb.toString();
+    }
+
+    @Override
+    public Recipe save(Long id, Recipe recipe) {
+        int changed = jdbcTemplate.update((conn) -> {
+            PreparedStatement stmt = conn.prepareStatement(recipeUpdateSQL());
+            stmt.setString(1, recipe.getTitle());
+            stmt.setLong(2, id);
+            return stmt;
+        });
+        if (changed == 1) {
+            return findById(id).get();
+        }
+        return null;
+    }
+
+    private String recipeUpdateSQL() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("UPDATE RECIPE ");
+        sb.append("SET TITLE = ?, LAST_MODIFICATION_TIME = UTC_TIMESTAMP(3) ");
+        sb.append("WHERE ID = ?");
         return sb.toString();
     }
 
