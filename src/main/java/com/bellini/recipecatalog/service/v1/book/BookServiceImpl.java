@@ -1,16 +1,12 @@
 package com.bellini.recipecatalog.service.v1.book;
 
-import java.time.Instant;
 import java.util.Collection;
 import java.util.Optional;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
-import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
 
 import com.bellini.recipecatalog.dao.v1.book.BookRepository;
@@ -26,14 +22,7 @@ public class BookServiceImpl implements BookService {
 
     @Override
     public Page<Book> getAll(Pageable pageable) {
-        return repo.findAll(createSortedPageRequest(pageable));
-    }
-
-    private PageRequest createSortedPageRequest(Pageable pageable) {
-        Sort.Order order = new Sort.Order(Direction.ASC, "Title").ignoreCase();
-        Sort sort = Sort.by(order);
-        PageRequest pgReq = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), sort);
-        return pgReq;
+        return repo.findAll(pageable);
     }
 
     @Override
@@ -41,15 +30,12 @@ public class BookServiceImpl implements BookService {
         if (!repo.findByTitleIgnoreCase(b.getTitle()).isEmpty()) {
             throw new DuplicateBookException(b);
         }
-        // setting creation/modification timestamps
-        b.setCreationTime(Instant.now());
-        b.setLastModificationTime(Instant.now());
         return repo.save(b);
     }
 
     @Override
     public Page<Book> get(String title, Pageable pageable) {
-        return repo.findByTitleIgnoreCaseContaining(title, createSortedPageRequest(pageable));
+        return repo.findByTitleIgnoreCaseContaining(title, pageable);
     }
 
     @Override
