@@ -4,7 +4,6 @@ import java.util.Collection;
 import java.util.Optional;
 
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 
 import com.bellini.recipecatalog.model.v1.DishType;
@@ -15,7 +14,7 @@ public interface DishTypeRepository {
 
     Page<DishType> findByNameIgnoreCaseContaining(String name, Pageable page);
 
-    Page<DishType> findAll(PageRequest pageRequest);
+    Page<DishType> findAll(Pageable pageRequest);
 
     DishType save(DishType dt);
 
