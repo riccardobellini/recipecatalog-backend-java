@@ -1,9 +1,14 @@
 package com.bellini.recipecatalog.test.service.book;
 
 import static org.junit.Assert.assertEquals;
-import static org.mockito.Mockito.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import java.util.Collections;
+import java.util.Optional;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -15,6 +20,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import com.bellini.recipecatalog.dao.v1.book.BookRepository;
 import com.bellini.recipecatalog.exception.book.DuplicateBookException;
+import com.bellini.recipecatalog.exception.book.NotExistingBookException;
 import com.bellini.recipecatalog.model.v1.Book;
 import com.bellini.recipecatalog.service.v1.book.BookService;
 
@@ -23,6 +29,7 @@ import com.bellini.recipecatalog.service.v1.book.BookService;
 public class BookServiceTest {
 
     private static final String DUMMY_BOOK_TITLE = "Da Noi";
+    private static final String DUMMY_BOOK_TITLE_2 = "Da noi";
 
     @Autowired
     private BookService bookSrv;
@@ -55,5 +62,46 @@ public class BookServiceTest {
         Book mock = new Book();
         mock.setTitle(DUMMY_BOOK_TITLE);
         return mock;
+    }
+
+    @Test(expected = DuplicateBookException.class)
+    public void update_shouldThrowExceptionWhenDuplicateTitle() {
+        when(bookRepo.findByTitleIgnoreCase(DUMMY_BOOK_TITLE_2)).thenReturn(Collections.singleton(dummyBookUpdateExisting()));
+        final Book mock = dummyBookUpdate();
+        bookSrv.update(2L, mock);
+        verify(bookRepo, never()).findById(anyLong());
+        verify(bookRepo, never()).save(anyLong(), any(Book.class));
+    }
+
+    @Test(expected = NotExistingBookException.class)
+    public void update_shouldThrowExceptionWhenBookIdDoesNotExists() {
+        when(bookRepo.findByTitleIgnoreCase(DUMMY_BOOK_TITLE_2)).thenReturn(Collections.emptyList());
+        when(bookRepo.findById(2L)).thenReturn(Optional.empty());
+        final Book mock = dummyBookUpdate();
+        bookSrv.update(2L, mock);
+        verify(bookRepo, never()).save(anyLong(), any(Book.class));
+    }
+
+    @Test
+    public void update_shouldCallRepositoryWhenDataAreCorrect() {
+        when(bookRepo.findByTitleIgnoreCase(DUMMY_BOOK_TITLE_2)).thenReturn(Collections.emptyList());
+        when(bookRepo.findById(2L)).thenReturn(Optional.of(dummyBookUpdateExisting()));
+        final Book mock = dummyBookUpdate();
+        bookSrv.update(2L, mock);
+        verify(bookRepo).save(anyLong(), any(Book.class));
+    }
+
+    private Book dummyBookUpdate() {
+        Book book = new Book();
+        book.setId(2L);
+        book.setTitle(DUMMY_BOOK_TITLE_2);
+        return book;
+    }
+
+    private Book dummyBookUpdateExisting() {
+        Book book = new Book();
+        book.setId(1L);
+        book.setTitle(DUMMY_BOOK_TITLE);
+        return book;
     }
 }
