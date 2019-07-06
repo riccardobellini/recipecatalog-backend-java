@@ -74,7 +74,7 @@ public class DishTypeRepositoryImpl implements DishTypeRepository {
     }
 
     @Override
-    public Page<DishType> findAll(PageRequest pageRequest) {
+    public Page<DishType> findAll(Pageable pageRequest) {
         List<DishType> result = jdbcTemplate.query(allSelectSQL(), (stmt) -> {
             stmt.setInt(1, pageRequest.getPageNumber() * pageRequest.getPageSize());
             stmt.setInt(2, pageRequest.getPageSize());
