@@ -2,9 +2,11 @@ package com.bellini.recipecatalog.test.service.dishtype;
 
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static org.mockito.ArgumentMatchers.*;
 
 import java.time.Instant;
 import java.util.Collections;
+import java.util.Optional;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -16,6 +18,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import com.bellini.recipecatalog.dao.v1.dishtype.DishTypeRepository;
 import com.bellini.recipecatalog.exception.dishtype.DuplicateDishTypeException;
+import com.bellini.recipecatalog.exception.dishtype.NotExistingDishTypeException;
 import com.bellini.recipecatalog.model.v1.DishType;
 import com.bellini.recipecatalog.service.v1.dishtype.DishTypeService;
 
@@ -37,6 +40,22 @@ public class DishTypeServiceTest {
         dtSrv.create(dummyDishType());
         // verify method calls
         verify(dtRepo).findByNameIgnoreCase(ArgumentMatchers.eq(DUMMY_DISHTYPE_NAME));
+    }
+
+    @Test(expected = NotExistingDishTypeException.class)
+    public void get_shouldThrowWhenNotFound() {
+        when(dtRepo.findById(anyLong())).thenReturn(Optional.empty());
+        dtSrv.get(1L);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void update_shouldThrowWhenNullId() {
+        dtSrv.update(null, dummyDishType());
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void update_shouldThrowWhenNullUpdatedObject() {
+        dtSrv.update(1L, null);
     }
 
     private DishType dummyDishType() {
