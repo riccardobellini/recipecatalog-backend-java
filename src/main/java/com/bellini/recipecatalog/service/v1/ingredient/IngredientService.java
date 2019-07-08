@@ -11,13 +11,13 @@ public interface IngredientService {
 
     Page<Ingredient> getAll(Pageable pageable);
 
-    Ingredient create(Ingredient dt);
+    Ingredient create(Ingredient ingr);
 
     Page<Ingredient> get(String name, Pageable pageable);
 
     Ingredient get(Long id);
 
-    Ingredient update(Long id, Ingredient dt);
-    
+    Ingredient update(Long id, Ingredient ingr);
+
     void delete(Long id);
 }
