@@ -19,7 +19,7 @@ public class PublicationServiceImpl implements PublicationService {
 
     @Override
     public Publication create(Publication pub) {
-        if (!repo.findByVolumeAndYear(pub.getVolume(), pub.getYear()).isPresent()) {
+        if (repo.findByVolumeAndYear(pub.getVolume(), pub.getYear()).isPresent()) {
             throw new DuplicatePublicationException(pub);
         }
         return repo.save(pub);
