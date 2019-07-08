@@ -6,10 +6,7 @@ import java.util.Optional;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
-import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
 
 import com.bellini.recipecatalog.dao.v1.ingredient.IngredientRepository;
@@ -25,14 +22,7 @@ public class IngredientServiceImpl implements IngredientService {
 
     @Override
     public Page<Ingredient> getAll(Pageable pageable) {
-        return repo.findAll(createSortedPageRequest(pageable));
-    }
-
-    private PageRequest createSortedPageRequest(Pageable pageable) {
-        Sort.Order order = new Sort.Order(Direction.ASC, "Name").ignoreCase();
-        Sort sort = Sort.by(order);
-        PageRequest pgReq = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), sort);
-        return pgReq;
+        return repo.findAll(pageable);
     }
 
     @Override
@@ -45,7 +35,7 @@ public class IngredientServiceImpl implements IngredientService {
 
     @Override
     public Page<Ingredient> get(String name, Pageable pageable) {
-        return repo.findByNameIgnoreCaseContaining(name, createSortedPageRequest(pageable));
+        return repo.findByNameIgnoreCaseContaining(name, pageable);
     }
 
     @Override
