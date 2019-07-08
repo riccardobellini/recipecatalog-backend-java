@@ -16,7 +16,8 @@ import org.springframework.jdbc.core.JdbcTemplate;
         "com.bellini.recipecatalog.dao.v1.publication",
         "com.bellini.recipecatalog.dao.v1.recipe",
         "com.bellini.recipecatalog.service.v1.book",
-        "com.bellini.recipecatalog.service.v1.dishtype" })
+        "com.bellini.recipecatalog.service.v1.dishtype",
+        "com.bellini.recipecatalog.service.v1.ingredient" })
 @EnableAutoConfiguration
 public class RecipeCatalogTestConfig {
 
