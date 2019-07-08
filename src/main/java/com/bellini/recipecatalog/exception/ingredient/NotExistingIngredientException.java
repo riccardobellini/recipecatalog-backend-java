@@ -15,6 +15,6 @@ public class NotExistingIngredientException extends RuntimeException {
 
     @Override
     public String getMessage() {
-        return "Dish type " + id + " not found in database";
+        return "Ingredient " + id + " not found in database";
     }
 }

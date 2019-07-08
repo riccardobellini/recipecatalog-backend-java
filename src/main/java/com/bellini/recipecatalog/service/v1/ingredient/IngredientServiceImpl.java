@@ -1,6 +1,6 @@
 package com.bellini.recipecatalog.service.v1.ingredient;
 
-import java.util.List;
+import java.util.Collection;
 import java.util.Optional;
 
 import org.apache.commons.lang3.StringUtils;
@@ -57,8 +57,8 @@ public class IngredientServiceImpl implements IngredientService {
         }
         // FIXME refactor
         // search for name conflict
-        List<Ingredient> soughtList = (List<Ingredient>) repo.findByNameIgnoreCase(ingr.getName());
-        if (soughtList.isEmpty() || soughtList.get(0).getId().equals(id)) {
+        Collection<Ingredient> soughtList = repo.findByNameIgnoreCase(ingr.getName());
+        if (soughtList.isEmpty() || soughtList.iterator().next().getId().equals(id)) {
             Optional<Ingredient> toUpdateOpt = repo.findById(id);
             if (!toUpdateOpt.isPresent()) {
                 throw new NotExistingIngredientException(id);
