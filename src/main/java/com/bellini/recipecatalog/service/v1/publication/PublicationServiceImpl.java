@@ -1,6 +1,5 @@
 package com.bellini.recipecatalog.service.v1.publication;
 
-import java.time.Instant;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -50,11 +49,10 @@ public class PublicationServiceImpl implements PublicationService {
             if (!toUpdate.isPresent()) {
                 throw new NotExistingPublicationException(id);
             }
-            // update only the volume/year and modification time
+            // update only the volume/year
             toUpdate.get().setVolume(pub.getVolume());
             toUpdate.get().setYear(pub.getYear());
-            toUpdate.get().setLastModificationTime(Instant.now());
-            return repo.save(toUpdate.get());
+            return repo.save(id, toUpdate.get());
         }
         throw new DuplicatePublicationException(pub);
     }

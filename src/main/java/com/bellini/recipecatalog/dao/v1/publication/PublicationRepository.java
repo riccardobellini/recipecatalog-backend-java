@@ -8,6 +8,8 @@ public interface PublicationRepository {
 
     Publication save(Publication pub);
 
+    Publication save(Long id, Publication pub);
+
     Optional<Publication> findByVolumeAndYear(Integer volume, Integer year);
 
     Optional<Publication> findById(Long id);

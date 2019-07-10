@@ -144,4 +144,28 @@ public class PublicationRepositoryImpl implements PublicationRepository {
         return sb.toString();
     }
 
+    @Override
+    public Publication save(Long id, Publication pub) {
+        int changed = jdbcTemplate.update((conn) -> {
+            PreparedStatement stmt = conn.prepareStatement(updateSQL());
+            int i = 1;
+            stmt.setInt(i++, pub.getVolume());
+            stmt.setInt(i++, pub.getYear());
+            stmt.setLong(i++, id);
+            return stmt;
+        });
+        if (changed == 1) {
+            return findById(id).get();
+        }
+        return null;
+    }
+
+    private String updateSQL() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("UPDATE PUBLICATION ");
+        sb.append("SET VOLUME = ?, YEAR = ?, LAST_MODIFICATION_TIME = UTC_TIMESTAMP(3) ");
+        sb.append("WHERE ID = ?");
+        return sb.toString();
+    }
+
 }
