@@ -70,7 +70,7 @@ public class DishTypeServiceImpl implements DishTypeService {
             // update only the name
             final DishType toUpdate = toUpdateOpt.get();
             toUpdate.setName(dt.getName());
-            return repo.save(toUpdate);
+            return repo.save(id, toUpdate);
         }
         throw new DuplicateDishTypeException(dt);
     }
