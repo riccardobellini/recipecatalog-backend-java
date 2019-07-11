@@ -18,7 +18,8 @@ import org.springframework.jdbc.core.JdbcTemplate;
         "com.bellini.recipecatalog.service.v1.book",
         "com.bellini.recipecatalog.service.v1.dishtype",
         "com.bellini.recipecatalog.service.v1.ingredient",
-        "com.bellini.recipecatalog.service.v1.publication" })
+        "com.bellini.recipecatalog.service.v1.publication",
+        "com.bellini.recipecatalog.service.v1.recipe" })
 @EnableAutoConfiguration
 public class RecipeCatalogTestConfig {
 

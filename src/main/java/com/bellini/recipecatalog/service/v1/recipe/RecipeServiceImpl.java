@@ -41,21 +41,22 @@ public class RecipeServiceImpl implements RecipeService {
     @Override
     public Recipe create(Recipe rec) {
         // TODO performs check
+        // TODO list of ingredients, dish types, book and publication should be retrieved from method parameter instead of saved object
         final Recipe saved = repo.save(rec);
         final Long recipeId = saved.getId();
-        Collection<Ingredient> ingredients = saved.getIngredients();
+        Collection<Ingredient> ingredients = rec.getIngredients();
         for (Ingredient ingr : ingredients) {
             ingredientRepo.attachToRecipe(ingr.getId(), recipeId);
         }
-        Collection<DishType> dishtypes = saved.getDishtypes();
+        Collection<DishType> dishtypes = rec.getDishtypes();
         for (DishType dt : dishtypes) {
             dishTypeRepo.attachToRecipe(dt.getId(), recipeId);
         }
-        Book book = saved.getBook();
+        Book book = rec.getBook();
         if (book != null) {
             bookRepo.attachToRecipe(book.getId(), recipeId);
         }
-        Publication publication = saved.getPublication();
+        Publication publication = rec.getPublication();
         if (publication != null) {
             pubRepo.attachToRecipe(publication.getId(), recipeId);
         }
