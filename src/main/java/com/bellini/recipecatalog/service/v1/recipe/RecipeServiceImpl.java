@@ -13,7 +13,7 @@ import com.bellini.recipecatalog.dao.v1.dishtype.DishTypeRepository;
 import com.bellini.recipecatalog.dao.v1.ingredient.IngredientRepository;
 import com.bellini.recipecatalog.dao.v1.publication.PublicationRepository;
 import com.bellini.recipecatalog.dao.v1.recipe.RecipeRepository;
-import com.bellini.recipecatalog.exception.ingredient.NotExistingIngredientException;
+import com.bellini.recipecatalog.exception.recipe.NotExistingRecipeException;
 import com.bellini.recipecatalog.model.v1.Book;
 import com.bellini.recipecatalog.model.v1.DishType;
 import com.bellini.recipecatalog.model.v1.Ingredient;
@@ -67,7 +67,7 @@ public class RecipeServiceImpl implements RecipeService {
     public Recipe get(Long id) {
         final Optional<Recipe> optRec = repo.findById(id);
         if (!optRec.isPresent()) {
-            throw new NotExistingIngredientException(id); // FIXME change exception
+            throw new NotExistingRecipeException(id);
         }
         final Recipe rec = optRec.get();
         rec.setDishtypes(dishTypeRepo.findByRecipeId(rec.getId()));
