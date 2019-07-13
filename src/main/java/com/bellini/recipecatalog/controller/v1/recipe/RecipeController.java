@@ -8,15 +8,19 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.bellini.recipecatalog.model.v1.Recipe;
+import com.bellini.recipecatalog.model.v1.dto.recipe.RecipeCreationDTO;
 import com.bellini.recipecatalog.model.v1.dto.recipe.RecipeDTO;
 import com.bellini.recipecatalog.model.v1.mapper.recipe.RecipeResponseMapper;
 import com.bellini.recipecatalog.service.v1.recipe.RecipeService;
@@ -38,4 +42,9 @@ public class RecipeController {
         return new ResponseEntity<>(new PageImpl<>(result, pageable, page.getTotalElements()), HttpStatus.OK);
     }
 
+    @PostMapping(consumes = { MediaType.APPLICATION_JSON_UTF8_VALUE }, path = "")
+    public HttpEntity<RecipeDTO> create(@RequestBody RecipeCreationDTO recipeDto) {
+        Recipe newRecipe = recipeService.create(recipeDto);
+        return new ResponseEntity<RecipeDTO>(RecipeResponseMapper.getInstance().toDto(newRecipe), HttpStatus.CREATED);
+    }
 }

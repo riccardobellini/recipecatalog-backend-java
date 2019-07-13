@@ -19,6 +19,7 @@ import com.bellini.recipecatalog.model.v1.DishType;
 import com.bellini.recipecatalog.model.v1.Ingredient;
 import com.bellini.recipecatalog.model.v1.Publication;
 import com.bellini.recipecatalog.model.v1.Recipe;
+import com.bellini.recipecatalog.model.v1.dto.recipe.RecipeCreationDTO;
 
 @Service
 public class RecipeServiceImpl implements RecipeService {
@@ -99,6 +100,47 @@ public class RecipeServiceImpl implements RecipeService {
             }
         }
         return result;
+    }
+
+    @Override
+    public Recipe create(RecipeCreationDTO recipeDto) {
+        if (recipeDto == null) {
+            throw new IllegalArgumentException("Null creation object not allowed");
+        }
+        Publication pub = null;
+        // check if publication is present, retrieve id if found, create publication otherwise
+        if (recipeDto.getVolume() != null && recipeDto.getYear() != null) {
+            Optional<Publication> pubOpt = pubRepo.findByVolumeAndYear(recipeDto.getVolume(), recipeDto.getYear());
+            if (!pubOpt.isPresent()) {
+                // create publication
+                Publication pubToCreate = new Publication();
+                pubToCreate.setVolume(recipeDto.getVolume());
+                pubToCreate.setYear(recipeDto.getYear());
+                pub = pubRepo.save(pubToCreate);
+            } else {
+                pub = pubOpt.get();
+            }
+        }
+        Recipe recipeToCreate = new Recipe();
+        recipeToCreate.setTitle(recipeDto.getTitle());
+        final Recipe saved = repo.save(recipeToCreate);
+        final Long recipeId = saved.getId();
+        Collection<Long> ingredients = recipeDto.getIngredients();
+        for (Long ingrId : ingredients) {
+            ingredientRepo.attachToRecipe(ingrId, recipeId);
+        }
+        Collection<Long> dishtypes = recipeDto.getDishtypes();
+        for (Long dtId : dishtypes) {
+            dishTypeRepo.attachToRecipe(dtId, recipeId);
+        }
+        Long bookId = recipeDto.getBook();
+        if (bookId != null) {
+            bookRepo.attachToRecipe(bookId, recipeId);
+        }
+        if (pub != null) {
+            pubRepo.attachToRecipe(pub.getId(), recipeId);
+        }
+        return get(recipeId);
     }
 
 }

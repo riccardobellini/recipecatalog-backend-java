@@ -5,6 +5,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.bellini.recipecatalog.model.v1.Recipe;
+import com.bellini.recipecatalog.model.v1.dto.recipe.RecipeCreationDTO;
 
 @Service
 public interface RecipeService {
@@ -14,5 +15,7 @@ public interface RecipeService {
     Recipe get(Long id);
     
     Page<Recipe> getAll(Pageable page);
+
+    Recipe create(RecipeCreationDTO recipeDto);
 
 }

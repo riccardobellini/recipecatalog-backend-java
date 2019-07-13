@@ -1,8 +1,12 @@
 package com.bellini.recipecatalog.model.v1.dto.recipe;
 
 import java.time.ZonedDateTime;
+import java.util.ArrayList;
+import java.util.Collection;
 
 import com.bellini.recipecatalog.model.v1.dto.book.BookDTO;
+import com.bellini.recipecatalog.model.v1.dto.dishtype.DishTypeDTO;
+import com.bellini.recipecatalog.model.v1.dto.ingredient.IngredientDTO;
 import com.bellini.recipecatalog.model.v1.dto.publication.PublicationDTO;
 import com.fasterxml.jackson.annotation.JsonFormat;
 
@@ -16,6 +20,8 @@ public class RecipeDTO {
     private ZonedDateTime lastModificationTime;
     private BookDTO book;
     private PublicationDTO publication;
+    private Collection<IngredientDTO> ingredients = new ArrayList<>();
+    private Collection<DishTypeDTO> dishtypes = new ArrayList<>();
 
     public Long getId() {
         return id;
@@ -63,6 +69,22 @@ public class RecipeDTO {
 
     public void setPublication(PublicationDTO publication) {
         this.publication = publication;
+    }
+
+    public Collection<IngredientDTO> getIngredients() {
+        return ingredients;
+    }
+
+    public void setIngredients(Collection<IngredientDTO> ingredients) {
+        this.ingredients = ingredients;
+    }
+
+    public Collection<DishTypeDTO> getDishtypes() {
+        return dishtypes;
+    }
+
+    public void setDishtypes(Collection<DishTypeDTO> dishtypes) {
+        this.dishtypes = dishtypes;
     }
 
 }

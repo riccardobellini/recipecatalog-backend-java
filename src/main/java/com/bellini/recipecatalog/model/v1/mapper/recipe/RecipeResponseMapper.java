@@ -2,11 +2,17 @@ package com.bellini.recipecatalog.model.v1.mapper.recipe;
 
 import java.time.Instant;
 import java.time.ZoneOffset;
+import java.util.Collection;
 
+import com.bellini.recipecatalog.model.v1.DishType;
+import com.bellini.recipecatalog.model.v1.Ingredient;
 import com.bellini.recipecatalog.model.v1.Recipe;
 import com.bellini.recipecatalog.model.v1.dto.book.BookDTO;
+import com.bellini.recipecatalog.model.v1.dto.publication.PublicationDTO;
 import com.bellini.recipecatalog.model.v1.dto.recipe.RecipeDTO;
 import com.bellini.recipecatalog.model.v1.mapper.Mapper;
+import com.bellini.recipecatalog.model.v1.mapper.dishtype.DishTypeResponseMapper;
+import com.bellini.recipecatalog.model.v1.mapper.ingredient.IngredientResponseMapper;
 
 public class RecipeResponseMapper implements Mapper<Recipe, RecipeDTO> {
 
@@ -47,13 +53,27 @@ public class RecipeResponseMapper implements Mapper<Recipe, RecipeDTO> {
             dto.setBook(bDto);
         }
 
-//        if (param.getPublication() != null) {
-//            PublicationDTO pDto = new PublicationDTO();
-//            pDto.setId(param.getPublication().getId());
-//            pDto.setVolume(param.getPublication().getVolume());
-//            pDto.setYear(param.getPublication().getYear());
-//            dto.setPublication(pDto);
-//        }
+        Collection<Ingredient> ingredients = param.getIngredients();
+        if (ingredients != null) {
+            for (Ingredient ingr : ingredients) {
+                dto.getIngredients().add(IngredientResponseMapper.getInstance().toDto(ingr));
+            }
+        }
+
+        Collection<DishType> dishtypes = param.getDishtypes();
+        if (dishtypes != null) {
+            for (DishType dt : dishtypes) {
+                dto.getDishtypes().add(DishTypeResponseMapper.getInstance().toDto(dt));
+            }
+        }
+
+        if (param.getPublication() != null) {
+            PublicationDTO pDto = new PublicationDTO();
+            pDto.setId(param.getPublication().getId());
+            pDto.setVolume(param.getPublication().getVolume());
+            pDto.setYear(param.getPublication().getYear());
+            dto.setPublication(pDto);
+        }
 
         return dto;
     }
