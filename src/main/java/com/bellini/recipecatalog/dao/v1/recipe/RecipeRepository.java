@@ -11,6 +11,8 @@ public interface RecipeRepository {
 
     Page<Recipe> findAll(Pageable page);
 
+    Page<Recipe> findByTitleIgnoreCaseContaining(String title, Pageable page);
+
     Recipe save(Recipe recipe);
 
     Recipe save(Long id, Recipe recipe);

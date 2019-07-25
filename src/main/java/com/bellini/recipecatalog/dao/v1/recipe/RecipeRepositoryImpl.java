@@ -138,4 +138,38 @@ public class RecipeRepositoryImpl implements RecipeRepository {
         };
     }
 
+    @Override
+    public Page<Recipe> findByTitleIgnoreCaseContaining(String title, Pageable page) {
+        final String sought = "%" + title + "%";
+        List<Recipe> result = jdbcTemplate.query(byTitleIgnoreCaseContainingSelectSQL(false), (stmt) -> {
+            int i = 1;
+            stmt.setString(i++, sought);
+            stmt.setInt(i++, page.getPageNumber() * page.getPageSize());
+            stmt.setInt(i++, page.getPageSize());
+        }, defaultMapper());
+        Long count = getRowCountByTitleIgnoreCaseContaining(title);
+        return new PageImpl<>(result, page, count);
+    }
+
+    private Long getRowCountByTitleIgnoreCaseContaining(String title) {
+        final String sought = "%" + title + "%";
+        return jdbcTemplate.queryForObject(byTitleIgnoreCaseContainingSelectSQL(true), Long.class, sought);
+    }
+
+    private String byTitleIgnoreCaseContainingSelectSQL(boolean count) {
+        StringBuilder sb = new StringBuilder();
+        if (count) {
+            sb.append("SELECT COUNT(*) ");
+        } else {
+            sb.append("SELECT rc.ID, rc.TITLE, rc.IMAGE_KEY, CREATION_TIME, LAST_MODIFICATION_TIME ");
+        }
+        sb.append("FROM RECIPE rc ");
+        sb.append("WHERE LOWER(rc.TITLE) LIKE LOWER(?) ");
+        if (!count) {
+            sb.append("ORDER BY rc.TITLE ASC ");
+            sb.append("LIMIT ?, ?");
+        }
+        return sb.toString();
+    }
+
 }

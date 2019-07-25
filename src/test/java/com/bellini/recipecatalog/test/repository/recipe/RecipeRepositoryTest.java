@@ -2,7 +2,7 @@ package com.bellini.recipecatalog.test.repository.recipe;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -109,5 +109,37 @@ public class RecipeRepositoryTest {
         Recipe rec = new Recipe();
         rec.setTitle("Pasta cacio e pepe");
         return rec;
+    }
+
+    @Test
+    public void findByTitleIgnoreCaseContaining_shouldReturnTheSameResult() {
+        Page<Recipe> uppercaseResult = recipeRepo.findByTitleIgnoreCaseContaining("SPAGH", PageRequest.of(0, 10));
+        Page<Recipe> lowercaseResult = recipeRepo.findByTitleIgnoreCaseContaining("spagh", PageRequest.of(0, 10));
+
+        // collections should be equal
+        assertThat(uppercaseResult.getContent(), is(lowercaseResult.getContent()));
+    }
+
+    @Test
+    public void findByTitleIgnoreCaseContaining_shouldReturnNotNullAndEmptyWhenNoMatch() {
+        Page<Recipe> result = recipeRepo.findByTitleIgnoreCaseContaining("Missing recipe", PageRequest.of(0, 10));
+
+        assertThat(result, notNullValue());
+        List<Recipe> resultList = result.getContent();
+        assertThat(resultList, notNullValue());
+        assertThat(resultList, empty());
+    }
+
+    @Test
+    public void findByTitleIgnoreCaseContaining_shouldHandlePaginationCorrectly() {
+        Page<Recipe> allResultPage = recipeRepo.findByTitleIgnoreCaseContaining("spagh", PageRequest.of(0, Integer.MAX_VALUE)); // retrieve all elements
+        Page<Recipe> firstPage = recipeRepo.findByTitleIgnoreCaseContaining("spagh", PageRequest.of(0, 1));
+        Page<Recipe> secondPage = recipeRepo.findByTitleIgnoreCaseContaining("spagh", PageRequest.of(1, 1));
+
+        assertThat(firstPage.getContent().size() + secondPage.getContent().size(), comparesEqualTo(2));
+        List<Recipe> allList = allResultPage.getContent();
+        List<Recipe> pagedResults = new ArrayList<>(firstPage.getContent());
+        pagedResults.addAll(secondPage.getContent());
+        assertThat(allList, is(pagedResults));
     }
 }
