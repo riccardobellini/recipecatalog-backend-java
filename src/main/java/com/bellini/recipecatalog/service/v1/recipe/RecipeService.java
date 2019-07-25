@@ -13,8 +13,10 @@ public interface RecipeService {
     Recipe create(Recipe pub);
 
     Recipe get(Long id);
-    
+
     Page<Recipe> getAll(Pageable page);
+
+    Page<Recipe> get(String title, Pageable pageable);
 
     Recipe create(RecipeCreationDTO recipeDto);
 

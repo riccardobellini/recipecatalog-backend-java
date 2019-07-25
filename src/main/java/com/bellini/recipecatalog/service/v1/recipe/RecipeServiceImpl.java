@@ -143,4 +143,9 @@ public class RecipeServiceImpl implements RecipeService {
         return get(recipeId);
     }
 
+    @Override
+    public Page<Recipe> get(String title, Pageable pageable) {
+        return repo.findByTitleIgnoreCaseContaining(title, pageable);
+    }
+
 }
