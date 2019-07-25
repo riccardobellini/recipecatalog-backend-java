@@ -33,8 +33,13 @@ public class RecipeController {
     private RecipeService recipeService;
 
     @GetMapping(path = "", produces = { MediaType.APPLICATION_JSON_UTF8_VALUE })
-    public ResponseEntity<Iterable<RecipeDTO>> getAllRecipes(@RequestParam(name = "q", required = false) String name, @PageableDefault(page = 0, size = 10) Pageable pageable) {
+    public ResponseEntity<Iterable<RecipeDTO>> getAllRecipes(@RequestParam(name = "q", required = false) String title, @PageableDefault(page = 0, size = 10) Pageable pageable) {
         Page<Recipe> page = null;
+        if (title != null) {
+            page = recipeService.get(title, pageable);
+        } else {
+            page = recipeService.getAll(pageable);
+        }
         page = recipeService.getAll(pageable);
         List<RecipeDTO> result = page.getContent().stream()
                 .map(recipe -> RecipeResponseMapper.getInstance().toDto(recipe))
