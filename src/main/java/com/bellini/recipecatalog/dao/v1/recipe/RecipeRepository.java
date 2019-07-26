@@ -6,6 +6,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 import com.bellini.recipecatalog.model.v1.Recipe;
+import com.bellini.recipecatalog.model.v1.RecipeSearchCriteria;
 
 public interface RecipeRepository {
 
@@ -18,4 +19,6 @@ public interface RecipeRepository {
     Recipe save(Long id, Recipe recipe);
 
     Optional<Recipe> findById(Long id);
+
+    Page<Recipe> search(RecipeSearchCriteria searchCriteria, Pageable page);
 }

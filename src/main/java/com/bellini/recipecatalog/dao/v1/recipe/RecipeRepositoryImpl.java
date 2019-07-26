@@ -12,11 +12,13 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.PreparedStatementSetter;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.stereotype.Repository;
 
 import com.bellini.recipecatalog.model.v1.Recipe;
+import com.bellini.recipecatalog.model.v1.RecipeSearchCriteria;
 
 @Repository
 public class RecipeRepositoryImpl implements RecipeRepository {
@@ -167,6 +169,94 @@ public class RecipeRepositoryImpl implements RecipeRepository {
         sb.append("WHERE LOWER(rc.TITLE) LIKE LOWER(?) ");
         if (!count) {
             sb.append("ORDER BY rc.TITLE ASC ");
+            sb.append("LIMIT ?, ?");
+        }
+        return sb.toString();
+    }
+
+    @Override
+    public Page<Recipe> search(RecipeSearchCriteria searchCriteria, Pageable page) {
+        List<Recipe> result = jdbcTemplate.query(searchSelectSQL(searchCriteria, false), searchStatementSetter(searchCriteria, page, false), defaultMapper());
+        Long count = getRowCountSearch(searchCriteria);
+        return new PageImpl<>(result, page, count);
+    }
+
+    private Long getRowCountSearch(RecipeSearchCriteria searchCriteria) {
+        return jdbcTemplate.query(searchSelectSQL(
+                searchCriteria, true),
+                searchStatementSetter(searchCriteria, null, true),
+                (rs) -> {
+                    return rs.getLong(1);
+                });
+    }
+
+    private PreparedStatementSetter searchStatementSetter(RecipeSearchCriteria searchCriteria, Pageable page, boolean count) {
+        return (stmt) -> {
+            int i = 1;
+            if (searchCriteria.isByIngredient()) {
+                stmt.setString(i++, "%" + searchCriteria.getIngredient() + "%");
+            }
+            if (searchCriteria.isByDishtype()) {
+                stmt.setString(i++, "%" + searchCriteria.getDishtype() + "%");
+            }
+            if (searchCriteria.isByBook()) {
+                stmt.setString(i++, "%" + searchCriteria.getBook() + "%");
+            }
+            if (!count) {
+                stmt.setLong(i++, page.getOffset());
+                stmt.setInt(i++, page.getPageSize());
+            }
+        };
+    }
+
+    private String searchSelectSQL(RecipeSearchCriteria searchCriteria, boolean count) {
+        /*
+         * SELECT DISTINCT rec.ID, rec.TITLE, rec.IMAGE_KEY, rec.CREATION_TIME, rec.LAST_MODIFICATION_TIME
+         * FROM RECIPE rec
+         * JOIN INGREDIENT_RECIPE ingrec ON ingrec.ID_RECIPE = rec.ID
+         * JOIN INGREDIENT ing ON ingrec.ID_INGREDIENT = ing.ID
+         * JOIN DISHTYPE_RECIPE dtrec ON dtrec.ID_RECIPE = rec.ID
+         * JOIN DISHTYPE dt ON dtrec.ID_DISHTYPE = dt.ID
+         * JOIN BOOK_RECIPE bookrec ON bookrec.ID_RECIPE = rec.ID
+         * JOIN BOOK book ON bookrec.ID_BOOK = book.ID
+         */
+        StringBuilder sb = new StringBuilder();
+        if (!count) {
+            sb.append("SELECT DISTINCT rec.ID, rec.TITLE, rec.IMAGE_KEY, rec.CREATION_TIME, rec.LAST_MODIFICATION_TIME ");
+        } else {
+            sb.append("SELECT COUNT(DISTINCT rec.ID) ");
+        }
+        sb.append("FROM RECIPE rec ");
+        // include only needed joins
+        if (searchCriteria.isByIngredient()) {
+            sb.append("JOIN INGREDIENT_RECIPE ingrec ON ingrec.ID_RECIPE = rec.ID ");
+            sb.append("JOIN INGREDIENT ing ON ingrec.ID_INGREDIENT = ing.ID ");
+        }
+        if (searchCriteria.isByDishtype()) {
+            sb.append("JOIN DISHTYPE_RECIPE dtrec ON dtrec.ID_RECIPE = rec.ID ");
+            sb.append("JOIN DISHTYPE dt ON dtrec.ID_DISHTYPE = dt.ID ");
+        }
+        if (searchCriteria.isByBook()) {
+            sb.append("JOIN BOOK_RECIPE bookrec ON bookrec.ID_RECIPE = rec.ID ");
+            sb.append("JOIN BOOK book ON bookrec.ID_BOOK = book.ID ");
+        }
+        boolean hasWhere = false;
+        if (searchCriteria.isByIngredient()) {
+            sb.append("WHERE LOWER(ing.NAME) LIKE LOWER(?) ");
+            hasWhere = true;
+        }
+        if (searchCriteria.isByDishtype()) {
+            sb.append(hasWhere ? "AND " : "WHERE ");
+            sb.append("LOWER(ing.NAME) LIKE LOWER(?) ");
+            hasWhere = true;
+        }
+        if (searchCriteria.isByBook()) {
+            sb.append(hasWhere ? "AND " : "WHERE ");
+            sb.append("LOWER(bookTITLE) LIKE LOWER(?) ");
+            hasWhere = true;
+        }
+        if (!count) {
+            sb.append("ORDER BY rec.TITLE ASC ");
             sb.append("LIMIT ?, ?");
         }
         return sb.toString();

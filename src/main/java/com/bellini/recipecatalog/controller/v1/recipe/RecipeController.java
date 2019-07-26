@@ -52,4 +52,14 @@ public class RecipeController {
         Recipe newRecipe = recipeService.create(recipeDto);
         return new ResponseEntity<RecipeDTO>(RecipeResponseMapper.getInstance().toDto(newRecipe), HttpStatus.CREATED);
     }
+
+    @GetMapping(path = "/search", produces = { MediaType.APPLICATION_JSON_UTF8_VALUE })
+    public ResponseEntity<Iterable<RecipeDTO>> searchRecipes(
+            @RequestParam(name = "ing", required = false) String ing,
+            @RequestParam(name = "dt", required = false) String dt,
+            @RequestParam(name = "book", required = false) String book,
+            @PageableDefault(page = 0, size = 10) Pageable pageable) {
+        // TODO
+        return null;
+    }
 }
