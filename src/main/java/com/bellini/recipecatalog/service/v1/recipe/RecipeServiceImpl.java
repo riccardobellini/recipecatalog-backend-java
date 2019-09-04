@@ -19,6 +19,7 @@ import com.bellini.recipecatalog.model.v1.DishType;
 import com.bellini.recipecatalog.model.v1.Ingredient;
 import com.bellini.recipecatalog.model.v1.Publication;
 import com.bellini.recipecatalog.model.v1.Recipe;
+import com.bellini.recipecatalog.model.v1.RecipeSearchCriteria;
 import com.bellini.recipecatalog.model.v1.dto.recipe.RecipeCreationDTO;
 
 @Service
@@ -146,6 +147,14 @@ public class RecipeServiceImpl implements RecipeService {
     @Override
     public Page<Recipe> get(String title, Pageable pageable) {
         return repo.findByTitleIgnoreCaseContaining(title, pageable);
+    }
+
+    @Override
+    public Page<Recipe> search(RecipeSearchCriteria searchCriteria, Pageable page) {
+        if (searchCriteria == null) {
+            return getAll(page);
+        }
+        return repo.search(searchCriteria, page);
     }
 
 }

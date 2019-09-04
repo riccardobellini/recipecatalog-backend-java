@@ -3,6 +3,7 @@ package com.bellini.recipecatalog.controller.v1.recipe;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -20,6 +21,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.bellini.recipecatalog.model.v1.Recipe;
+import com.bellini.recipecatalog.model.v1.RecipeSearchCriteria;
 import com.bellini.recipecatalog.model.v1.dto.recipe.RecipeCreationDTO;
 import com.bellini.recipecatalog.model.v1.dto.recipe.RecipeDTO;
 import com.bellini.recipecatalog.model.v1.mapper.recipe.RecipeResponseMapper;
@@ -59,7 +61,20 @@ public class RecipeController {
             @RequestParam(name = "dt", required = false) String dt,
             @RequestParam(name = "book", required = false) String book,
             @PageableDefault(page = 0, size = 10) Pageable pageable) {
-        // TODO
-        return null;
+        RecipeSearchCriteria.Builder builder = RecipeSearchCriteria.builder();
+        if (StringUtils.isNotBlank(ing)) {
+            builder.withIngredient(ing);
+        }
+        if (StringUtils.isNotBlank(dt)) {
+            builder.withDishtype(dt);
+        }
+        if (StringUtils.isNotBlank(book)) {
+            builder.withBook(book);
+        }
+        Page<Recipe> page = recipeService.search(builder.build(), pageable);
+        List<RecipeDTO> result = page.getContent().stream()
+                .map(recipe -> RecipeResponseMapper.getInstance().toDto(recipe))
+                .collect(Collectors.toList());
+        return new ResponseEntity<>(new PageImpl<>(result, pageable, page.getTotalElements()), HttpStatus.OK);
     }
 }
