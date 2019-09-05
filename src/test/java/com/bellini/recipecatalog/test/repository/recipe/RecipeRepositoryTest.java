@@ -21,6 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.bellini.recipecatalog.dao.v1.recipe.RecipeRepository;
 import com.bellini.recipecatalog.model.v1.Recipe;
+import com.bellini.recipecatalog.model.v1.RecipeSearchCriteria;
 
 @SpringBootTest
 @RunWith(SpringRunner.class)
@@ -141,5 +142,67 @@ public class RecipeRepositoryTest {
         List<Recipe> pagedResults = new ArrayList<>(firstPage.getContent());
         pagedResults.addAll(secondPage.getContent());
         assertThat(allList, is(pagedResults));
+    }
+
+    @Test
+    public void search_shouldFindByIngredient() {
+        RecipeSearchCriteria criteria = new RecipeSearchCriteria("pec", null, null, null);
+        Page<Recipe> result = recipeRepo.search(criteria, PageRequest.of(0, Integer.MAX_VALUE));
+
+        assertThat(result, notNullValue());
+        List<Recipe> resultList = result.getContent();
+        assertThat(resultList, hasSize(1));
+        assertThat(resultList.get(0), hasProperty("id", comparesEqualTo(1L)));
+    }
+
+    @Test
+    public void search_shouldFindByDishtype() {
+        RecipeSearchCriteria criteria = new RecipeSearchCriteria(null, "pas", null, null);
+        Page<Recipe> result = recipeRepo.search(criteria, PageRequest.of(0, Integer.MAX_VALUE));
+
+        assertThat(result, notNullValue());
+        List<Recipe> resultList = result.getContent();
+        assertThat(resultList, hasSize(2));
+    }
+
+    @Test
+    public void search_findByBook() {
+        RecipeSearchCriteria criteria = new RecipeSearchCriteria(null, null, "Pep", null);
+        Page<Recipe> result = recipeRepo.search(criteria, PageRequest.of(0, Integer.MAX_VALUE));
+
+        assertThat(result, notNullValue());
+        List<Recipe> resultList = result.getContent();
+        assertThat(resultList, hasSize(1));
+        assertThat(resultList.get(0), hasProperty("id", comparesEqualTo(2L)));
+    }
+
+    @Test
+    public void search_shouldFindByTitle() {
+        RecipeSearchCriteria criteria = new RecipeSearchCriteria(null, null, null, "ca");
+        Page<Recipe> result = recipeRepo.search(criteria, PageRequest.of(0, Integer.MAX_VALUE));
+
+        assertThat(result, notNullValue());
+        List<Recipe> resultList = result.getContent();
+        assertThat(resultList, hasSize(2));
+    }
+
+    @Test
+    public void search_shouldEvaluateCriteriaWithLogicalAnd_ReturnEmptyCollection() {
+        RecipeSearchCriteria criteria = new RecipeSearchCriteria("pec", "pas", "Pep", null);
+        Page<Recipe> result = recipeRepo.search(criteria, PageRequest.of(0, Integer.MAX_VALUE));
+
+        assertThat(result, notNullValue());
+        assertThat(result.getContent(), empty());
+    }
+
+    @Test
+    public void search_shouldEvaluateCriteriaWithLogicalAnd_ReturnCorrectElement() {
+        RecipeSearchCriteria criteria = new RecipeSearchCriteria("pec", "pas", "Noi", "spa");
+        Page<Recipe> result = recipeRepo.search(criteria, PageRequest.of(0, Integer.MAX_VALUE));
+
+        assertThat(result, notNullValue());
+        List<Recipe> resultList = result.getContent();
+        assertThat(resultList, hasSize(1));
+        assertThat(resultList.get(0), hasProperty("id", comparesEqualTo(1L)));
     }
 }
