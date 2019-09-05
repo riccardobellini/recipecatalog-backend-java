@@ -7,11 +7,13 @@ public class RecipeSearchCriteria {
     private final String ingredient;
     private final String dishtype;
     private final String book;
+    private final String titleQuery;
 
-    public RecipeSearchCriteria(String ingredient, String dishtype, String book) {
+    public RecipeSearchCriteria(String ingredient, String dishtype, String book, String titleQuery) {
         this.ingredient = ingredient;
         this.dishtype = dishtype;
         this.book = book;
+        this.titleQuery = titleQuery;
     }
 
     public String getIngredient() {
@@ -26,6 +28,10 @@ public class RecipeSearchCriteria {
         return book;
     }
 
+    public String getTitleQuery() {
+        return titleQuery;
+    }
+
     public boolean isByIngredient() {
         return StringUtils.isNotBlank(ingredient);
     }
@@ -38,6 +44,10 @@ public class RecipeSearchCriteria {
         return StringUtils.isNotBlank(book);
     }
 
+    public boolean isByTitle() {
+        return StringUtils.isNotBlank(titleQuery);
+    }
+
     public static Builder builder() {
         return new Builder();
     }
@@ -46,6 +56,7 @@ public class RecipeSearchCriteria {
         private String ingredient;
         private String dishtype;
         private String book;
+        private String titleQuery;
 
         public Builder withIngredient(String ingredient) {
             this.ingredient = ingredient;
@@ -62,8 +73,13 @@ public class RecipeSearchCriteria {
             return this;
         }
 
+        public Builder withTitleQuery(String titleQuery) {
+            this.titleQuery = titleQuery;
+            return this;
+        }
+
         public RecipeSearchCriteria build() {
-            return new RecipeSearchCriteria(this.ingredient, this.dishtype, this.book);
+            return new RecipeSearchCriteria(this.ingredient, this.dishtype, this.book, this.titleQuery);
         }
     }
 }

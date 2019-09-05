@@ -202,6 +202,9 @@ public class RecipeRepositoryImpl implements RecipeRepository {
             if (searchCriteria.isByBook()) {
                 stmt.setString(i++, "%" + searchCriteria.getBook() + "%");
             }
+            if (searchCriteria.isByTitle()) {
+                stmt.setString(i++, "%" + searchCriteria.getTitleQuery() + "%");
+            }
             if (!count) {
                 stmt.setLong(i++, page.getOffset());
                 stmt.setInt(i++, page.getPageSize());
@@ -254,6 +257,10 @@ public class RecipeRepositoryImpl implements RecipeRepository {
             sb.append(hasWhere ? "AND " : "WHERE ");
             sb.append("LOWER(book.TITLE) LIKE LOWER(?) ");
             hasWhere = true;
+        }
+        if (searchCriteria.isByTitle()) {
+            sb.append(hasWhere ? "AND " : "WHERE ");
+            sb.append("LOWER(rec.TITLE) LIKE LOWER(?) ");
         }
         if (!count) {
             sb.append("ORDER BY rec.TITLE ASC ");

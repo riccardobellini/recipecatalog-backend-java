@@ -57,6 +57,7 @@ public class RecipeController {
 
     @GetMapping(path = "/search", produces = { MediaType.APPLICATION_JSON_UTF8_VALUE })
     public ResponseEntity<Iterable<RecipeDTO>> searchRecipes(
+            @RequestParam(name = "q", required = false) String title,
             @RequestParam(name = "ing", required = false) String ing,
             @RequestParam(name = "dt", required = false) String dt,
             @RequestParam(name = "book", required = false) String book,
@@ -70,6 +71,9 @@ public class RecipeController {
         }
         if (StringUtils.isNotBlank(book)) {
             builder.withBook(book);
+        }
+        if (StringUtils.isNotBlank(title)) {
+            builder.withTitleQuery(title);
         }
         Page<Recipe> page = recipeService.search(builder.build(), pageable);
         List<RecipeDTO> result = page.getContent().stream()
