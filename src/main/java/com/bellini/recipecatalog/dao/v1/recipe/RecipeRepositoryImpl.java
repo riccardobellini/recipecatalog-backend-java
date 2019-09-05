@@ -252,7 +252,7 @@ public class RecipeRepositoryImpl implements RecipeRepository {
         }
         if (searchCriteria.isByBook()) {
             sb.append(hasWhere ? "AND " : "WHERE ");
-            sb.append("LOWER(bookTITLE) LIKE LOWER(?) ");
+            sb.append("LOWER(book.TITLE) LIKE LOWER(?) ");
             hasWhere = true;
         }
         if (!count) {
