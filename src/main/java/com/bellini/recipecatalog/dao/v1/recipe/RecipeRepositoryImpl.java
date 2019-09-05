@@ -186,7 +186,10 @@ public class RecipeRepositoryImpl implements RecipeRepository {
                 searchCriteria, true),
                 searchStatementSetter(searchCriteria, null, true),
                 (rs) -> {
-                    return rs.getLong(1);
+                    if (rs.next()) {
+                        return rs.getLong(1);
+                    }
+                    return 0L;
                 });
     }
 
@@ -250,7 +253,7 @@ public class RecipeRepositoryImpl implements RecipeRepository {
         }
         if (searchCriteria.isByDishtype()) {
             sb.append(hasWhere ? "AND " : "WHERE ");
-            sb.append("LOWER(ing.NAME) LIKE LOWER(?) ");
+            sb.append("LOWER(dt.NAME) LIKE LOWER(?) ");
             hasWhere = true;
         }
         if (searchCriteria.isByBook()) {
