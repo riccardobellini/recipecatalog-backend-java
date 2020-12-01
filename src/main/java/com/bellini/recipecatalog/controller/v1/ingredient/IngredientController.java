@@ -49,7 +49,7 @@ public class IngredientController {
         List<IngredientDTO> result = StreamSupport.stream(list.spliterator(), true)
                 .map(ingr -> IngredientResponseMapper.getInstance().toDto(ingr))
                 .collect(Collectors.toList());
-        return new ResponseEntity<>(new PageImpl<>(result, pageable, pageable.getPageSize()), HttpStatus.OK);
+        return new ResponseEntity<>(new PageImpl<>(result, pageable, list.getTotalElements()), HttpStatus.OK);
     }
 
     @PostMapping(consumes = { MediaType.APPLICATION_JSON_UTF8_VALUE }, produces = { MediaType.APPLICATION_JSON_UTF8_VALUE })
