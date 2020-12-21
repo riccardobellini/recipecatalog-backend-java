@@ -28,4 +28,5 @@ public interface DishTypeRepository {
 
     void attachToRecipe(Long dtId, Long recId);
 
+    int getCount();
 }

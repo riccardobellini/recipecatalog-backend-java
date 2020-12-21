@@ -26,6 +26,7 @@ import com.bellini.recipecatalog.exception.dishtype.NotExistingDishTypeException
 import com.bellini.recipecatalog.model.v1.DishType;
 import com.bellini.recipecatalog.model.v1.dto.dishtype.DishTypeDTO;
 import com.bellini.recipecatalog.model.v1.dto.dishtype.DishTypeModificationDTO;
+import com.bellini.recipecatalog.model.v1.dto.generic.CountResultDTO;
 import com.bellini.recipecatalog.model.v1.mapper.dishtype.DishTypeModificationMapper;
 import com.bellini.recipecatalog.model.v1.mapper.dishtype.DishTypeResponseMapper;
 import com.bellini.recipecatalog.service.v1.dishtype.DishTypeService;
@@ -78,5 +79,11 @@ public class DishTypeController {
     public HttpEntity<String> delete(@PathVariable(value = "id") Long id) {
         dishTypeService.delete(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
+    @GetMapping(path = "/count")
+    public HttpEntity<CountResultDTO> getDishTypeCount() {
+        int total = dishTypeService.getCount();
+        return new ResponseEntity<>(new CountResultDTO(total), HttpStatus.OK);
     }
 }

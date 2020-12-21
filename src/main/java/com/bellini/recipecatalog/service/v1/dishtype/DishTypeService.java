@@ -20,4 +20,6 @@ public interface DishTypeService {
     DishType update(Long id, DishType dt);
 
     void delete(Long id);
+
+    int getCount();
 }

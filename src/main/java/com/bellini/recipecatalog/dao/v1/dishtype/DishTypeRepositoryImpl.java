@@ -228,4 +228,9 @@ public class DishTypeRepositoryImpl implements DishTypeRepository {
         return sb.toString();
     }
 
+    @Override
+    public int getCount() {
+        return jdbcTemplate.queryForObject(countSQL(), Integer.class);
+    }
+
 }

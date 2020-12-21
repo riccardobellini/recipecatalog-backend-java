@@ -80,4 +80,9 @@ public class DishTypeServiceImpl implements DishTypeService {
         repo.deleteById(id);
     }
 
+    @Override
+    public int getCount() {
+        return repo.getCount();
+    }
+
 }
