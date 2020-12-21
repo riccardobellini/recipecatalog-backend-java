@@ -228,4 +228,9 @@ public class IngredientRepositoryImpl implements IngredientRepository {
         return sb.toString();
     }
 
+    @Override
+    public int getCount() {
+        return jdbcTemplate.queryForObject(countSQL(), Integer.class);
+    }
+
 }

@@ -76,4 +76,9 @@ public class IngredientServiceImpl implements IngredientService {
         repo.deleteById(id);
     }
 
+    @Override
+    public int getCount() {
+        return repo.getCount();
+    }
+
 }

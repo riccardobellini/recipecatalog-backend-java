@@ -1,6 +1,6 @@
 package com.bellini.recipecatalog.test.repository.ingredient;
 
-import static org.hamcrest.CoreMatchers.notNullValue;
+import static org.hamcrest.CoreMatchers.*;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.allOf;
 import static org.hamcrest.Matchers.comparesEqualTo;
@@ -211,5 +211,11 @@ public class IngredientRepositoryTest {
         Collection<Ingredient> result = repo.findByRecipeId((long) 10000);
         assertThat(result, notNullValue());
         assertThat(result, empty());
+    }
+
+    @Test
+    public void getCount_shouldReturnCount() {
+        int count = repo.getCount();
+        assertThat(count, equalTo(10));
     }
 }

@@ -27,4 +27,6 @@ public interface IngredientRepository {
     Collection<Ingredient> findByRecipeId(Long recipeId);
 
     void attachToRecipe(Long ingrId, Long recId);
+
+    int getCount();
 }

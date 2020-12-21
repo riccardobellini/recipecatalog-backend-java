@@ -20,4 +20,6 @@ public interface IngredientService {
     Ingredient update(Long id, Ingredient ingr);
 
     void delete(Long id);
+
+    int getCount();
 }

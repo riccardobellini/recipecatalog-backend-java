@@ -25,6 +25,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.bellini.recipecatalog.exception.ingredient.NotExistingIngredientException;
 import com.bellini.recipecatalog.model.v1.Ingredient;
+import com.bellini.recipecatalog.model.v1.dto.generic.CountResultDTO;
 import com.bellini.recipecatalog.model.v1.dto.ingredient.IngredientDTO;
 import com.bellini.recipecatalog.model.v1.dto.ingredient.IngredientModificationDTO;
 import com.bellini.recipecatalog.model.v1.mapper.ingredient.IngredientModificationMapper;
@@ -78,5 +79,11 @@ public class IngredientController {
     public HttpEntity<String> delete(@PathVariable(value = "id") Long id) {
         ingredientService.delete(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
+    @GetMapping(path = "/count")
+    public HttpEntity<CountResultDTO> getIngredientCount() {
+        int total = ingredientService.getCount();
+        return new ResponseEntity<>(new CountResultDTO(total), HttpStatus.OK);
     }
 }
