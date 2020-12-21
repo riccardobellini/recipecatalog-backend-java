@@ -26,6 +26,7 @@ import com.bellini.recipecatalog.exception.dishtype.NotExistingDishTypeException
 import com.bellini.recipecatalog.model.v1.Book;
 import com.bellini.recipecatalog.model.v1.dto.book.BookDTO;
 import com.bellini.recipecatalog.model.v1.dto.book.BookModificationDTO;
+import com.bellini.recipecatalog.model.v1.dto.generic.CountResultDTO;
 import com.bellini.recipecatalog.model.v1.mapper.book.BookModificationMapper;
 import com.bellini.recipecatalog.model.v1.mapper.book.BookResponseMapper;
 import com.bellini.recipecatalog.service.v1.book.BookService;
@@ -38,7 +39,7 @@ public class BookController {
     private BookService bookService;
 
     @GetMapping(path = "", produces = { MediaType.APPLICATION_JSON_UTF8_VALUE })
-    public ResponseEntity<Iterable<BookDTO>> getAllBooks(@RequestParam(name="q", required = false) String name, @PageableDefault(page = 0, size = 10) Pageable pageable) {
+    public ResponseEntity<Iterable<BookDTO>> getAllBooks(@RequestParam(name = "q", required = false) String name, @PageableDefault(page = 0, size = 10) Pageable pageable) {
         Page<Book> page = null;
         if (name != null) {
             page = bookService.get(name, pageable);
@@ -77,5 +78,11 @@ public class BookController {
     public HttpEntity<String> delete(@PathVariable(value = "id") Long id) {
         bookService.delete(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
+    @GetMapping(path = "/count")
+    public HttpEntity<CountResultDTO> getBookCount() {
+        int total = bookService.getCount();
+        return new ResponseEntity<>(new CountResultDTO(total), HttpStatus.OK);
     }
 }

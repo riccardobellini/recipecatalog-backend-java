@@ -1,6 +1,6 @@
 package com.bellini.recipecatalog.test.repository.book;
 
-import static org.hamcrest.CoreMatchers.notNullValue;
+import static org.hamcrest.CoreMatchers.*;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.allOf;
 import static org.hamcrest.Matchers.comparesEqualTo;
@@ -204,5 +204,11 @@ public class BookRepositoryTest {
         Optional<Book> optBook = repo.findByRecipeId((long) 1000);
         assertThat(optBook, notNullValue());
         assertFalse(optBook.isPresent());
+    }
+    
+    @Test
+    public void getCount_shouldReturnCount() {
+        int count = repo.getCount();
+        assertThat(count, equalTo(4));
     }
 }

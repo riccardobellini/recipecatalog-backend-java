@@ -28,4 +28,6 @@ public interface BookRepository {
 
     void attachToRecipe(Long bookId, Long recId);
 
+    int getCount();
+
 }

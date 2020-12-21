@@ -226,4 +226,9 @@ public class BookRepositoryImpl implements BookRepository {
         sb.append("(?, ?)");
         return sb.toString();
     }
+
+    @Override
+    public int getCount() {
+        return jdbcTemplate.queryForObject(countSQL(), Integer.class);
+    }
 }

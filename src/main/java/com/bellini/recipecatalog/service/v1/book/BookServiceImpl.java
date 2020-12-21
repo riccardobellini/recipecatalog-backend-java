@@ -76,4 +76,9 @@ public class BookServiceImpl implements BookService {
         repo.deleteById(id);
     }
 
+    @Override
+    public int getCount() {
+        return repo.getCount();
+    }
+
 }

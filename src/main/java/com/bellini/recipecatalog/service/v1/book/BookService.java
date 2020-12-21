@@ -18,6 +18,8 @@ public interface BookService {
     Book get(Long id);
 
     Book update(Long id, Book dt);
-    
+
     void delete(Long id);
+
+    int getCount();
 }
