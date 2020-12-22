@@ -2,16 +2,16 @@ package com.bellini.recipecatalog.model.v1.dto.publication;
 
 public class PublicationDTO {
 
-    private Long id;
+    private Integer month;
     private Integer volume;
     private Integer year;
 
-    public Long getId() {
-        return this.id;
+    public Integer getMonth() {
+        return month;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public void setMonth(Integer month) {
+        this.month = month;
     }
 
     public Integer getVolume() {

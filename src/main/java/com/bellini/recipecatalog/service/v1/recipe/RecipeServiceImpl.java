@@ -15,8 +15,6 @@ import com.bellini.recipecatalog.dao.v1.publication.PublicationRepository;
 import com.bellini.recipecatalog.dao.v1.recipe.RecipeRepository;
 import com.bellini.recipecatalog.exception.recipe.NotExistingRecipeException;
 import com.bellini.recipecatalog.model.v1.Book;
-import com.bellini.recipecatalog.model.v1.DishType;
-import com.bellini.recipecatalog.model.v1.Ingredient;
 import com.bellini.recipecatalog.model.v1.Publication;
 import com.bellini.recipecatalog.model.v1.Recipe;
 import com.bellini.recipecatalog.model.v1.RecipeSearchCriteria;
@@ -39,31 +37,6 @@ public class RecipeServiceImpl implements RecipeService {
 
     @Autowired
     private PublicationRepository pubRepo;
-
-    @Override
-    public Recipe create(Recipe rec) {
-        // TODO performs check
-        // TODO list of ingredients, dish types, book and publication should be retrieved from method parameter instead of saved object
-        final Recipe saved = repo.save(rec);
-        final Long recipeId = saved.getId();
-        Collection<Ingredient> ingredients = rec.getIngredients();
-        for (Ingredient ingr : ingredients) {
-            ingredientRepo.attachToRecipe(ingr.getId(), recipeId);
-        }
-        Collection<DishType> dishtypes = rec.getDishtypes();
-        for (DishType dt : dishtypes) {
-            dishTypeRepo.attachToRecipe(dt.getId(), recipeId);
-        }
-        Book book = rec.getBook();
-        if (book != null) {
-            bookRepo.attachToRecipe(book.getId(), recipeId);
-        }
-        Publication publication = rec.getPublication();
-        if (publication != null) {
-            pubRepo.attachToRecipe(publication.getId(), recipeId);
-        }
-        return saved;
-    }
 
     @Override
     public Recipe get(Long id) {
@@ -108,19 +81,12 @@ public class RecipeServiceImpl implements RecipeService {
         if (recipeDto == null) {
             throw new IllegalArgumentException("Null creation object not allowed");
         }
+        // TODO add month
         Publication pub = null;
-        // check if publication is present, retrieve id if found, create publication otherwise
-        if (recipeDto.getVolume() != null && recipeDto.getYear() != null) {
-            Optional<Publication> pubOpt = pubRepo.findByVolumeAndYear(recipeDto.getVolume(), recipeDto.getYear());
-            if (!pubOpt.isPresent()) {
-                // create publication
-                Publication pubToCreate = new Publication();
-                pubToCreate.setVolume(recipeDto.getVolume());
-                pubToCreate.setYear(recipeDto.getYear());
-                pub = pubRepo.save(pubToCreate);
-            } else {
-                pub = pubOpt.get();
-            }
+        if (recipeDto.getVolume() != null || recipeDto.getYear() != null) {
+            pub = new Publication();
+            pub.setVolume(recipeDto.getVolume());
+            pub.setYear(recipeDto.getYear());
         }
         Recipe recipeToCreate = new Recipe();
         recipeToCreate.setTitle(recipeDto.getTitle());
@@ -139,7 +105,7 @@ public class RecipeServiceImpl implements RecipeService {
             bookRepo.attachToRecipe(bookId, recipeId);
         }
         if (pub != null) {
-            pubRepo.attachToRecipe(pub.getId(), recipeId);
+            pubRepo.attachToRecipe(recipeId, pub);
         }
         return get(recipeId);
     }

@@ -11,8 +11,6 @@ import com.bellini.recipecatalog.model.v1.dto.recipe.RecipeCreationDTO;
 @Service
 public interface RecipeService {
 
-    Recipe create(Recipe pub);
-
     Recipe get(Long id);
 
     Page<Recipe> getAll(Pageable page);

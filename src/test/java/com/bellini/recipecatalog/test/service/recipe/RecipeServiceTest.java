@@ -3,7 +3,6 @@ package com.bellini.recipecatalog.test.service.recipe;
 import static org.hamcrest.CoreMatchers.*;
 import static org.junit.Assert.*;
 import static org.mockito.ArgumentMatchers.*;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 import java.time.Instant;
@@ -37,7 +36,6 @@ public class RecipeServiceTest {
     private static final String RECIPE_TITLE = "Pasta alla norma";
 
     private static final String DUMMY_INGREDIENT_1_NAME = "Melanzane";
-    private static final String DUMMY_INGREDIENT_2_NAME = "Spaghetti";
 
     private static final String DUMMY_DISHTYPE_NAME = "Primi piatti - pasta";
 
@@ -61,21 +59,6 @@ public class RecipeServiceTest {
     @MockBean
     private PublicationRepository pubRepo;
 
-    @Test
-    public void create_shouldCallRepositoriesToAttachRelatedEntities() {
-        when(recipeRepo.save(any())).thenReturn(dummyRecipeSlim());
-
-        final Recipe toCreate = dummyRecipe();
-        Recipe theNewRecipe = recipeSrv.create(toCreate);
-
-        assertThat(theNewRecipe, notNullValue());
-
-        verify(ingrRepo, atLeastOnce()).attachToRecipe(anyLong(), anyLong());
-        verify(dtRepo, atLeastOnce()).attachToRecipe(anyLong(), anyLong());
-        verify(bookRepo).attachToRecipe(anyLong(), anyLong());
-        verify(pubRepo).attachToRecipe(anyLong(), anyLong());
-    }
-
     private Recipe dummyRecipeSlim() {
         // returns a recipe with no other entities attached
         Recipe rec = new Recipe();
@@ -83,23 +66,6 @@ public class RecipeServiceTest {
         rec.setLastModificationTime(Instant.now());
         rec.setId(1L);
         rec.setTitle(RECIPE_TITLE);
-        return rec;
-    }
-
-    private Recipe dummyRecipe() {
-        Recipe rec = new Recipe();
-
-        rec.setCreationTime(Instant.now());
-        rec.setLastModificationTime(Instant.now());
-        rec.setId(1L);
-        rec.setTitle(RECIPE_TITLE);
-
-        rec.getIngredients().add(dummyIngredient(1L, DUMMY_INGREDIENT_1_NAME));
-        rec.getIngredients().add(dummyIngredient(2L, DUMMY_INGREDIENT_2_NAME));
-        rec.getDishtypes().add(dummyDishType());
-        rec.setBook(dummyBook());
-        rec.setPublication(dummyPublication());
-
         return rec;
     }
 
@@ -130,9 +96,6 @@ public class RecipeServiceTest {
 
     private Publication dummyPublication() {
         final Publication pub = new Publication();
-        pub.setCreationTime(Instant.now());
-        pub.setLastModificationTime(Instant.now());
-        pub.setId(1L);
         pub.setVolume(1);
         pub.setYear(2019);
         return pub;

@@ -69,9 +69,9 @@ public class RecipeResponseMapper implements Mapper<Recipe, RecipeDTO> {
 
         if (param.getPublication() != null) {
             PublicationDTO pDto = new PublicationDTO();
-            pDto.setId(param.getPublication().getId());
             pDto.setVolume(param.getPublication().getVolume());
             pDto.setYear(param.getPublication().getYear());
+            pDto.setMonth(param.getPublication().getMonth());
             dto.setPublication(pDto);
         }
 
