@@ -157,4 +157,9 @@ public class RecipeServiceImpl implements RecipeService {
         return repo.search(searchCriteria, page);
     }
 
+    @Override
+    public int getCount() {
+        return repo.getCount();
+    }
+
 }

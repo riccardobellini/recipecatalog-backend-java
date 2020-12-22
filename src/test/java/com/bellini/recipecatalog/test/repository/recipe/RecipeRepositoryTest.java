@@ -1,5 +1,6 @@
 package com.bellini.recipecatalog.test.repository.recipe;
 
+import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.*;
@@ -204,5 +205,11 @@ public class RecipeRepositoryTest {
         List<Recipe> resultList = result.getContent();
         assertThat(resultList, hasSize(1));
         assertThat(resultList.get(0), hasProperty("id", comparesEqualTo(1L)));
+    }
+
+    @Test
+    public void getCount_shouldReturnCount() {
+        int count = recipeRepo.getCount();
+        assertThat(count, equalTo(2));
     }
 }

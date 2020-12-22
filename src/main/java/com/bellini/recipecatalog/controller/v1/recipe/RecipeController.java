@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.bellini.recipecatalog.model.v1.Recipe;
 import com.bellini.recipecatalog.model.v1.RecipeSearchCriteria;
+import com.bellini.recipecatalog.model.v1.dto.generic.CountResultDTO;
 import com.bellini.recipecatalog.model.v1.dto.recipe.RecipeCreationDTO;
 import com.bellini.recipecatalog.model.v1.dto.recipe.RecipeDTO;
 import com.bellini.recipecatalog.model.v1.mapper.recipe.RecipeResponseMapper;
@@ -80,5 +81,11 @@ public class RecipeController {
                 .map(recipe -> RecipeResponseMapper.getInstance().toDto(recipe))
                 .collect(Collectors.toList());
         return new ResponseEntity<>(new PageImpl<>(result, pageable, page.getTotalElements()), HttpStatus.OK);
+    }
+    
+    @GetMapping(path = "/count", produces = { MediaType.APPLICATION_JSON_UTF8_VALUE })
+    public HttpEntity<CountResultDTO> getRecipeCount() {
+        int total = recipeService.getCount();
+        return ResponseEntity.ok(new CountResultDTO(total));
     }
 }

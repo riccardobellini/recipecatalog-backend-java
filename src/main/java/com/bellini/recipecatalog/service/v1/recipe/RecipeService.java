@@ -23,4 +23,5 @@ public interface RecipeService {
 
     Page<Recipe> search(RecipeSearchCriteria searchCriteria, Pageable page);
 
+    int getCount();
 }

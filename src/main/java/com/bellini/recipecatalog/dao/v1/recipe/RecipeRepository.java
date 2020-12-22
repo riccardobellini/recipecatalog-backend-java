@@ -21,4 +21,6 @@ public interface RecipeRepository {
     Optional<Recipe> findById(Long id);
 
     Page<Recipe> search(RecipeSearchCriteria searchCriteria, Pageable page);
+
+    int getCount();
 }

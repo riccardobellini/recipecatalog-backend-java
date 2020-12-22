@@ -272,4 +272,9 @@ public class RecipeRepositoryImpl implements RecipeRepository {
         return sb.toString();
     }
 
+    @Override
+    public int getCount() {
+        return jdbcTemplate.queryForObject(countSQL(), Integer.class);
+    }
+
 }
