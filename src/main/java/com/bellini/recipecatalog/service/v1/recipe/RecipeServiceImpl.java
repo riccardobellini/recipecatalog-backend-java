@@ -112,7 +112,20 @@ public class RecipeServiceImpl implements RecipeService {
 
     @Override
     public Page<Recipe> get(String title, Pageable pageable) {
-        return repo.findByTitleIgnoreCaseContaining(title, pageable);
+        final Page<Recipe> result = repo.findByTitleIgnoreCaseContaining(title, pageable);
+        for (Recipe rec : result) {
+            rec.setDishtypes(dishTypeRepo.findByRecipeId(rec.getId()));
+            rec.setIngredients(ingredientRepo.findByRecipeId(rec.getId()));
+            Optional<Book> optBook = bookRepo.findByRecipeId(rec.getId());
+            if (optBook.isPresent()) {
+                rec.setBook(optBook.get());
+            }
+            Optional<Publication> optPub = pubRepo.findByRecipeId(rec.getId());
+            if (optPub.isPresent()) {
+                rec.setPublication(optPub.get());
+            }
+        }
+        return result;
     }
 
     @Override

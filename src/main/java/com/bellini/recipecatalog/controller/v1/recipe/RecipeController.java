@@ -43,7 +43,6 @@ public class RecipeController {
         } else {
             page = recipeService.getAll(pageable);
         }
-        page = recipeService.getAll(pageable);
         List<RecipeDTO> result = page.getContent().stream()
                 .map(recipe -> RecipeResponseMapper.getInstance().toDto(recipe))
                 .collect(Collectors.toList());
